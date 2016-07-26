@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+"http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+	<!-- 数据库驱动 -->
+	<classPathEntry
+		location="D:/mvn_rep/rep/mysql/mysql-connector-java/5.0.4/mysql-connector-java-5.0.4.jar" />
+	<context id="MysqlContext" targetRuntime="MyBatis3"
+		defaultModelType="flat">
+
+		<!-- 注释 -->
+		<commentGenerator>
+			<property name="suppressDate" value="false" />
+			<property name="suppressAllComments" value="true" />
+		</commentGenerator>
+
+		<!-- 数据库连接 -->
+		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
+			connectionURL="jdbc:mysql://localhost:3306/costaccount" 
+			userId="root"
+			password="lizhiyong" />
+
+		<!-- java model -->
+		<javaModelGenerator targetPackage="cn.com.fanrenlee.model.tables"
+			targetProject="costaccount">
+			<property name="enableSubPackages" value="true" />
+			<property name="trimStrings" value="true" />
+		</javaModelGenerator>
+
+		<!-- sqlmap xml,注意：重新生成前xml文件请先删除，否则会重复 -->
+		<!-- <sqlMapGenerator targetPackage="mybatis.mapper.generate"
+			targetProject="src/main/resources">
+			<property name="enableSubPackages" value="true" />
+		</sqlMapGenerator> -->
+
+		<!-- java client dao -->
+		<!-- <javaClientGenerator targetPackage="cn.com.sinosoft.AppointMent.server.dao"
+			targetProject="src/main/java" type="XMLMAPPER">
+			<property name="enableSubPackages" value="true" />
+		</javaClientGenerator> -->
+
+		<!-- 全部表-单表请使用具体表名 -->
+		<table tableName="%" enableCountByExample="false"
+			enableUpdateByExample="false" enableDeleteByExample="false"
+			enableSelectByExample="false" selectByExampleQueryId="false">
+			<generatedKey column="id" sqlStatement="Mysql" />
+		</table>
+
+	</context>
+</generatorConfiguration>

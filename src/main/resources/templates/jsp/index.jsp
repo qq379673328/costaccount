@@ -8,7 +8,15 @@
 </head>
 <body>
 
-welcome
+<form action="costaccount/uploadSrcData">
+123
+	任务描述：<input type="text" name="jobDesc"/>
+	<select name="tHosId">
+		<option value="1">测试医院</option>
+	</select>
+	<input type="file" name="file" />
+	
+</form>
 
 </body>
 </html>

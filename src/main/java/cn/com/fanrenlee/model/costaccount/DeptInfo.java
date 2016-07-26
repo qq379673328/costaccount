@@ -12,6 +12,11 @@ package cn.com.fanrenlee.model.costaccount;
 public class DeptInfo {
 	
 	/**
+	 * 科室id
+	 */
+	private Integer deptId;
+	
+	/**
 	 * 科室代码
 	 */
 	private String deptCode;
@@ -231,6 +236,14 @@ public class DeptInfo {
 
 	public void setDeptSpecialMedicalRecord(boolean isDeptSpecialMedicalRecord) {
 		this.isDeptSpecialMedicalRecord = isDeptSpecialMedicalRecord;
+	}
+
+	public Integer getDeptId() {
+		return deptId;
+	}
+
+	public void setDeptId(Integer deptId) {
+		this.deptId = deptId;
 	}
 
 }

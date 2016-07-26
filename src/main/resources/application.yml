@@ -8,14 +8,13 @@ spring:
         username: root
         password: lizhiyong
         driver-class-name: com.mysql.jdbc.Driver
+    view:
+        prefix: jsp
+        suffix: .jsp
     mvc:
-        view:
-            prefix: jsp 
-            suffix: .jsp
-        mvc:
-            async:
-                request-timeout: 20
-            date-format: dd/MM/yyyy
+        async:
+            request-timeout: 20
+        date-format: dd/MM/yyyy
             
     profiles:
         active: DEFAULT
