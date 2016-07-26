@@ -4,18 +4,10 @@ ext:
 
 spring:
     datasource:
-        url: jdbc:mysql://localhost:3306/costaccount
+        url: jdbc:mysql://localhost:3306/costaccount?useUnicode=true&characterEncoding=UTF-8
         username: root
-        password: lizhiyong
+        password:
         driver-class-name: com.mysql.jdbc.Driver
-    view:
-        prefix: jsp
-        suffix: .jsp
-    mvc:
-        async:
-            request-timeout: 20
-        date-format: dd/MM/yyyy
-            
     profiles:
         active: DEFAULT
     multipart:
@@ -31,6 +23,13 @@ spring:
             preferred-json-mapper: true
     jackson:
         date-format: yyyy-MM-dd HH:mm:ss
+    velocity:
+        charset: UTF-8
+        properties:
+            input:
+                encoding: UTF-8
+            output:
+                encoding: UTF-8
 
 # 服务器
 server:

@@ -99,7 +99,7 @@ public class CADItemHandler {
 				for (CADItem cadItemIn : cadItems) {
 					String deptCodeIn = cadItemIn.getDeptCode();
 					// 非行政后勤科室过滤
-					if (!cadItem.isDeptTypeXZHQ()) {
+					if (!cadItemIn.isDeptTypeXZHQ()) {
 						continue;
 					}
 					// 该医辅科室人员数 /（全院人数 - 该行政后勤科室人员数） × 该行政后勤科室全成本
@@ -140,7 +140,7 @@ public class CADItemHandler {
 				for (CADItem cadItemIn : cadItems) {
 					String deptCodeIn = cadItemIn.getDeptCode();
 					// 非医辅科室过滤
-					if (!cadItem.isDeptTypeYF()) {
+					if (!cadItemIn.isDeptTypeYF()) {
 						continue;
 					}
 					// 二级分摊
@@ -177,11 +177,11 @@ public class CADItemHandler {
 				for (CADItem cadItemIn : cadItems) {
 					String deptCodeIn = cadItemIn.getDeptCode();
 					// 非医技科室过滤
-					if (!cadItem.isDeptTypeYJ()) {
+					if (!cadItemIn.isDeptTypeYJ()) {
 						continue;
 					}
 					// 三级分摊
-					Float baseCount = cadItem.getWorkCountKD()
+					Float baseCount = cadItem.getWorkCountKd()
 							/ cadItemIn.getWorkCount();
 					CostItem costItemSrc = getCostDirectMap().get(deptCodeIn);
 					// 一级分摊
@@ -214,13 +214,13 @@ public class CADItemHandler {
 		Float level2 = 0f;
 		// 某医技科室分摊的供应室全成本 = 该医技科室消毒工作量 / 全院消毒工作总量 × 供应室全成本
 		if (cadItem.isDeptTypeYJ() && cadItemIn.isDeptSpecialSupply()) {
-			level2 = cadItem.getWorkCountXD() / getTotalWorkDisinfected();
+			level2 = cadItem.getWorkCountXd() / getTotalWorkDisinfected();
 			// 某临床科室中门诊科室分摊的门诊收费处全成本 = 该门诊科室门诊量 / 全院门诊总量 × 门诊收费处全成本
 			// 某临床科室中门诊科室分摊的挂号处全成本 = 该门诊科室门诊量 / 全院门诊总量 × 挂号处全成本
 		} else if (cadItem.isDeptTypeLC() && cadItem.isDeptSpecialOutpatient()
 				&& (cadItemIn.isDeptSpecialOutpatientCashier()
 						|| cadItemIn.isDeptSpecialRegister())) {
-			level2 = cadItem.getWorkCountMZ() / getTotalWorkOutpatient();
+			level2 = cadItem.getWorkCountMz() / getTotalWorkOutpatient();
 			// 某临床科室中住院科室分摊的住院收费处全成本 = 该住院科室住院人数 / 全院住院总人数 × 住院收费处全成本
 			// 某临床科室中住院科室分摊的病案室成本 = 该住院科室住院人数 / 全院住院总人数 × 病案室全成本
 		} else if (cadItem.isDeptTypeLC() && cadItem.isDeptSpecialInhos()
@@ -229,7 +229,7 @@ public class CADItemHandler {
 			level2 = cadItem.getWorkCountInhos() / getTotalInhos();
 			// 某临床科室分摊的供应室成本 = 该临床科室消毒工作量 / 全院消毒工作总量 × 供应室全成本
 		} else if (cadItem.isDeptTypeLC() && cadItem.isDeptSpecialSupply()) {
-			level2 = cadItem.getWorkCountXD() / getTotalWorkDisinfected();
+			level2 = cadItem.getWorkCountXd() / getTotalWorkDisinfected();
 		} else {// 默认
 			level2 = cadItem.getWorkCount() / getTotalWork();
 		}

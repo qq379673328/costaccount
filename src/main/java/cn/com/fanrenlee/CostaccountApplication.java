@@ -8,8 +8,8 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @SpringBootApplication
 @EnableWebMvc
 @EnableTransactionManagement
-public class CostaccountApplication {
-
+public class CostaccountApplication{
+	
 	public static void main(String[] args) {
 		SpringApplication.run(CostaccountApplication.class, args);
 	}
