@@ -1,2 +1,7 @@
 build
 logs
+/.gradle/
+bin
+.project
+.classpath
+.settings

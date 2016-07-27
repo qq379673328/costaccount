@@ -16,12 +16,10 @@ public class CommonController {
 	
 	/**
 	 * 首页
-	 *
-	 * @return
 	 */
-	@RequestMapping(value = {"/", "index"})
-	String index(){
+	@RequestMapping("/")
+	public String index(){
 		return "index";
 	}
-
+	
 }

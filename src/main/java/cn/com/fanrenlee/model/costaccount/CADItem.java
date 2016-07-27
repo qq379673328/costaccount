@@ -382,28 +382,12 @@ public class CADItem {
 		this.workCount = workCount;
 	}
 
-	public Float getWorkCountKD() {
-		return workCountKD;
+	public Float getWorkCountKd() {
+		return workCountKd;
 	}
 
-	public void setWorkCountKD(Float workCountKD) {
-		this.workCountKD = workCountKD;
-	}
-
-	public Float getWorkCountXD() {
-		return workCountXD;
-	}
-
-	public void setWorkCountXD(Float workCountXD) {
-		this.workCountXD = workCountXD;
-	}
-
-	public Float getWorkCountMZ() {
-		return workCountMZ;
-	}
-
-	public void setWorkCountMZ(Float workCountMZ) {
-		this.workCountMZ = workCountMZ;
+	public void setWorkCountKd(Float workCountKd) {
+		this.workCountKd = workCountKd;
 	}
 
 	public Float getWorkCountInhos() {
@@ -412,6 +396,22 @@ public class CADItem {
 
 	public void setWorkCountInhos(Float workCountInhos) {
 		this.workCountInhos = workCountInhos;
+	}
+
+	public Float getWorkCountMz() {
+		return workCountMz;
+	}
+
+	public void setWorkCountMz(Float workCountMz) {
+		this.workCountMz = workCountMz;
+	}
+
+	public Float getWorkCountXd() {
+		return workCountXd;
+	}
+
+	public void setWorkCountXd(Float workCountXd) {
+		this.workCountXd = workCountXd;
 	}
 
 	/**
@@ -427,12 +427,12 @@ public class CADItem {
 	/**
 	 * 科室开单工作量
 	 */
-	private Float workCountKD;
+	private Float workCountKd;
 	
 	/**
 	 * 科室消毒工作量
 	 */
-	private Float workCountXD;
+	private Float workCountXd;
 	
 	/**
 	 * 科室住院人数
@@ -442,6 +442,6 @@ public class CADItem {
 	/**
 	 * 科室门诊量
 	 */
-	private Float workCountMZ;
+	private Float workCountMz;
 	
 }

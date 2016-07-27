@@ -3,9 +3,6 @@
  */
 package cn.com.fanrenlee.util.doc;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -53,9 +50,22 @@ public class ExcelUtil {
 				Row row = rowIte.next();
 				int colNums = row.getLastCellNum();
 				List<String> colList = new ArrayList<String>();
-				for (int j = 0; j <= colNums; j++) {
+				for (int j = 0; j < colNums; j++) {
 					Cell cell = row.getCell(j);
-					colList.add(cell.getStringCellValue());
+					if(cell == null){
+						colList.add(null);
+						continue;
+					}
+					int cellType = cell.getCellType();
+					if(Cell.CELL_TYPE_BLANK == cellType){
+						colList.add(null);
+					}else if(Cell.CELL_TYPE_NUMERIC == cellType){
+						colList.add(String.valueOf(cell.getNumericCellValue()));
+					}else if(Cell.CELL_TYPE_STRING == cellType){
+						colList.add(cell.getStringCellValue());
+					}else{
+						colList.add(null);
+					}
 				}
 				rowList.add(colList);
 			}
@@ -65,19 +75,6 @@ public class ExcelUtil {
 			wb.close();
 		}
 		return sheetList;
-	}
-
-	public static void main(String[] args) {
-		String filePath = "C:\\Users\\sinosoft\\Desktop\\百姓医院文档整理列表20160718.xlsx";
-		try {
-			List<List<List<String>>> items = ExcelUtil
-					.transExcelToData(new FileInputStream(new File(filePath)));
-			System.out.println(items.size());
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 }

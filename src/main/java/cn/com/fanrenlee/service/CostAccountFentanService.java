@@ -15,11 +15,14 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Service;
+
+import com.mysql.jdbc.Statement;
 
 import cn.com.fanrenlee.model.common.JobStateInfos;
 import cn.com.fanrenlee.model.costaccount.CADItem;
@@ -52,8 +55,7 @@ public class CostAccountFentanService {
 	 * @return
 	 * @throws ServiceException
 	 */
-	public Integer saveSrcDate(InputStream inputStream,
-			final TCostaccountJob job) throws ServiceException {
+	public Integer saveSrcDate(InputStream inputStream, final TCostaccountJob job) throws ServiceException {
 		List<List<List<String>>> srcData = null;
 		try {
 			srcData = ExcelUtil.transExcelToData(inputStream);
@@ -66,19 +68,16 @@ public class CostAccountFentanService {
 		}
 
 		// 原始业务数据
-		final List<TCostaccountSrc> srcItems = getCadItemsFromSrcData(srcData,
-				job);
+		final List<TCostaccountSrc> srcItems = getCadItemsFromSrcData(srcData, job);
 
 		// 保存任务数据
-		final String sqlJob = "insert into t_costaccount_job "
-				+ "(job_desc, t_hos_id, hos_code, hos_name) "
+		final String sqlJob = "insert into t_costaccount_job " + "(job_desc, t_hos_id, hos_code, hos_name) "
 				+ "values (?, ?, ?, ?) ";
 		KeyHolder keyJob = new GeneratedKeyHolder();
 		jdbcTemplate.update(new PreparedStatementCreator() {
 			@Override
-			public PreparedStatement createPreparedStatement(Connection con)
-					throws SQLException {
-				PreparedStatement preState = con.prepareStatement(sqlJob);
+			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+				PreparedStatement preState = con.prepareStatement(sqlJob, Statement.RETURN_GENERATED_KEYS);
 				preState.setString(1, job.getJobDesc());
 				preState.setInt(2, job.gettHosId());
 				preState.setString(3, job.getHosCode());
@@ -89,50 +88,44 @@ public class CostAccountFentanService {
 		final Integer jobId = keyJob.getKey().intValue();
 
 		// 保存业务数据
-		String sqlService = "insert into t_costaccount_src "
-				+ " (dept_code, dept_name, dept_id, "
+		String sqlService = "insert into t_costaccount_src " + " (dept_code, dept_name, dept_id, "
 				+ " cost_people, cost_old_device_common, cost_old_device_special,"
-				+ " cost_old_house, cost_asset_amortize, cost_vc_funds,"
-				+ " cost_other, t_job_id, "
-				+ " people_count, work_count, work_count_kd, work_count_xd, "
-				+ " work_count_inhos, work_count_mz "
-				+ ")"
-				+ " values (?,?,?,?,?,?,?,?,?,?,?) ";
-		jdbcTemplate.batchUpdate(sqlService,
-				new BatchPreparedStatementSetter() {
+				+ " cost_old_house, cost_asset_amortize, cost_vc_funds," + " cost_other, t_job_id, "
+				+ " people_count, work_count, work_count_kd, work_count_xd, " + " work_count_inhos, work_count_mz "
+				+ ")" + " values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
+		jdbcTemplate.batchUpdate(sqlService, new BatchPreparedStatementSetter() {
 
-					@Override
-					public void setValues(PreparedStatement ps, int i)
-							throws SQLException {
-						TCostaccountSrc item = srcItems.get(i);
-						ps.setString(1, item.getDeptCode());
-						ps.setString(2, item.getDeptName());
-						ps.setInt(3, item.getDeptId());
+			@Override
+			public void setValues(PreparedStatement ps, int i) throws SQLException {
+				TCostaccountSrc item = srcItems.get(i);
+				ps.setString(1, item.getDeptCode());
+				ps.setString(2, item.getDeptName());
+				ps.setObject(3, item.getDeptId());
 
-						ps.setFloat(4, item.getCostPeople());
-						ps.setFloat(5, item.getCostOldDeviceCommon());
-						ps.setFloat(6, item.getCostOldDeviceSpecial());
-						ps.setFloat(7, item.getCostOldHouse());
-						ps.setFloat(8, item.getCostAssetAmortize());
-						ps.setFloat(9, item.getCostVcFunds());
-						ps.setFloat(10, item.getCostOther());
+				ps.setObject(4, item.getCostPeople());
+				ps.setObject(5, item.getCostOldDeviceCommon());
+				ps.setObject(6, item.getCostOldDeviceSpecial());
+				ps.setObject(7, item.getCostOldHouse());
+				ps.setObject(8, item.getCostAssetAmortize());
+				ps.setObject(9, item.getCostVcFunds());
+				ps.setObject(10, item.getCostOther());
 
-						ps.setInt(11, jobId);
-						
-						ps.setFloat(12, item.getPeopleCount());
-						ps.setFloat(13, item.getWorkCount());
-						ps.setFloat(14, item.getWorkCountKd());
-						ps.setFloat(15, item.getWorkCountXd());
-						ps.setFloat(16, item.getWorkCountInhos());
-						ps.setFloat(17, item.getWorkCountMz());
-					}
+				ps.setObject(11, jobId);
 
-					@Override
-					public int getBatchSize() {
-						return srcItems.size();
-					}
+				ps.setObject(12, item.getPeopleCount());
+				ps.setObject(13, item.getWorkCount());
+				ps.setObject(14, item.getWorkCountKd());
+				ps.setObject(15, item.getWorkCountXd());
+				ps.setObject(16, item.getWorkCountInhos());
+				ps.setObject(17, item.getWorkCountMz());
+			}
 
-				});
+			@Override
+			public int getBatchSize() {
+				return srcItems.size();
+			}
+
+		});
 		return jobId;
 	}
 
@@ -143,8 +136,7 @@ public class CostAccountFentanService {
 	 * @return
 	 * @throws ServiceException
 	 */
-	private List<TCostaccountSrc> getCadItemsFromSrcData(
-			List<List<List<String>>> srcData, TCostaccountJob job)
+	private List<TCostaccountSrc> getCadItemsFromSrcData(List<List<List<String>>> srcData, TCostaccountJob job)
 			throws ServiceException {
 		if (srcData == null || srcData.get(0).size() == 0) {
 			return null;
@@ -156,15 +148,16 @@ public class CostAccountFentanService {
 		}
 		for (int i = 0; i < sheetDataItem.size(); i++) {
 			// 忽略标题行
-			if (i == 0)
+			if (i == 0) {
 				continue;
+			}
 			List<String> rowDataItem = sheetDataItem.get(i);
 			int rowDataitemSize = rowDataItem.size();
 			if (rowDataitemSize <= 2) {
 				throw new ServiceException("基础数据行至少应有两列数据(行" + (i + 1) + ")");
 			}
+			TCostaccountSrc srcItem = new TCostaccountSrc();
 			for (int j = 0; j < rowDataitemSize; j++) {
-				TCostaccountSrc srcItem = new TCostaccountSrc();
 				String cellData = rowDataItem.get(j);
 
 				if (j == 0) {// 第1列-科室代码
@@ -172,36 +165,44 @@ public class CostAccountFentanService {
 				} else if (j == 1) {// 第2列-科室名称
 					srcItem.setDeptName(cellData);
 				} else if (j == 2) {// 第3列-人员经费
-					srcItem.setCostPeople(Float.valueOf(cellData));
+					srcItem.setCostPeople(getFloat(cellData));
 				} else if (j == 3) {// 第4列-通用设备折旧费
-					srcItem.setCostOldDeviceCommon(Float.valueOf(cellData));
+					srcItem.setCostOldDeviceCommon(getFloat(cellData));
 				} else if (j == 4) {// 第5列-专用设备折旧费
-					srcItem.setCostOldDeviceSpecial(Float.valueOf(cellData));
+					srcItem.setCostOldDeviceSpecial(getFloat(cellData));
 				} else if (j == 5) {// 第6列-房屋折旧费
-					srcItem.setCostOldHouse(Float.valueOf(cellData));
+					srcItem.setCostOldHouse(getFloat(cellData));
 				} else if (j == 6) {// 第7列-无形资产摊销费
-					srcItem.setCostAssetAmortize(Float.valueOf(cellData));
+					srcItem.setCostAssetAmortize(getFloat(cellData));
 				} else if (j == 7) {// 第8列-计提医疗风险基金
-					srcItem.setCostVcFunds(Float.valueOf(cellData));
+					srcItem.setCostVcFunds(getFloat(cellData));
 				} else if (j == 8) {// 第9列-其他费用
-					srcItem.setCostOther(Float.valueOf(cellData));
+					srcItem.setCostOther(getFloat(cellData));
 				} else if (j == 9) {// 第10列-人员数
-					srcItem.setPeopleCount(Integer.valueOf(cellData));
+					srcItem.setPeopleCount(getInteger(cellData));
 				} else if (j == 10) {// 第11列-工作量
-					srcItem.setWorkCount(Float.valueOf(cellData));
+					srcItem.setWorkCount(getFloat(cellData));
 				} else if (j == 11) {// 第12列-开单工作量
-					srcItem.setWorkCountKd(Float.valueOf(cellData));
+					srcItem.setWorkCountKd(getFloat(cellData));
 				} else if (j == 12) {// 第13列-消毒工作量
-					srcItem.setWorkCountXd(Float.valueOf(cellData));
+					srcItem.setWorkCountXd(getFloat(cellData));
 				} else if (j == 13) {// 第14列-住院人数
-					srcItem.setWorkCountInhos(Integer.valueOf(cellData));
+					srcItem.setWorkCountInhos(getInteger(cellData));
 				} else if (j == 14) {// 第15列-门诊量
-					srcItem.setWorkCountMz(Float.valueOf(cellData));
+					srcItem.setWorkCountMz(getFloat(cellData));
 				}
-				srcItems.add(srcItem);
 			}
+			srcItems.add(srcItem);
 		}
 		return srcItems;
+	}
+
+	private Float getFloat(String text) {
+		return text == null ? null : Float.valueOf(text);
+	}
+
+	private Integer getInteger(String text) {
+		return text == null ? null : Integer.valueOf(Math.round(getFloat(text)));
 	}
 
 	/**
@@ -255,15 +256,11 @@ public class CostAccountFentanService {
 	 * @param jobId
 	 */
 	private void deleteJobDataById(Integer jobId) {
-		jdbcTemplate.update(
-				"update t_costaccount_src set count_all = null, count_direct = null where t_job_id = ? ",
+		jdbcTemplate.update("update t_costaccount_src set count_all = null, count_direct = null where t_job_id = ? ",
 				jobId);
-		jdbcTemplate.update(
-				"delete from t_costaccount_level1 where t_job_id = ? ", jobId);
-		jdbcTemplate.update(
-				"delete from t_costaccount_level2 where t_job_id = ? ", jobId);
-		jdbcTemplate.update(
-				"delete from t_costaccount_level3 where t_job_id = ? ", jobId);
+		jdbcTemplate.update("delete from t_costaccount_level1 where t_job_id = ? ", jobId);
+		jdbcTemplate.update("delete from t_costaccount_level2 where t_job_id = ? ", jobId);
+		jdbcTemplate.update("delete from t_costaccount_level3 where t_job_id = ? ", jobId);
 
 	}
 
@@ -274,22 +271,19 @@ public class CostAccountFentanService {
 	 * @param costAll
 	 * @param job
 	 */
-	private void saveCostDirectAndAll(Map<String, CostItem> costDirect,
-			Map<String, Float> costAll, final TCostaccountJob job) {
+	private void saveCostDirectAndAll(Map<String, CostItem> costDirect, Map<String, Float> costAll,
+			final TCostaccountJob job) {
 		final List<Object[]> items = new ArrayList<Object[]>();
 		for (String key : costDirect.keySet()) {
 			// deptcode-直接费用-全费用
-			items.add(new Object[] { key, costDirect.get(key).getCostShare(),
-					costAll.get(key) });
+			items.add(new Object[] { key, costDirect.get(key).getCostShare(), costAll.get(key) });
 		}
-		String sql = "update t_costaccount_src set "
-				+ "count_direct = ?,count_all = ?, update_time = ? "
+		String sql = "update t_costaccount_src set " + "count_direct = ?,count_all = ?, update_time = ? "
 				+ "where t_job_id = ? and dept_code = ? ";
 		jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
 
 			@Override
-			public void setValues(PreparedStatement ps, int i)
-					throws SQLException {
+			public void setValues(PreparedStatement ps, int i) throws SQLException {
 				Object[] item = items.get(i);
 				ps.setFloat(1, Float.valueOf(String.valueOf(item[1])));
 				ps.setFloat(2, Float.valueOf(String.valueOf(item[2])));
@@ -310,8 +304,7 @@ public class CostAccountFentanService {
 	 * 保存分级分摊结果-级别1
 	 *
 	 */
-	private void saveCostLevel1(Map<String, CostItem> costItems,
-			final TCostaccountJob job) {
+	private void saveCostLevel1(Map<String, CostItem> costItems, final TCostaccountJob job) {
 		final List<TCostaccountLevel1> items = new ArrayList<TCostaccountLevel1>();
 		for (String key : costItems.keySet()) {
 			TCostaccountLevel1 item = new TCostaccountLevel1();
@@ -326,8 +319,7 @@ public class CostAccountFentanService {
 
 			item.setShareItemAssetAmortize(ci.getCostShareassetAmortize());
 			item.setShareItemOldDeviceCommon(ci.getCostShareoldDeviceCommon());
-			item.setShareItemOldDeviceSpecial(
-					ci.getCostShareoldDeviceSpecial());
+			item.setShareItemOldDeviceSpecial(ci.getCostShareoldDeviceSpecial());
 			item.setShareItemOldHouse(ci.getCostShareoldHouse());
 			item.setShareItemOther(ci.getCostShareOther());
 			item.setShareItemPeople(ci.getCostSharePeople());
@@ -336,18 +328,15 @@ public class CostAccountFentanService {
 			items.add(item);
 		}
 
-		String sql = "insert into t_costaccount_level1 "
-				+ " (dept_code, dept_name, share_level1, "
+		String sql = "insert into t_costaccount_level1 " + " (dept_code, dept_name, share_level1, "
 				+ " dept_code_share, dept_name_share, t_hospital_code,"
 				+ " share_item_people, share_item_old_device_common, share_item_old_device_special,"
 				+ " share_item_old_house, share_item_asset_amortize, share_item_vc_funds,"
-				+ " share_item_other, t_job_id) "
-				+ "values (?,?,?,?,?,?,?,?,?,?,?) ";
+				+ " share_item_other, t_job_id) " + "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
 		jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
 
 			@Override
-			public void setValues(PreparedStatement ps, int i)
-					throws SQLException {
+			public void setValues(PreparedStatement ps, int i) throws SQLException {
 				TCostaccountLevel1 item = items.get(i);
 				ps.setString(1, item.getDeptCode());
 				ps.setString(2, item.getDeptName());
@@ -361,9 +350,10 @@ public class CostAccountFentanService {
 				ps.setFloat(9, item.getShareItemOldDeviceSpecial());
 				ps.setFloat(10, item.getShareItemOldHouse());
 				ps.setFloat(11, item.getShareItemAssetAmortize());
-				ps.setFloat(12, item.getShareItemOther());
+				ps.setFloat(12, item.getShareItemVcFunds());
+				ps.setFloat(13, item.getShareItemOther());
 
-				ps.setInt(13, job.getId());
+				ps.setInt(14, job.getId());
 			}
 
 			@Override
@@ -378,8 +368,7 @@ public class CostAccountFentanService {
 	 * 保存分级分摊结果-级别2
 	 *
 	 */
-	private void saveCostLevel2(Map<String, CostItem> costItems,
-			final TCostaccountJob job) {
+	private void saveCostLevel2(Map<String, CostItem> costItems, final TCostaccountJob job) {
 		final List<TCostaccountLevel2> items = new ArrayList<TCostaccountLevel2>();
 		for (String key : costItems.keySet()) {
 			TCostaccountLevel2 item = new TCostaccountLevel2();
@@ -394,8 +383,7 @@ public class CostAccountFentanService {
 
 			item.setShareItemAssetAmortize(ci.getCostShareassetAmortize());
 			item.setShareItemOldDeviceCommon(ci.getCostShareoldDeviceCommon());
-			item.setShareItemOldDeviceSpecial(
-					ci.getCostShareoldDeviceSpecial());
+			item.setShareItemOldDeviceSpecial(ci.getCostShareoldDeviceSpecial());
 			item.setShareItemOldHouse(ci.getCostShareoldHouse());
 			item.setShareItemOther(ci.getCostShareOther());
 			item.setShareItemPeople(ci.getCostSharePeople());
@@ -404,18 +392,15 @@ public class CostAccountFentanService {
 			items.add(item);
 		}
 
-		String sql = "insert into t_costaccount_level2 "
-				+ " (dept_code, dept_name, share_level2, "
+		String sql = "insert into t_costaccount_level2 " + " (dept_code, dept_name, share_level2, "
 				+ " dept_code_share, dept_name_share, t_hospital_code,"
 				+ " share_item_people, share_item_old_device_common, share_item_old_device_special,"
 				+ " share_item_old_house, share_item_asset_amortize, share_item_vc_funds,"
-				+ " share_item_other, t_job_id) "
-				+ "values (?,?,?,?,?,?,?,?,?,?,?) ";
+				+ " share_item_other, t_job_id) " + "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
 		jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
 
 			@Override
-			public void setValues(PreparedStatement ps, int i)
-					throws SQLException {
+			public void setValues(PreparedStatement ps, int i) throws SQLException {
 				TCostaccountLevel2 item = items.get(i);
 				ps.setString(1, item.getDeptCode());
 				ps.setString(2, item.getDeptName());
@@ -429,9 +414,10 @@ public class CostAccountFentanService {
 				ps.setFloat(9, item.getShareItemOldDeviceSpecial());
 				ps.setFloat(10, item.getShareItemOldHouse());
 				ps.setFloat(11, item.getShareItemAssetAmortize());
-				ps.setFloat(12, item.getShareItemOther());
+				ps.setFloat(12, item.getShareItemVcFunds());
+				ps.setFloat(13, item.getShareItemOther());
 
-				ps.setInt(13, job.getId());
+				ps.setInt(14, job.getId());
 			}
 
 			@Override
@@ -446,8 +432,7 @@ public class CostAccountFentanService {
 	 * 保存分级分摊结果-级别3
 	 *
 	 */
-	private void saveCostLevel3(Map<String, CostItem> costItems,
-			final TCostaccountJob job) {
+	private void saveCostLevel3(Map<String, CostItem> costItems, final TCostaccountJob job) {
 		final List<TCostaccountLevel3> items = new ArrayList<TCostaccountLevel3>();
 		for (String key : costItems.keySet()) {
 			TCostaccountLevel3 item = new TCostaccountLevel3();
@@ -462,8 +447,7 @@ public class CostAccountFentanService {
 
 			item.setShareItemAssetAmortize(ci.getCostShareassetAmortize());
 			item.setShareItemOldDeviceCommon(ci.getCostShareoldDeviceCommon());
-			item.setShareItemOldDeviceSpecial(
-					ci.getCostShareoldDeviceSpecial());
+			item.setShareItemOldDeviceSpecial(ci.getCostShareoldDeviceSpecial());
 			item.setShareItemOldHouse(ci.getCostShareoldHouse());
 			item.setShareItemOther(ci.getCostShareOther());
 			item.setShareItemPeople(ci.getCostSharePeople());
@@ -472,18 +456,15 @@ public class CostAccountFentanService {
 			items.add(item);
 		}
 
-		String sql = "insert into t_costaccount_level3 "
-				+ " (dept_code, dept_name, share_level3, "
+		String sql = "insert into t_costaccount_level3 " + " (dept_code, dept_name, share_level3, "
 				+ " dept_code_share, dept_name_share, t_hospital_code,"
 				+ " share_item_people, share_item_old_device_common, share_item_old_device_special,"
 				+ " share_item_old_house, share_item_asset_amortize, share_item_vc_funds,"
-				+ " share_item_other, t_job_id) "
-				+ "values (?,?,?,?,?,?,?,?,?,?,?) ";
+				+ " share_item_other, t_job_id) " + "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
 		jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
 
 			@Override
-			public void setValues(PreparedStatement ps, int i)
-					throws SQLException {
+			public void setValues(PreparedStatement ps, int i) throws SQLException {
 				TCostaccountLevel3 item = items.get(i);
 				ps.setString(1, item.getDeptCode());
 				ps.setString(2, item.getDeptName());
@@ -497,9 +478,10 @@ public class CostAccountFentanService {
 				ps.setFloat(9, item.getShareItemOldDeviceSpecial());
 				ps.setFloat(10, item.getShareItemOldHouse());
 				ps.setFloat(11, item.getShareItemAssetAmortize());
-				ps.setFloat(12, item.getShareItemOther());
+				ps.setFloat(12, item.getShareItemVcFunds());
+				ps.setFloat(13, item.getShareItemOther());
 
-				ps.setInt(13, job.getId());
+				ps.setInt(14, job.getId());
 			}
 
 			@Override
@@ -517,9 +499,9 @@ public class CostAccountFentanService {
 	 * @return
 	 */
 	private TCostaccountJobBaseinfo getBaseInfoByJobId(Integer jobId) {
-		List<TCostaccountJobBaseinfo> infos = jdbcTemplate.queryForList(
-				"select * from t_costaccount_job_baseinfo where id = ? ",
-				new Object[] { jobId }, TCostaccountJobBaseinfo.class);
+		List<TCostaccountJobBaseinfo> infos = jdbcTemplate.query(
+				"select * from t_costaccount_job_baseinfo where t_costaccount_job_id = ? ", new Object[] { jobId },
+				new BeanPropertyRowMapper<TCostaccountJobBaseinfo>(TCostaccountJobBaseinfo.class));
 		return infos.size() > 0 ? infos.get(0) : null;
 	}
 
@@ -533,8 +515,8 @@ public class CostAccountFentanService {
 		Date currentData = new Date(new java.util.Date().getTime());
 		if ("1".equals(state)) {// 进行中
 			jdbcTemplate.update(
-					"update t_costaccount_job set state = ?, update_time = ?, exec_time_start = ? where id = ? ",
-					state, currentData, currentData, jobId);
+					"update t_costaccount_job set state = ?, update_time = ?, exec_time_start = ? where id = ? ", state,
+					currentData, currentData, jobId);
 		} else {
 			jdbcTemplate.update(
 					"update t_costaccount_job set state = ?, update_time = ? , exec_time_end = ? , costtime = ? where id = ? ",
@@ -549,9 +531,8 @@ public class CostAccountFentanService {
 	 * @return
 	 */
 	public TCostaccountJob getJobByJobid(Integer jobId) {
-		return jdbcTemplate.queryForObject(
-				"select * from t_costaccount_job where id = ? ",
-				new Object[] { jobId }, TCostaccountJob.class);
+		return jdbcTemplate.queryForObject("select * from t_costaccount_job where id = ? ", new Object[] { jobId },
+				new BeanPropertyRowMapper<TCostaccountJob>(TCostaccountJob.class));
 	}
 
 	/**
@@ -561,14 +542,12 @@ public class CostAccountFentanService {
 	 * @return
 	 */
 	public List<CADItem> getSrcData(Integer jobId) {
-		return jdbcTemplate.queryForList(
-				" SELECT " + " dept.dept_special_code, "
-						+ " dept.dept_type_code, " + " src.*"
-						+ " FROM t_costaccount_src src "
-						+ " LEFT JOIN t_costaccount_job job ON src.t_job_id = job.id "
-						+ " LEFT JOIN t_dept dept ON job.t_hos_id = dept.t_hospital_id "
-						+ " WHERE src.t_job_id = ? ",
-				new Object[] { jobId }, CADItem.class);
+		return jdbcTemplate.query(
+				" SELECT dd.dept_special_code, dd.dept_type_code, src.* FROM t_costaccount_src src LEFT JOIN "
+						+ " (SELECT dept.*,job.id jobid FROM t_dept dept LEFT JOIN t_costaccount_job job "
+						+ " ON job.t_hos_id = dept.t_hospital_id WHERE job.id = ?) dd "
+						+ " ON src.t_job_id = dd.jobid AND src.dept_code = dd.dept_code WHERE src.t_job_id = ? ",
+				new Object[] { jobId, jobId }, new BeanPropertyRowMapper<CADItem>(CADItem.class));
 	}
-	
+
 }
