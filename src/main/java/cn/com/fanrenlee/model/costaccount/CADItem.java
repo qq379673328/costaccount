@@ -41,7 +41,7 @@ public class CADItem {
 	/**
 	 * 费用-计提医疗风险基金
 	 */
-	private float costVCFunds;
+	private float costVcFunds;
 
 	/**
 	 * 费用-其它
@@ -350,12 +350,12 @@ public class CADItem {
 		this.costAssetAmortize = costAssetAmortize;
 	}
 
-	public float getCostVCFunds() {
-		return costVCFunds;
+	public float getCostVcFunds() {
+		return costVcFunds;
 	}
 
-	public void setCostVCFunds(float costVCFunds) {
-		this.costVCFunds = costVCFunds;
+	public void setCostVcFunds(float costVcFunds) {
+		this.costVcFunds = costVcFunds;
 	}
 
 	public float getCostOther() {

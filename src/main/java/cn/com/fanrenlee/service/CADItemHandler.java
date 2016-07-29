@@ -76,12 +76,12 @@ public class CADItemHandler {
 					+ cadItem.getCostOldDeviceCommon()
 					+ cadItem.getCostOldDeviceSpecial()
 					+ cadItem.getCostOldHouse() + cadItem.getCostOther()
-					+ cadItem.getCostPeople() + cadItem.getCostVCFunds();
+					+ cadItem.getCostPeople() + cadItem.getCostVcFunds();
 			CostItem costItem = new CostItem(costDirect,
 					cadItem.getCostPeople(), cadItem.getCostOldDeviceCommon(),
 					cadItem.getCostOldDeviceSpecial(),
 					cadItem.getCostOldHouse(), cadItem.getCostAssetAmortize(),
-					cadItem.getCostVCFunds(), cadItem.getCostOther());
+					cadItem.getCostVcFunds(), cadItem.getCostOther());
 			getCostDirectMap().put(deptCode, costItem);
 			// 行政后勤科室
 			if (DeptTypeInfos.TYPECODE_XZHQ.equals(cadItem.getDeptTypeCode())) {
@@ -103,7 +103,7 @@ public class CADItemHandler {
 						continue;
 					}
 					// 该医辅科室人员数 /（全院人数 - 该行政后勤科室人员数） × 该行政后勤科室全成本
-					Integer baseCount = cadItem.getPeopleCount()
+					Float baseCount = Float.valueOf(cadItem.getPeopleCount())
 							/ (getAllPeopleCount()
 									- cadItemIn.getPeopleCount());
 					CostItem costItemSrc = getCostDirectMap().get(deptCodeIn);
