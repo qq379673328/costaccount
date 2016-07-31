@@ -1,0 +1,104 @@
+<div class="navigation">
+	位置：
+	<a href="#">首页</a>
+</div>
+<form name="form">
+<div class="content">
+	<div class="mytable">
+		<div class="title">
+			<span>
+				任务编辑
+			</span>
+		</div>
+		<table>
+			<tbody>
+				<tr>
+					<td class="td-odd"><span class="warn">*</span>任务描述：</td>
+					<td class="td-even" colspan="3">
+						<input class="form-input" ng-model="job.jobDesc" />
+					</td>
+				</tr>
+				<tr class="line">
+					<td class="td-odd"><span class="warn">*</span>选择医院：</td>
+					<td class="td-even" colspan="3">
+						<div core-hos-select ng-model="selectHos" hosid="t_hos_id"></div>
+					</td>
+				</tr>
+				<tr>
+					<td class="td-even" colspan="4">基础数据</td>
+				</tr>
+				<tr>
+					<td class="td-odd"><span class="warn">*</span>全院工作总量：</td>
+					<td class="td-even">
+						<input class="form-input" ng-model="job.totalWork" />
+					</td>
+					<td class="td-odd"><span class="warn">*</span>全院消毒工作总量：</td>
+					<td class="td-even">
+						<input class="form-input" ng-model="job.totalWorkDisinfected" />
+					</td>
+				</tr>
+				<tr>
+					<td class="td-odd"><span class="warn">*</span>全院总人数：</td>
+					<td class="td-even">
+						<input class="form-input" ng-model="job.totalPeople" />
+					</td>
+					<td class="td-odd"><span class="warn">*</span>全院住院总人数：</td>
+					<td class="td-even">
+						<input class="form-input" ng-model="job.totalInhos" />
+					</td>
+				</tr>
+				<tr class="line">
+					<td class="td-odd"><span class="warn">*</span>全院门诊总量：</td>
+					<td class="td-even">
+						<input class="form-input" ng-model="job.totalWorkOutpatient" />
+					</td>
+					<td class="td-odd"></td>
+					<td class="td-even">
+					</td>
+				</tr>
+				
+				<tr>
+					<td class="td-even" colspan="4">业务数据</td>
+				</tr>
+				<tr>
+					<td class="td-even" colspan="4">
+						<input type="file"
+							ng-model="file"
+							ngf-select
+							name="file"
+							ngf-accept="'.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel'" 
+							ngf-max-size="50MB"
+							required
+							ngf-model-invalid="errorFile"
+							ngf-validate-force="false"
+							>
+							上传excel<div/>
+					</td>
+				</tr>
+				
+				<tr>
+					<td class="td-even" colspan="4">
+						<div class="btn btn-lblue" 
+							ng-show="!isRuning"
+							ng-click="save()">
+							保存
+						</div>
+						<div ng-show="isRuning">
+							上传中，请稍后...
+						</div>
+
+					</td>
+				</tr>
+				
+				<tr>
+					<td colspan="2">
+						<div core-formresult result="formresult"></div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	
+</div>
+
+</form>

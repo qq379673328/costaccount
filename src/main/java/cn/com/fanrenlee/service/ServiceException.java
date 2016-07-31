@@ -8,7 +8,7 @@ package cn.com.fanrenlee.service;
  * @author <a href="mainto:nytclizy@gmail.com">lizhiyong</a>
  * @since 2016年7月25日
  */
-public class ServiceException extends Exception{
+public class ServiceException extends RuntimeException{
 
 	/** serialVersionUID*/
 	private static final long serialVersionUID = 1L;

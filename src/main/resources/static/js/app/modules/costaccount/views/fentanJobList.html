@@ -1,0 +1,110 @@
+<div class="navigation">
+	位置：
+	<a ui-sref="index">首页</a>
+	&gt;
+	成本核算
+	<a ui-sref="costaccount.fentan">分摊算法</a>
+</div>
+<div class="content">
+	<div class="searchzone">
+		<div class="title"><i class="fa fa-users"></i>&nbsp;分摊算法</div>
+		<div class="line border-none">
+			<div class="desc">任务描述：</div>
+			<div class="vals">
+				<input ng-model="search.jobDesc" />
+			</div>
+		</div>
+		<div class="line border-none">
+			<div class="desc">创建时间：</div>
+			<div class="vals">
+				<input datepicker ng-model="search.createTimeStart" />
+				至
+				<input datepicker ng-model="search.createTimeEnd"/>
+			</div>
+			<div class="desc">状态：</div>
+			<div class="vals">
+				<input type="radio" ng-model="search.state" name="state" value="" />
+				全部 &nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="radio" ng-model="search.state" name="state" value="0" />
+				未开始
+				<input type="radio" ng-model="search.state" name="state" value="1" />
+				进行中
+				<input type="radio" ng-model="search.state" name="state" value="2" />
+				成功
+				<input type="radio" ng-model="search.state" name="state" value="9" />
+				失败
+			</div>
+		</div>
+	</div>
+	
+	
+	<div core-formresult result="formresult"></div>
+	
+	<div class="mytable">
+		<div class="title">
+			<span>总任务数 ：
+				<span class="highlight">{{queryParams.total}}</span>
+			</span>
+			 
+			<a class="spe" ui-sref="costaccountFentanJobEdit">创建新任务</a>
+			 
+		</div>
+		<table class="my-table" ng-table="tableParams">
+			<thead>
+				<tr>
+					<th></th>
+					<th>任务名</th>
+					<th>所属医院</th>
+					<th>状态</th>
+					<th>创建时间</th>
+					<th>修改时间</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tr ng-show="!$data"><td colspan="4">加载中...</td></tr>
+			<tr ng-repeat="item in $data">
+				<td>{{ (queryParams.page - 1) * queryParams.rows + $index + 1 }}</td>
+				
+				<td><a class="href" ui-sref="costaccountFentanJobView({job: item})">{{ item.job_desc }}</a></td>
+				<td>{{ item.hos_name }}</td>
+				<td>{{ item.state }}</td>
+				<td>{{ item.create_time | date: "yyyy/MM/dd" }}</td>
+				<td>{{ item.update_time | date: "yyyy/MM/dd" }}</td>
+				
+				<td class="handle">
+					<a class="btn btn-small btn-lblue" 
+						ui-sref="costaccountFentanJobEdit({job :item})"
+						ng-show="!item.ishanding"
+						>编辑</a>
+						
+					<a class="btn btn-small btn-success"
+						ng-click="item.prepareDel = !item.prepareDel"
+						ng-show="!item.ishanding"
+						>删除</a>
+					
+					<a class="btn btn-small btn-success"
+						ng-click="runJob(item)"
+						ng-show="!item.ishanding"
+						>执行</a>
+						
+					<a class="btn btn-small btn-w4"
+						ng-show="item.ishanding"
+						>操作中...</a>
+					
+					<table ng-show="item.prepareDel">
+						<tr>
+							<td colspan="5"></td>
+							<td>
+								<a class="btn btn-small btn-danger btn-w4"
+									ng-click="item.ishanding==true;del(item);"
+									>确认删除</a>
+							</td>
+						</tr>
+					</table>
+					
+				</td>
+			</tr>
+		</table>
+	</div>
+
+</div>

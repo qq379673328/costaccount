@@ -1,0 +1,273 @@
+<div class="navigation">
+	位置：
+	<a ui-sref="index">首页</a>
+	&gt;
+	成本核算
+	&gt;
+	{{job.job_desc}} {{job.state}}
+</div>
+<div class="content">
+
+	<div class="mytable" >
+		<div class="title" ng-init="show='baseinfo'">
+			<a class="item" ng-click="show='baseinfo'"
+				ng-class="{true: 'select', false: 'unselect'}[show=='baseinfo']" >基本信息</a>
+			<a class="item" ng-show="job.state == '2'" ng-click="show='srcData'"
+				ng-class="{true: 'select', false: 'unselect'}[show=='srcData']" >原始数据</a>
+			<a class="item" ng-show="job.state == '2'" ng-click="show='level1Data'" 
+				ng-class="{true: 'select', false: 'unselect'}[show=='level1Data']">一级分摊</a>
+			<a class="item" ng-show="job.state == '2'" ng-click="show='level2Data'"
+				ng-class="{true: 'select', false: 'unselect'}[show=='level2Data']" >二级分摊</a>
+			<a class="item" ng-show="job.state == '2'" ng-click="show='level3Data'"
+				ng-class="{true: 'select', false: 'unselect'}[show=='level3Data']" >三级分摊</a>
+		</div>
+	</div>
+	
+	<!-- 基础数据 -->
+	<div class="mytable" ng-show="show=='baseinfo'">
+		<table>
+			<tbody>
+				<tr>
+					<td class="td-odd">医院名称：</td>
+					<td class="td-even">
+						{{job.hos_name}}
+					</td>
+					<td class="td-odd"></td>
+					<td class="td-even">
+					</td>
+				</tr>
+				<tr>
+					<td class="td-odd">全院工作总量：</td>
+					<td class="td-even">
+						{{job.totalWork}}
+					</td>
+					<td class="td-odd">全院消毒工作总量：</td>
+					<td class="td-even">
+						{{job.totalWorkDisinfected}}
+					</td>
+				</tr>
+				<tr>
+					<td class="td-odd">全院总人数：</td>
+					<td class="td-even">
+						{{job.totalPeople}}
+					</td>
+					<td class="td-odd">全院住院总人数：</td>
+					<td class="td-even">
+						{{job.totalInhos}}
+					</td>
+				</tr>
+				<tr>
+					<td class="td-odd">全院门诊总量：</td>
+					<td class="td-even">
+						{{job.totalWorkOutpatient}}
+					</td>
+					<td class="td-odd"></td>
+					<td class="td-even">
+					</td>
+				</tr>
+				<tr>
+					<td class="td-odd">创建时间：</td>
+					<td class="td-even">
+						{{job.create_time | date: 'yyyy/MM/dd HH:mm:ss'}}
+					</td>
+					<td class="td-odd">更新时间：</td>
+					<td class="td-even">
+						{{job.update_time | date: 'yyyy/MM/dd HH:mm:ss'}}
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	
+	<!-- 原始数据 -->
+	<div class="mytable" ng-show="show=='srcData'">
+		<table class="my-table" ng-table="tableParamsSrc">
+			<thead>
+				<tr>
+					<th rowspan="2"></th>
+					<!-- <th rowspan="2">科室<br/>编码</th> -->
+					<th rowspan="2">科室<br/>名称</th>
+					<th colspan="7">费用</th>
+					<th colspan="8">其它信息</th>
+				</tr>
+				<tr>
+					<th>人员<br/>经费</th>
+					<th>通用设备<br/>折旧费</th>
+					<th>专用设备<br/>折旧费</th>
+					<th>房屋<br/>折旧费</th>
+					<th>无形资产<br/>摊销费</th>
+					<th>计提医疗<br/>风险基金</th>
+					<th>其它</th>
+					
+					<th>人员数</th>
+					<th>工作量</th>
+					<th>开单<br/>工作量</th>
+					<th>消毒<br/>工作量</th>
+					<th>住院人数</th>
+					<th>门诊量</th>
+					<th>直接成本</th>
+					<th>全成本</th>
+					
+				</tr>
+			</thead>
+			<tr ng-show="!$data"><td colspan="4">加载中...</td></tr>
+			<tr ng-repeat="item in $data">
+				<td>{{ (queryParamsSrc.page - 1) * queryParamsSrc.rows + $index + 1 }}</td>
+				
+				<!-- <td>{{ item.dept_code }}</td> -->
+				<td>{{ item.dept_name }}</td>
+				
+				<td>{{ item.cost_people }}</td>
+				<td>{{ item.cost_old_device_common }}</td>
+				<td>{{ item.cost_old_device_special }}</td>
+				<td>{{ item.cost_old_house }}</td>
+				<td>{{ item.cost_asset_amortize }}</td>
+				<td>{{ item.cost_vc_funds }}</td>
+				<td>{{ item.cost_other }}</td>
+				
+				<td>{{ item.people_count }}</td>
+				<td>{{ item.work_count }}</td>
+				<td>{{ item.work_count_kd }}</td>
+				<td>{{ item.work_count_xd }}</td>
+				<td>{{ item.work_count_inhos }}</td>
+				<td>{{ item.work_count_mz }}</td>
+				<td>{{ item.count_direct }}</td>
+				<td>{{ item.count_all }}</td>
+				
+			</tr>
+		</table>
+	</div>
+	
+	<!-- 一级分摊 -->
+	<div class="mytable" ng-show="show=='level1Data'">
+		<table class="my-table" ng-table="tableParamsLevel1">
+			<thead>
+				<tr>
+					<th rowspan="2"></th>
+					<!-- <th rowspan="2">科室<br/>编码</th> -->
+					<th rowspan="2">科室<br/>名称</th>
+					<th rowspan="2">分摊费用</th>
+					<!-- <th rowspan="2">被分摊科室<br/>编码</th> -->
+					<th rowspan="2">被分摊科室<br/>名称</th>
+					<th colspan="7">分项成本</th>
+				</tr>
+				<tr>
+					<th>人员<br/>经费</th>
+					<th>通用设备<br/>折旧费</th>
+					<th>专用设备<br/>折旧费</th>
+					<th>房屋<br/>折旧费</th>
+					<th>无形资产<br/>摊销费</th>
+					<th>计提医疗<br/>风险基金</th>
+					<th>其它</th>
+				</tr>
+			</thead>
+			<tr ng-show="!$data"><td colspan="4">加载中...</td></tr>
+			<tr ng-repeat="item in $data">
+				<td>{{ (queryParamsLevel1.page - 1) * queryParamsLevel1.rows + $index + 1 }}</td>
+				
+				<!-- <td>{{ item.dept_code }}</td> -->
+				<td>{{ item.dept_name }}</td>
+				<td>{{ item.share_level1 }}</td>
+				<!-- <td>{{ item.dept_code_share }}</td> -->
+				<td>{{ item.dept_name_share }}</td>
+				
+				<td>{{ item.share_item_people }}</td>
+				<td>{{ item.share_item_old_device_common }}</td>
+				<td>{{ item.share_item_old_device_special }}</td>
+				<td>{{ item.share_item_old_house }}</td>
+				<td>{{ item.share_item_asset_amortize }}</td>
+				<td>{{ item.share_item_vc_funds }}</td>
+				<td>{{ item.share_item_other }}</td>
+			</tr>
+		</table>
+	</div>
+	
+	<!-- 二级分摊 -->
+	<div class="mytable" ng-show="show=='level2Data'">
+		<table class="my-table" ng-table="tableParamsLevel2">
+			<thead>
+				<tr>
+					<th rowspan="2"></th>
+					<!-- <th rowspan="2">科室<br/>编码</th> -->
+					<th rowspan="2">科室<br/>名称</th>
+					<th rowspan="2">分摊费用</th>
+					<!-- <th rowspan="2">被分摊科室<br/>编码</th> -->
+					<th rowspan="2">被分摊科室<br/>名称</th>
+					<th colspan="7">分项成本</th>
+				</tr>
+				<tr>
+					<th>人员<br/>经费</th>
+					<th>通用设备<br/>折旧费</th>
+					<th>专用设备<br/>折旧费</th>
+					<th>房屋<br/>折旧费</th>
+					<th>无形资产<br/>摊销费</th>
+					<th>计提医疗<br/>风险基金</th>
+					<th>其它</th>
+				</tr>
+			</thead>
+			<tr ng-show="!$data"><td colspan="4">加载中...</td></tr>
+			<tr ng-repeat="item in $data">
+				<td>{{ (queryParamsLevel2.page - 1) * queryParamsLevel2.rows + $index + 1 }}</td>
+				
+				<!-- <td>{{ item.dept_code }}</td> -->
+				<td>{{ item.dept_name }}</td>
+				<td>{{ item.share_level2 }}</td>
+				<!-- <td>{{ item.dept_code_share }}</td> -->
+				<td>{{ item.dept_name_share }}</td>
+				
+				<td>{{ item.share_item_people }}</td>
+				<td>{{ item.share_item_old_device_common }}</td>
+				<td>{{ item.share_item_old_device_special }}</td>
+				<td>{{ item.share_item_old_house }}</td>
+				<td>{{ item.share_item_asset_amortize }}</td>
+				<td>{{ item.share_item_vc_funds }}</td>
+				<td>{{ item.share_item_other }}</td>
+			</tr>
+		</table>
+	</div>
+	
+	<!-- 三级分摊 -->
+	<div class="mytable" ng-show="show=='level3Data'">
+		<table class="my-table" ng-table="tableParamsLevel3">
+			<thead>
+				<tr>
+					<th rowspan="2"></th>
+					<!-- <th rowspan="2">科室<br/>编码</th> -->
+					<th rowspan="2">科室<br/>名称</th>
+					<th rowspan="2">分摊费用</th>
+					<!-- <th rowspan="2">被分摊科室<br/>编码</th> -->
+					<th rowspan="2">被分摊科室<br/>名称</th>
+					<th colspan="7">分项成本</th>
+				</tr>
+				<tr>
+					<th>人员<br/>经费</th>
+					<th>通用设备<br/>折旧费</th>
+					<th>专用设备<br/>折旧费</th>
+					<th>房屋<br/>折旧费</th>
+					<th>无形资产<br/>摊销费</th>
+					<th>计提医疗<br/>风险基金</th>
+					<th>其它</th>
+				</tr>
+			</thead>
+			<tr ng-show="!$data"><td colspan="4">加载中...</td></tr>
+			<tr ng-repeat="item in $data">
+				<td>{{ (queryParamsLevel3.page - 1) * queryParamsLevel3.rows + $index + 1 }}</td>
+				
+				<!-- <td>{{ item.dept_code }}</td> -->
+				<td>{{ item.dept_name }}</td>
+				<td>{{ item.share_level3 }}</td>
+				<!-- <td>{{ item.dept_code_share }}</td> -->
+				<td>{{ item.dept_name_share }}</td>
+				
+				<td>{{ item.share_item_people }}</td>
+				<td>{{ item.share_item_old_device_common }}</td>
+				<td>{{ item.share_item_old_device_special }}</td>
+				<td>{{ item.share_item_old_house }}</td>
+				<td>{{ item.share_item_asset_amortize }}</td>
+				<td>{{ item.share_item_vc_funds }}</td>
+				<td>{{ item.share_item_other }}</td>
+			</tr>
+		</table>
+	</div>
+
+</div>

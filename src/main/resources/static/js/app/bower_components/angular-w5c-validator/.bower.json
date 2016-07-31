@@ -1,0 +1,14 @@
+{
+  "name": "angular-w5c-validator",
+  "homepage": "https://github.com/why520crazy/angular-w5c-validator",
+  "version": "2.3.11",
+  "_release": "2.3.11",
+  "_resolution": {
+    "type": "version",
+    "tag": "2.3.11",
+    "commit": "a7fc59a3b001da77f6f205306fe53bb19ce3b5a3"
+  },
+  "_source": "https://github.com/why520crazy/angular-w5c-validator.git",
+  "_target": "~2.3.9",
+  "_originalSource": "angular-w5c-validator"
+}

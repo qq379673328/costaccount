@@ -5,13 +5,13 @@ public class TCostaccountJobBaseinfo {
 
     private Float totalWork;
 
-    private Float totalworkdisinfected;
+    private Float totalWorkDisinfected;
 
-    private Float totalworkoutpatient;
+    private Float totalWorkOutpatient;
 
-    private Integer totalinhos;
+    private Integer totalInhos;
 
-    private Integer totalpeople;
+    private Integer totalPeople;
 
     private Integer tCostaccountJobId;
 
@@ -31,36 +31,36 @@ public class TCostaccountJobBaseinfo {
         this.totalWork = totalWork;
     }
 
-    public Float getTotalworkdisinfected() {
-        return totalworkdisinfected;
+    public Float getTotalWorkDisinfected() {
+        return totalWorkDisinfected;
     }
 
-    public void setTotalworkdisinfected(Float totalworkdisinfected) {
-        this.totalworkdisinfected = totalworkdisinfected;
+    public void setTotalWorkDisinfected(Float totalWorkDisinfected) {
+        this.totalWorkDisinfected = totalWorkDisinfected;
     }
 
-    public Float getTotalworkoutpatient() {
-        return totalworkoutpatient;
+    public Float getTotalWorkOutpatient() {
+        return totalWorkOutpatient;
     }
 
-    public void setTotalworkoutpatient(Float totalworkoutpatient) {
-        this.totalworkoutpatient = totalworkoutpatient;
+    public void setTotalWorkOutpatient(Float totalWorkOutpatient) {
+        this.totalWorkOutpatient = totalWorkOutpatient;
     }
 
-    public Integer getTotalinhos() {
-        return totalinhos;
+    public Integer getTotalInhos() {
+        return totalInhos;
     }
 
-    public void setTotalinhos(Integer totalinhos) {
-        this.totalinhos = totalinhos;
+    public void setTotalInhos(Integer totalInhos) {
+        this.totalInhos = totalInhos;
     }
 
-    public Integer getTotalpeople() {
-        return totalpeople;
+    public Integer getTotalPeople() {
+        return totalPeople;
     }
 
-    public void setTotalpeople(Integer totalpeople) {
-        this.totalpeople = totalpeople;
+    public void setTotalPeople(Integer totalPeople) {
+        this.totalPeople = totalPeople;
     }
 
     public Integer gettCostaccountJobId() {

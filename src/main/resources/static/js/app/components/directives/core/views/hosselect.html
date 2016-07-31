@@ -1,0 +1,39 @@
+<div class="widget-team">
+	<div class="teams">
+		<div class="team formresult-success">
+			<span class="fa fa-user">&nbsp;</span>
+		</div>
+		<div class="team formresult-success">
+			<span
+				ng-show="hosName!=null"
+				ng-click="hosName=null"
+				class="fa fa-times close">
+					{{hosName}}
+				</span>
+		</div>
+	</div>
+	<span class="btn btn-lblue teams-btn" ng-click="showdialog=true;">选择医院</span>
+	<input name="hosName" class="none" value="{{hosName}}" />
+	<div class="dialog-wrap" ng-show="showdialog">
+		<div class="dialog">
+			<div class="info">
+				<div ng-click="showdialog=false;" 
+					class="fa fa-2x fa-times close"></div>
+				<i class="fa fa-info"></i>&nbsp;&nbsp;
+				<span>请输入医院名进行查询，</span>
+				<span>至多显示50条记录</span>
+				<div>
+					<div class="field-desc">医院名：</div><input class="form-input" ng-model="hossearch" />
+				</div>
+			</div>
+			<div ng-repeat="item in hoss">
+				<span
+					ng-click="ok(item);"
+					class="fa fa-2x fa-check-circle ok">
+						{{item.hos_name}}
+					</span>
+				<br/>
+			</div>
+		</div>
+	</div>
+</div>
