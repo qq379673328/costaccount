@@ -4,6 +4,7 @@
 package cn.com.fanrenlee.web;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,7 +83,7 @@ public class CostAccountFentanController {
 	@RequestMapping(value = "execJob/{jobId}", method = RequestMethod.POST)
 	public @ResponseBody ApiResult<String> execJob(@PathVariable Integer jobId) {
 		costAccountFentanService.execJob(jobId);
-		return new ApiResult<String>("任务已开始执行，请等待");
+		return new ApiResult<String>("任务已执行完成");
 	}
 
 	/**
@@ -94,6 +95,26 @@ public class CostAccountFentanController {
 		return costAccountFentanService.getJobList(params, pageParams);
 	}
 
+	/**
+	 * 获取任务详情-任务信息
+	 *
+	 */
+	@RequestMapping(value = "jobDetail/{jobId}", method = RequestMethod.POST)
+	public @ResponseBody Map<String, Object> getJobDetail(@PathVariable("jobId") String jobId) {
+		Map<String, Object> item = costAccountFentanService.getJobDetail(jobId);
+		return item == null ? new HashMap<String, Object>() : item;
+	}
+	
+	/**
+	 * 获取分摊基本信息
+	 *
+	 */
+	@RequestMapping(value = "fentanBase/{jobId}", method = RequestMethod.POST)
+	public @ResponseBody Map<String, Object> fentanBase(@PathVariable("jobId") String jobId) {
+		Map<String, Object> item = costAccountFentanService.fentanBase(jobId);
+		return item == null ? new HashMap<String, Object>() : item;
+	}
+	
 	/**
 	 * 获取原始数据列表
 	 *

@@ -343,6 +343,10 @@ textarea{
 }
 .mytable table{
 	width: 100%;
+	border-bottom: 1px solid #c3bbbb;
+}
+.mytable .table-width{
+	width: auto;
 }
 .mytable table thead{}
 .mytable table thead tr{
@@ -354,7 +358,10 @@ textarea{
 	color: #fff;
 	font-size: 14px;
 }
-.mytable table thead tr th{}
+.mytable table thead tr th{
+	border-bottom: 1px solid #fff;
+	border-right: 1px solid #fff;
+}
 .mytable table tbody{}
 .mytable table tbody tr{
 	height: 40px;
@@ -389,7 +396,7 @@ textarea{
 	padding-left: 5px;
 }
 .mytable table tbody tr td{
-	border-right: 1px solid #fff;
+	border-bottom: 1px solid #c3bbbb;
 }
 .card{
 	display: inline-block;
@@ -870,4 +877,8 @@ hr {
 .href{
 	cursor: pointer;
 	color: blue;
+}
+
+.center{
+	text-align: center;
 }

@@ -20,17 +20,13 @@ public class CostItem {
 	 */
 	private Float costSharePeople;
 	/**
-	 * 分项-通用设备折旧费
+	 * 分项-房屋、通用设备折旧费
 	 */
-	private Float costShareoldDeviceCommon;
+	private Float costShareOldHouseDeviceCommon;
 	/**
 	 * 分项-专用设备折旧费
 	 */
-	private Float costShareoldDeviceSpecial;
-	/**
-	 * 分项-房屋折旧费
-	 */
-	private Float costShareoldHouse;
+	private Float costShareOldDeviceSpecial;
 	/**
 	 * 分项-无形资产摊销费
 	 */
@@ -49,15 +45,14 @@ public class CostItem {
 	}
 
 	public CostItem(Float costShare, Float costSharePeople,
-			Float costShareoldDeviceCommon, Float costShareoldDeviceSpecial,
-			Float costShareoldHouse, Float costShareassetAmortize,
+			Float costShareOldHouseDeviceCommon, Float costShareOldDeviceSpecial,
+			Float costShareassetAmortize,
 			Float costSharevcFunds, Float costShareOther) {
 		super();
 		this.costShare = costShare;
 		this.costSharePeople = costSharePeople;
-		this.costShareoldDeviceCommon = costShareoldDeviceCommon;
-		this.costShareoldDeviceSpecial = costShareoldDeviceSpecial;
-		this.costShareoldHouse = costShareoldHouse;
+		this.costShareOldHouseDeviceCommon = costShareOldHouseDeviceCommon;
+		this.costShareOldDeviceSpecial = costShareOldDeviceSpecial;
 		this.costShareassetAmortize = costShareassetAmortize;
 		this.costSharevcFunds = costSharevcFunds;
 		this.costShareOther = costShareOther;
@@ -79,28 +74,20 @@ public class CostItem {
 		this.costSharePeople = costSharePeople;
 	}
 
-	public Float getCostShareoldDeviceCommon() {
-		return costShareoldDeviceCommon;
+	public Float getCostShareOldHouseDeviceCommon() {
+		return costShareOldHouseDeviceCommon;
 	}
 
-	public void setCostShareoldDeviceCommon(Float costShareoldDeviceCommon) {
-		this.costShareoldDeviceCommon = costShareoldDeviceCommon;
+	public void setCostShareOldHouseDeviceCommon(Float costShareOldHouseDeviceCommon) {
+		this.costShareOldHouseDeviceCommon = costShareOldHouseDeviceCommon;
 	}
 
-	public Float getCostShareoldDeviceSpecial() {
-		return costShareoldDeviceSpecial;
+	public Float getCostShareOldDeviceSpecial() {
+		return costShareOldDeviceSpecial;
 	}
 
-	public void setCostShareoldDeviceSpecial(Float costShareoldDeviceSpecial) {
-		this.costShareoldDeviceSpecial = costShareoldDeviceSpecial;
-	}
-
-	public Float getCostShareoldHouse() {
-		return costShareoldHouse;
-	}
-
-	public void setCostShareoldHouse(Float costShareoldHouse) {
-		this.costShareoldHouse = costShareoldHouse;
+	public void setCostShareOldDeviceSpecial(Float costShareOldDeviceSpecial) {
+		this.costShareOldDeviceSpecial = costShareOldDeviceSpecial;
 	}
 
 	public Float getCostShareassetAmortize() {

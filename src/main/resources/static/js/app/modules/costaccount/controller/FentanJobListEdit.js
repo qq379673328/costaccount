@@ -6,14 +6,21 @@ app.controller('FentanJobEditCtrl',function($scope,
 	
 	$scope.isRuning = false;
 	
-	var job = $stateParams.job || {};
-	$scope.job = job;
-	$scope.t_hos_id = job.t_hos_id;
-	$scope.job.jobDesc = job.jobDesc || job.job_desc;
-	$scope.selectHos = {
-		hos_name: job.hos_name,
-		id: job.t_hos_id
-	};
+	var jobId = $stateParams.jobId;
+	
+	//加载job信息
+	$http.post("costaccount/jobDetail/" + jobId)
+	.success(function(data){
+		var job = data;
+		$scope.job = job;
+		$scope.t_hos_id = job.t_hos_id;
+		$scope.job.jobDesc = job.jobDesc || job.job_desc;
+		
+		$scope.selectHos = {
+			hos_name: job.hos_name,
+			id: job.t_hos_id
+		};
+	});
 	
 	//保存
 	$scope.save = function(){

@@ -18,16 +18,16 @@ app.config(function($stateProvider, $urlRouterProvider) {
 	})
 	// 成本核算-分摊算法-任务编辑
 	.state('costaccountFentanJobEdit',{
-		url : "/costaccount/jobEdit",
-		params: {job: null},
+		url : "/costaccount/jobEdit/{jobId}",
+		params: {jobId: null},
 		templateUrl : fdRouterViewsBasepath
 				+ 'costaccount/views/fentanJobEdit.html',
 		controller : "FentanJobEditCtrl"
 	})
 	// 成本核算-分摊算法-任务查看
 	.state('costaccountFentanJobView',{
-		url : "/costaccount/jobView",
-		params: {job: null},
+		url : "/costaccount/jobView/{jobId}",
+		params: {jobId: null},
 		templateUrl : fdRouterViewsBasepath
 				+ 'costaccount/views/fentanJobView.html',
 		controller : "FentanJobViewCtrl"

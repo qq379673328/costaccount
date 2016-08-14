@@ -65,15 +65,17 @@
 			<tr ng-repeat="item in $data">
 				<td>{{ (queryParams.page - 1) * queryParams.rows + $index + 1 }}</td>
 				
-				<td><a class="href" ui-sref="costaccountFentanJobView({job: item})">{{ item.job_desc }}</a></td>
+				<td><a class="href" 
+					href="#costaccount/jobView/{{item.id}}"
+					>{{ item.job_desc }}</a></td>
 				<td>{{ item.hos_name }}</td>
-				<td>{{ item.state }}</td>
+				<td>{{ item.state | state }}</td>
 				<td>{{ item.create_time | date: "yyyy/MM/dd" }}</td>
 				<td>{{ item.update_time | date: "yyyy/MM/dd" }}</td>
 				
 				<td class="handle">
 					<a class="btn btn-small btn-lblue" 
-						ui-sref="costaccountFentanJobEdit({job :item})"
+						href="#costaccount/jobEdit/{{item.id}}"
 						ng-show="!item.ishanding"
 						>编辑</a>
 						

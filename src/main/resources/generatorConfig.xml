@@ -5,7 +5,7 @@ PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
 <generatorConfiguration>
 	<!-- 数据库驱动 -->
 	<classPathEntry
-		location="D:/mvn_rep/rep/mysql/mysql-connector-java/5.0.4/mysql-connector-java-5.0.4.jar" />
+		location="E:/applications/gradle-2.14.1-all/gradle-2.14.1/caches/modules-2/files-2.1/mysql/mysql-connector-java/5.1.39/4617fe8dc8f1969ec450984b0b9203bc8b7c8ad5/mysql-connector-java-5.1.39.jar" />
 	<context id="MysqlContext" targetRuntime="MyBatis3"
 		defaultModelType="flat">
 
@@ -19,7 +19,7 @@ PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
 		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
 			connectionURL="jdbc:mysql://localhost:3306/costaccount" 
 			userId="root"
-			password="lizhiyong" />
+			password="" />
 
 		<!-- java model -->
 		<javaModelGenerator targetPackage="cn.com.fanrenlee.model.tables"

@@ -16,37 +16,32 @@ public class CADItem {
 	/**
 	 * 费用-人员经费
 	 */
-	private float costPeople;
+	private Float costPeople;
 
 	/**
-	 * 费用-通用设备折旧费
+	 * 费用-房屋、通用设备折旧费
 	 */
-	private float costOldDeviceCommon;
+	private Float costOldHouseDeviceCommon;
 
 	/**
 	 * 费用-专用设备折旧费
 	 */
-	private float costOldDeviceSpecial;
-
-	/**
-	 * 费用-房屋折旧费
-	 */
-	private float costOldHouse;
+	private Float costOldDeviceSpecial;
 
 	/**
 	 * 费用-无形资产摊销费
 	 */
-	private float costAssetAmortize;
+	private Float costAssetAmortize;
 
 	/**
 	 * 费用-计提医疗风险基金
 	 */
-	private float costVcFunds;
+	private Float costVcFunds;
 
 	/**
 	 * 费用-其它
 	 */
-	private float costOther;
+	private Float costOther;
 
 	/**
 	 * 科室id
@@ -318,28 +313,12 @@ public class CADItem {
 		this.costPeople = costPeople;
 	}
 
-	public float getCostOldDeviceCommon() {
-		return costOldDeviceCommon;
-	}
-
-	public void setCostOldDeviceCommon(float costOldDeviceCommon) {
-		this.costOldDeviceCommon = costOldDeviceCommon;
-	}
-
 	public float getCostOldDeviceSpecial() {
 		return costOldDeviceSpecial;
 	}
 
 	public void setCostOldDeviceSpecial(float costOldDeviceSpecial) {
 		this.costOldDeviceSpecial = costOldDeviceSpecial;
-	}
-
-	public float getCostOldHouse() {
-		return costOldHouse;
-	}
-
-	public void setCostOldHouse(float costOldHouse) {
-		this.costOldHouse = costOldHouse;
 	}
 
 	public float getCostAssetAmortize() {
@@ -374,22 +353,6 @@ public class CADItem {
 		this.peopleCount = peopleCount;
 	}
 
-	public Float getWorkCount() {
-		return workCount;
-	}
-
-	public void setWorkCount(Float workCount) {
-		this.workCount = workCount;
-	}
-
-	public Float getWorkCountKd() {
-		return workCountKd;
-	}
-
-	public void setWorkCountKd(Float workCountKd) {
-		this.workCountKd = workCountKd;
-	}
-
 	public Float getWorkCountInhos() {
 		return workCountInhos;
 	}
@@ -406,12 +369,44 @@ public class CADItem {
 		this.workCountMz = workCountMz;
 	}
 
-	public Float getWorkCountXd() {
-		return workCountXd;
+	public float getCostOldHouseDeviceCommon() {
+		return costOldHouseDeviceCommon;
 	}
 
-	public void setWorkCountXd(Float workCountXd) {
-		this.workCountXd = workCountXd;
+	public void setCostOldHouseDeviceCommon(float costOldHouseDeviceCommon) {
+		this.costOldHouseDeviceCommon = costOldHouseDeviceCommon;
+	}
+
+	public Float getWorkCountKdgzl() {
+		return workCountKdgzl;
+	}
+
+	public void setWorkCountKdgzl(Float workCountKdgzl) {
+		this.workCountKdgzl = workCountKdgzl;
+	}
+
+	public Float getWorkCountXdgzl() {
+		return workCountXdgzl;
+	}
+
+	public void setWorkCountXdgzl(Float workCountXdgzl) {
+		this.workCountXdgzl = workCountXdgzl;
+	}
+
+	public Float getWorkCountKdsr() {
+		return workCountKdsr;
+	}
+
+	public void setWorkCountKdsr(Float workCountKdsr) {
+		this.workCountKdsr = workCountKdsr;
+	}
+
+	public Float getWorkCountZxsr() {
+		return workCountZxsr;
+	}
+
+	public void setWorkCountZxsr(Float workCountZxsr) {
+		this.workCountZxsr = workCountZxsr;
 	}
 
 	/**
@@ -420,19 +415,14 @@ public class CADItem {
 	private Integer peopleCount;
 	
 	/**
-	 * 科室工作量
-	 */
-	private Float workCount;
-	
-	/**
 	 * 科室开单工作量
 	 */
-	private Float workCountKd;
+	private Float workCountKdgzl;
 	
 	/**
 	 * 科室消毒工作量
 	 */
-	private Float workCountXd;
+	private Float workCountXdgzl;
 	
 	/**
 	 * 科室住院人数
@@ -443,5 +433,34 @@ public class CADItem {
 	 * 科室门诊量
 	 */
 	private Float workCountMz;
+	
+	/**
+	 * 工作量-开单收入
+	 */
+	private Float workCountKdsr;
+	
+	/**
+	 * 工作量-执行收入
+	 */
+	private Float workCountZxsr;
+	
+	/**
+	 * 获取工作量
+	 * @return
+	 */
+	public Float getWorkCount(){
+		//挂号处、门诊收费处
+		if(isDeptSpecialOutpatientCashier() || isDeptSpecialRegister()){
+			return this.workCountZxsr;
+		//住院科室
+		}else if(isDeptSpecialInhos()){
+			return this.workCountInhos;
+		//医技科室
+		}else if(isDeptTypeYJ()){
+			return this.workCountXdgzl;
+		}else{
+			return this.workCountZxsr;
+		}
+	}
 	
 }
