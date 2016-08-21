@@ -19,6 +19,86 @@ public class CostItem {
 	 * 分项-人员经费
 	 */
 	private Float costSharePeople;
+	
+	/**
+	 * 分项-人员经费-主治医师
+	 */
+	private Float costSharePeopleZzys;
+	
+	/**
+	 * 分项-人员经费-副主任医师
+	 */
+	private Float costSharePeopleFzrys;
+	
+	/**
+	 * 分项-人员经费-主任医师
+	 */
+	private Float costSharePeopleZrys;
+	
+	/**
+	 * 分项-人员经费-主任技师
+	 */
+	private Float costSharePeopleJs;
+	
+	/**
+	 * 分项-人员经费-护士
+	 */
+	private Float costSharePeopleHs;
+	
+	/**
+	 * 分项-人员经费-其他
+	 */
+	private Float costSharePeopleQt;
+	
+	
+	public Float getCostSharePeopleZzys() {
+		return costSharePeopleZzys;
+	}
+
+	public void setCostSharePeopleZzys(Float costSharePeopleZzys) {
+		this.costSharePeopleZzys = costSharePeopleZzys;
+	}
+
+	public Float getCostSharePeopleFzrys() {
+		return costSharePeopleFzrys;
+	}
+
+	public void setCostSharePeopleFzrys(Float costSharePeopleFzrys) {
+		this.costSharePeopleFzrys = costSharePeopleFzrys;
+	}
+
+	public Float getCostSharePeopleZrys() {
+		return costSharePeopleZrys;
+	}
+
+	public void setCostSharePeopleZrys(Float costSharePeopleZrys) {
+		this.costSharePeopleZrys = costSharePeopleZrys;
+	}
+
+	public Float getCostSharePeopleJs() {
+		return costSharePeopleJs;
+	}
+
+	public void setCostSharePeopleJs(Float costSharePeopleJs) {
+		this.costSharePeopleJs = costSharePeopleJs;
+	}
+
+	public Float getCostSharePeopleHs() {
+		return costSharePeopleHs;
+	}
+
+	public void setCostSharePeopleHs(Float costSharePeopleHs) {
+		this.costSharePeopleHs = costSharePeopleHs;
+	}
+
+	public Float getCostSharePeopleQt() {
+		return costSharePeopleQt;
+	}
+
+	public void setCostSharePeopleQt(Float costSharePeopleQt) {
+		this.costSharePeopleQt = costSharePeopleQt;
+	}
+
 	/**
 	 * 分项-房屋、通用设备折旧费
 	 */

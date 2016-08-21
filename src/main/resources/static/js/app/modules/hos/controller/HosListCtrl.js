@@ -1,8 +1,8 @@
-//分摊算法-任务列表
-app.controller('FentanJobListCtrl',function($scope,
+//医院列表
+app.controller('HosListCtrl',function($scope,
 		$http, ngTableParams, $rootScope) {
 	
-	$rootScope.menu = "fentan";
+	$rootScope.menu = "hos";
 	
 	//分页查询
 	var initpage = 1,
@@ -41,7 +41,7 @@ app.controller('FentanJobListCtrl',function($scope,
 			}else{
 				$scope.queryParams.isreload = false;
 			}
-			$http.post("costaccount/getJobList", $scope.queryParams).success(function(data){
+			$http.post("hos/list", $scope.queryParams).success(function(data){
 				var total = data.total;
 				$scope.queryParams.total = total;
 				params.total(total);
@@ -60,35 +60,11 @@ app.controller('FentanJobListCtrl',function($scope,
 	//删除
 	$scope.del = function(item){
 		item.ishanding = true;
-		$http.post("costaccount/delJob/" + item.id).success(function(data){
+		$http.post("hos/delById", {hosId: item.id}).success(function(data){
 			$scope.reload();
 		}).error(function(){
 			item.ishanding = false;
 		});
 	};
-	
-	/**
-	 * 执行任务
-	 */
-	$scope.runJob = function(item){
-		item.ishanding = true;
-		$http.post("costaccount/execJob/" + item.id).success(function(data){
-			$scope.reload();
-		}).error(function(){
-			item.ishanding = false;
-		});
-	};
-	
-	/**
-	 * 执行任务-项目成本
-	 */
-	$scope.runJobPro = function(item){
-		item.ishanding = true;
-		$http.post("pro/execPro/" + item.id).success(function(data){
-			$scope.reload();
-		}).error(function(){
-			item.ishanding = false;
-		});
-	};
-	
+
 });

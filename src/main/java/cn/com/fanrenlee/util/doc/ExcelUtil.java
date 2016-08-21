@@ -56,6 +56,7 @@ public class ExcelUtil {
 						colList.add(null);
 						continue;
 					}
+					cell.setCellType(Cell.CELL_TYPE_STRING);
 					int cellType = cell.getCellType();
 					if(Cell.CELL_TYPE_BLANK == cellType){
 						colList.add(null);

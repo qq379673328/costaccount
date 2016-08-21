@@ -1,0 +1,119 @@
+<div class="navigation">
+	位置：
+	<a ui-sref="index">首页</a>
+	&gt;
+	项目理论成本计算
+	&gt;
+	{{job.job_desc}} {{job.state}}
+</div>
+<div class="content">
+
+	<div ng-if="job.state == '2'">
+		
+		项目名:<input ng-model="search.filterStr" />
+		<div class="btn btn-lblue" 
+			ng-click="reload();">
+			过滤
+		</div>
+		
+	</div>
+
+	<div class="mytable" >
+		<div class="title" ng-init="show='baseinfo'">
+			<a class="item" ng-click="show='baseinfo'"
+				ng-class="{true: 'select', false: 'unselect'}[show=='baseinfo']" >基本信息</a>
+			<a class="item" ng-show="job.state == '2'" ng-click="show='srcData'"
+				ng-class="{true: 'select', false: 'unselect'}[show=='srcData']" >原始数据</a>
+			<a class="item" ng-show="job.state == '2'" ng-click="show='fentanData'"
+				ng-class="{true: 'select', false: 'unselect'}[show=='fentanData']" >计算数据</a>
+		</div>
+	</div>
+	
+	<!-- 基础数据 -->
+	<div class="mytable" ng-show="show=='baseinfo'">
+		<table>
+			<tbody>
+				<tr>
+					<td class="td-odd">医院名称：</td>
+					<td class="td-even">
+						{{job.hos_name}}
+					</td>
+					<td class="td-odd"></td>
+					<td class="td-even">
+					</td>
+				</tr>
+				
+				<tr>
+					<td class="td-odd">创建时间：</td>
+					<td class="td-even">
+						{{job.create_time | date: 'yyyy/MM/dd HH:mm:ss'}}
+					</td>
+					<td class="td-odd">更新时间：</td>
+					<td class="td-even">
+						{{job.update_time | date: 'yyyy/MM/dd HH:mm:ss'}}
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		
+	</div>
+	
+	<!-- 原始数据 -->
+	<div class="mytable" ng-show="show=='srcData'" style="overflow-x: scroll;">
+		<table class="my-table" ng-table="tableParamsSrc">
+			<thead>
+				<tr>
+					<th>序号</th>
+					<th>项目编码</th>
+					<th>项目名称</th>
+					<th>科室编码</th>
+					<th>科室名称</th>
+				</tr>
+			</thead>
+			<tr ng-show="!$data"><td colspan="4">加载中...</td></tr>
+			<tr ng-repeat="item in $data">
+				<td>{{ (queryParamsSrc.page - 1) * queryParamsSrc.rows + $index + 1 }}</td>
+				
+				<td>{{ item.pro_code }}</td>
+				<td>{{ item.pro_name }}</td>
+				<td>{{ item.dept_code }}</td>
+				<td>{{ item.dept_name }}</td>
+				
+			</tr>
+		</table>
+	</div>
+	
+	<!-- 计算数据 -->
+	<div class="mytable" ng-show="show=='fentanData'" style="overflow-x: scroll;">
+		<table class="my-table" ng-table="tableParamsFentan">
+			<thead>
+				<tr>
+					<th>序号</th>
+					<th>项目编码</th>
+					<th>项目名称</th>
+					<th>科室编码</th>
+					<th>科室名称</th>
+					<th>直接成本</th>
+					<th>业务成本</th>
+					<th>全成本</th>
+					
+				</tr>
+			</thead>
+			<tr ng-show="!$data"><td colspan="4">加载中...</td></tr>
+			<tr ng-repeat="item in $data">
+				<td>{{ (queryParamsFentan.page - 1) * queryParamsFentan.rows + $index + 1 }}</td>
+				
+				<td>{{ item.pro_code }}</td>
+				<td>{{ item.pro_name }}</td>
+				<td>{{ item.dept_code }}</td>
+				<td>{{ item.dept_name }}</td>
+				
+				<td>{{ item.cost_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_serve | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_all | number:2 | tableShowNull}}</td>
+				
+			</tr>
+		</table>
+	</div>
+	
+</div>

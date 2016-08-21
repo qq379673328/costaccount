@@ -329,8 +329,14 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 				+ " fx_l1_people, fx_l1_device_common, fx_l1_device_spe, fx_l1_asset, fx_l1_vc, fx_l1_other, fx_l1 ,"
 				+ " fx_l2_people, fx_l2_device_common, fx_l2_device_spe, fx_l2_asset, fx_l2_vc, fx_l2_other, fx_l2 ,"
 				+ " fx_l3_people, fx_l3_device_common, fx_l3_device_spe, fx_l3_asset, fx_l3_vc, fx_l3_other, fx_l3 ,"
-				+ " t_job_id) " 
-				+ "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
+				+ " t_job_id, "
+				
+				+ " fx_l1_people_zzys, fx_l1_people_fzrys, fx_l1_people_zrys, fx_l1_people_js, fx_l1_people_hs, fx_l1_people_qt ,"
+				+ " fx_l2_people_zzys, fx_l2_people_fzrys, fx_l2_people_zrys, fx_l2_people_js, fx_l2_people_hs, fx_l2_people_qt ,"
+				+ " fx_l3_people_zzys, fx_l3_people_fzrys, fx_l3_people_zrys, fx_l3_people_js, fx_l3_people_hs, fx_l3_people_qt "
+				
+				+ ") " 
+				+ "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
 		jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
 
 			@Override
@@ -367,6 +373,28 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 				ps.setObject(25, item.getFxL3());
 
 				ps.setInt(26, jobId);
+				
+				ps.setObject(27, item.getFxL1PeopleZzys());
+				ps.setObject(28, item.getFxL1PeopleFzrys());
+				ps.setObject(29, item.getFxL1PeopleZrys());
+				ps.setObject(30, item.getFxL1PeopleJs());
+				ps.setObject(31, item.getFxL1PeopleHs());
+				ps.setObject(32, item.getFxL1PeopleQt());
+				
+				ps.setObject(33, item.getFxL2PeopleZzys());
+				ps.setObject(34, item.getFxL2PeopleFzrys());
+				ps.setObject(35, item.getFxL2PeopleZrys());
+				ps.setObject(36, item.getFxL2PeopleJs());
+				ps.setObject(37, item.getFxL2PeopleHs());
+				ps.setObject(38, item.getFxL2PeopleQt());
+				
+				ps.setObject(39, item.getFxL3PeopleZzys());
+				ps.setObject(40, item.getFxL3PeopleFzrys());
+				ps.setObject(41, item.getFxL3PeopleZrys());
+				ps.setObject(42, item.getFxL3PeopleJs());
+				ps.setObject(43, item.getFxL3PeopleHs());
+				ps.setObject(44, item.getFxL3PeopleQt());
+				
 			}
 
 			@Override
@@ -714,10 +742,10 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 			values.add(params.get("state"));
 		}
 		if (!StrUtils.isNull(params.get("createTimeStart"))) {// 创建日期-开始
-			sb.append(" AND " + SqlUtil.toDate(params.get("createTimeStart"), 1, 0) + " <= tt.create_time ");
+			sb.append(" AND " + SqlUtil.toDate(params.get("createTimeStart"), 1, 0) + " <= j.create_time ");
 		}
 		if (!StrUtils.isNull(params.get("createTimeEnd"))) {// 创建日期-结束
-			sb.append(" AND " + SqlUtil.toDate(params.get("createTimeEnd"), 1, 0) + " >= tt.create_time ");
+			sb.append(" AND " + SqlUtil.toDate(params.get("createTimeEnd"), 1, 0) + " >= j.create_time ");
 		}
 
 		sb.append(" ORDER BY j.create_time DESC ");
@@ -785,7 +813,7 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 		// 科室编码
 		if (!StrUtils.isNull(params.get("deptCode"))) {
 			sb.append(" and t.dept_code = ? ");
-			values.add(params.get("state"));
+			values.add(params.get("deptCode"));
 		}
 		// 科室名称
 		if (!StrUtils.isNull(params.get("deptName"))) {
@@ -809,6 +837,34 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 		srcSql.setValues(values.toArray());
 
 		return pagingSearch(params, pageParams, srcSql);
+	}
+	
+	/**
+	 * 获取分摊数据列表-分摊-不分页
+	 * 
+	 * @param params
+	 * @param pageParams
+	 * @return
+	 */
+	public List<TCostaccountFentan> getFentanLevel0(Integer jobId) {
+		return jdbcTemplate.query(
+				" SELECT * from t_costaccount_fentan where t_job_id = ? ",
+				new Object[] { jobId },
+				new BeanPropertyRowMapper<TCostaccountFentan>(TCostaccountFentan.class));
+	}
+	
+	/**
+	 * 获取分摊数据列表-原始-不分页
+	 * 
+	 * @param params
+	 * @param pageParams
+	 * @return
+	 */
+	public List<TCostaccountSrc> getFentanSrc(Integer jobId) {
+		return jdbcTemplate.query(
+				" SELECT * from t_costaccount_src where t_job_id = ? ",
+				new Object[] { jobId },
+				new BeanPropertyRowMapper<TCostaccountSrc>(TCostaccountSrc.class));
 	}
 
 	/**

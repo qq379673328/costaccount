@@ -17,6 +17,111 @@ public class CADItem {
 	 * 费用-人员经费
 	 */
 	private Float costPeople;
+	
+	/**
+	 * 费用-人员经费-主治医师
+	 */
+	private Float costPeopleZzys;
+	
+	/**
+	 * 费用-人员经费-副主任医师
+	 */
+	private Float costPeopleFzzys;
+	
+	/**
+	 * 费用-人员经费-主任医师
+	 */
+	private Float costPeopleZrys;
+
+	
+	/**
+	 * 费用-人员经费-技师
+	 */
+	private Float costPeopleJs;
+
+	
+	/**
+	 * 费用-人员经费-护士
+	 */
+	private Float costPeopleHs;
+
+	
+	/**
+	 * 费用-人员经费-其它
+	 */
+	private Float costPeopleQt;
+
+	public Float getCostPeopleZzys() {
+		return costPeopleZzys;
+	}
+
+	public void setCostPeopleZzys(Float costPeopleZzys) {
+		this.costPeopleZzys = costPeopleZzys;
+	}
+
+	public Float getCostPeopleFzzys() {
+		return costPeopleFzzys;
+	}
+
+	public void setCostPeopleFzzys(Float costPeopleFzzys) {
+		this.costPeopleFzzys = costPeopleFzzys;
+	}
+
+	public Float getCostPeopleZrys() {
+		return costPeopleZrys;
+	}
+
+	public void setCostPeopleZrys(Float costPeopleZrys) {
+		this.costPeopleZrys = costPeopleZrys;
+	}
+
+	public Float getCostPeopleJs() {
+		return costPeopleJs;
+	}
+
+	public void setCostPeopleJs(Float costPeopleJs) {
+		this.costPeopleJs = costPeopleJs;
+	}
+
+	public Float getCostPeopleHs() {
+		return costPeopleHs;
+	}
+
+	public void setCostPeopleHs(Float costPeopleHs) {
+		this.costPeopleHs = costPeopleHs;
+	}
+
+	public Float getCostPeopleQt() {
+		return costPeopleQt;
+	}
+
+	public void setCostPeopleQt(Float costPeopleQt) {
+		this.costPeopleQt = costPeopleQt;
+	}
+
+	public void setCostPeople(Float costPeople) {
+		this.costPeople = costPeople;
+	}
+
+	public void setCostOldHouseDeviceCommon(Float costOldHouseDeviceCommon) {
+		this.costOldHouseDeviceCommon = costOldHouseDeviceCommon;
+	}
+
+	public void setCostOldDeviceSpecial(Float costOldDeviceSpecial) {
+		this.costOldDeviceSpecial = costOldDeviceSpecial;
+	}
+
+	public void setCostAssetAmortize(Float costAssetAmortize) {
+		this.costAssetAmortize = costAssetAmortize;
+	}
+
+	public void setCostVcFunds(Float costVcFunds) {
+		this.costVcFunds = costVcFunds;
+	}
+
+	public void setCostOther(Float costOther) {
+		this.costOther = costOther;
+	}
 
 	/**
 	 * 费用-房屋、通用设备折旧费

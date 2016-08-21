@@ -1,0 +1,99 @@
+<div class="navigation">
+	位置：
+	<a ui-sref="index">首页</a>
+	&gt;
+	基础数据
+</div>
+<div class="content">
+	<div class="searchzone">
+		<div class="title"><i class="fa fa-users"></i>&nbsp;项目字典列表</div>
+		<div class="line border-none">
+			<div class="desc">项目编码：</div>
+			<div class="vals">
+				<input ng-model="search.proCode" />
+			</div>
+		</div>
+		<div class="line border-none">
+			<div class="desc">项目名称：</div>
+			<div class="vals">
+				<input ng-model="search.proName" />
+			</div>
+		</div>
+	</div>
+	
+	<div core-formresult result="formresult"></div>
+	
+	<div class="mytable">
+		<div class="title">
+			<span>总数 ：
+				<span class="highlight">{{queryParams.total}}</span>
+			</span>
+			 
+			<a class="spe" href="#prodic/add/{{hosId}}">新增项目字典</a>
+			 
+		</div>
+		<table class="my-table" ng-table="tableParams">
+			<thead>
+				<tr>
+					<th></th>
+					<th>项目编码</th>
+					<th>项目名称</th>
+					<th>计价单位</th>
+					<th>现行价格</th>
+					<th>项目耗时</th>
+					<th>医生人数</th>
+					<th>护士人数</th>
+					<th>技师人数</th>
+					<th>低值易耗<br/>品成本</th>
+					<th>内涵一次性<br/>耗材成本</th>
+					
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tr ng-show="!$data"><td colspan="4">加载中...</td></tr>
+			<tr ng-repeat="item in $data">
+				<td>{{ (queryParams.page - 1) * queryParams.rows + $index + 1 }}</td>
+				
+				<td>{{ item.pro_code }}</td>
+				<td>{{ item.pro_name }}</td>
+				<td>{{ item.unit }}</td>
+				<td>{{ item.price_current }}</td>
+				<td>{{ item.cost_time }}</td>
+				<td>{{ item.people_count_doctor }}</td>
+				<td>{{ item.people_count_nurse }}</td>
+				<td>{{ item.people_count_tech }}</td>
+				<td>{{ item.cost_low_level }}</td>
+				<td>{{ item.cost_once }}</td>
+				
+				<td class="handle">
+					<a class="btn btn-small btn-lblue" 
+						href="#prodic/edit/{{hosId}}/{{item.id}}"
+						ng-show="!item.ishanding"
+						>编辑</a>
+						
+					<a class="btn btn-small btn-danger"
+						ng-click="item.prepareDel = !item.prepareDel"
+						ng-show="!item.ishanding"
+						>删除</a>
+						
+					<a class="btn btn-small btn-w4"
+						ng-show="item.ishanding"
+						>操作中...</a>
+					
+					<table ng-show="item.prepareDel">
+						<tr>
+							<td colspan="5"></td>
+							<td>
+								<a class="btn btn-small btn-danger btn-w4"
+									ng-click="item.ishanding==true;del(item);"
+									>确认删除</a>
+							</td>
+						</tr>
+					</table>
+					
+				</td>
+			</tr>
+		</table>
+	</div>
+
+</div>

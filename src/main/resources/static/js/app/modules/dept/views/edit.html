@@ -1,0 +1,94 @@
+<div class="navigation">
+	位置：
+	<a href="#">首页</a>
+</div>
+<form name="form">
+<div class="content">
+	<div class="mytable">
+		<div class="title">
+			<span>
+				科室编辑
+			</span>
+		</div>
+		<table>
+			<tbody>
+				<tr>
+					<td class="td-even">
+						<span class="warn">*</span>科室编码：
+						<input class="form-input" ng-model="dept.deptCode" />
+					</td>
+				</tr>
+				<tr>
+					<td class="td-even">
+						<span class="warn">*</span>科室名称：
+						<input class="form-input" ng-model="dept.deptName" />
+					</td>
+				</tr>
+				
+				<tr>
+					<td class="td-even">
+						<span class="warn">*</span>科室类型：
+						
+						<span ng-repeat="item in dics.deptType">
+							<input
+								name="deptType"
+								type="radio"
+								value="{{item[0]}}"
+								ng-model="dept.deptTypeCode"
+								ng-checked="item[0] == dept.deptTypeCode" >
+							{{item[1]}}
+						</span>
+					</td>
+				</tr>
+				
+				<tr>
+					<td class="td-even">
+						<span class="warn">*</span>特殊科室类型：
+						
+						无
+						<input
+							name="deptSpe"
+							type="radio"
+							value=""
+							ng-model="dept.deptSpecialCode">
+						
+						&nbsp;&nbsp;
+						
+						<span ng-repeat="item in dics.deptSpe">
+							<input
+								name="deptSpe"
+								type="radio"
+								value="{{item[0]}}"
+								ng-model="dept.deptSpecialCode"
+								ng-checked="item[0] == dept.deptSpecialCode" >
+							{{item[1]}}
+						</span>
+					</td>
+				</tr>
+				
+				<tr>
+					<td class="td-even">
+						<div class="btn btn-lblue" 
+							ng-show="!isRuning"
+							ng-click="save()">
+							&nbsp;&nbsp;保存&nbsp;&nbsp;
+						</div>
+						<div ng-show="isRuning">
+							保存中，请稍后...
+						</div>
+
+					</td>
+				</tr>
+				
+				<tr>
+					<td colspan="2">
+						<div core-formresult result="formresult"></div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	
+</div>
+
+</form>

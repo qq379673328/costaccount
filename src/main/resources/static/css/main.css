@@ -340,10 +340,13 @@ textarea{
 	color: #E9EACA;
 	font-weight: bold;
 	font-size: 14px;
+	background: green;
+	border-radius: 5px;
+	padding: 0 10px;
 }
 .mytable table{
 	width: 100%;
-	border-bottom: 1px solid #c3bbbb;
+	/* border-bottom: 1px solid #c3bbbb; */
 }
 .mytable .table-width{
 	width: auto;
@@ -396,7 +399,7 @@ textarea{
 	padding-left: 5px;
 }
 .mytable table tbody tr td{
-	border-bottom: 1px solid #c3bbbb;
+	/* border-bottom: 1px solid #c3bbbb; */
 }
 .card{
 	display: inline-block;

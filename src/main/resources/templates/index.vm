@@ -41,11 +41,16 @@
 				<i class="fa fa-user"></i>&nbsp;主页</div>
 			
 			<div class="lv1"><i class="fa fa-edit"></i>&nbsp;成本核算</div>
-			
 			<div 
 				ng-class="{true: 'select'}[$root.menu=='fentan']"
 				class="lv2" ui-sref="costaccountFentanJoblist">
-				<i class="fa fa-caret-right"></i>&nbsp;分摊算法</div>
+				<i class="fa fa-caret-right"></i>&nbsp;科室分摊算法</div>
+				
+			<div class="lv1"><i class="fa fa-edit"></i>&nbsp;基础数据</div>
+			<div 
+				ng-class="{true: 'select'}[$root.menu=='hos']"
+				class="lv2" ui-sref="hosList">
+				<i class="fa fa-caret-right"></i>&nbsp;医院管理</div>
 		</div>
 		
 		<script type="text/ng-template" id="custom/pager">

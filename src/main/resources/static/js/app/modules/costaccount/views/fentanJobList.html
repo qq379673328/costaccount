@@ -21,6 +21,7 @@
 				至
 				<input datepicker ng-model="search.createTimeEnd"/>
 			</div>
+			<!-- 
 			<div class="desc">状态：</div>
 			<div class="vals">
 				<input type="radio" ng-model="search.state" name="state" value="" />
@@ -34,6 +35,7 @@
 				<input type="radio" ng-model="search.state" name="state" value="9" />
 				失败
 			</div>
+			-->
 		</div>
 	</div>
 	
@@ -58,37 +60,56 @@
 					<th>状态</th>
 					<th>创建时间</th>
 					<th>修改时间</th>
-					<th></th>
+					<th>操作</th>
 				</tr>
 			</thead>
 			<tr ng-show="!$data"><td colspan="4">加载中...</td></tr>
 			<tr ng-repeat="item in $data">
 				<td>{{ (queryParams.page - 1) * queryParams.rows + $index + 1 }}</td>
 				
-				<td><a class="href" 
-					href="#costaccount/jobView/{{item.id}}"
-					>{{ item.job_desc }}</a></td>
+				<td>{{ item.job_desc }}</td>
 				<td>{{ item.hos_name }}</td>
 				<td>{{ item.state | state }}</td>
 				<td>{{ item.create_time | date: "yyyy/MM/dd" }}</td>
 				<td>{{ item.update_time | date: "yyyy/MM/dd" }}</td>
 				
 				<td class="handle">
+					<!--
 					<a class="btn btn-small btn-lblue" 
 						href="#costaccount/jobEdit/{{item.id}}"
 						ng-show="!item.ishanding"
 						>编辑</a>
+					-->
 						
-					<a class="btn btn-small btn-success"
+					<a class="btn btn-small btn-danger"
 						ng-click="item.prepareDel = !item.prepareDel"
 						ng-show="!item.ishanding"
 						>删除</a>
-					
+						
+					&nbsp;&nbsp;&nbsp;
 					<a class="btn btn-small btn-success"
 						ng-click="runJob(item)"
 						ng-show="!item.ishanding"
-						>执行</a>
-						
+						>计算科室全成本</a>
+					<a class="btn btn-small btn-success"
+						href="#costaccount/jobView/{{item.id}}"
+						ng-show="!item.ishanding"
+						>查看科室全成本</a>
+					
+					&nbsp;&nbsp;&nbsp;
+					<a class="btn btn-small btn-primary"
+						href="#proUpload/{{item.id}}"
+						ng-show="!item.ishanding"
+						>上传项目数据</a>
+					<a class="btn btn-small btn-primary"
+						ng-click="runJobPro(item)"
+						ng-show="!item.ishanding"
+						>计算项目理论成本</a>
+					<a class="btn btn-small btn-primary"
+						href="#pro/view/{{item.id}}"
+						ng-show="!item.ishanding"
+						>查看项目理论成本</a>
+					
 					<a class="btn btn-small btn-w4"
 						ng-show="item.ishanding"
 						>操作中...</a>

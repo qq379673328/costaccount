@@ -3,7 +3,6 @@
  */
 package cn.com.fanrenlee.web;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,9 +52,11 @@ public class CostAccountFentanController {
 		try {
 			Integer jobId = costAccountFentanService.saveSrcDate(file.getInputStream(), job, baseInfo);
 			return new ApiResult<Integer>(jobId);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-			return new ApiResult<Integer>(ResultCode.FAILURE.getCode(), "附件读取失败");
+			String message = e.getMessage();
+			message = message == null || message.isEmpty() ? "操作失败，服务器异常" : message;
+			return new ApiResult<Integer>(ResultCode.FAILURE.getCode(), message);
 		}
 	}
 
@@ -82,8 +83,15 @@ public class CostAccountFentanController {
 	 */
 	@RequestMapping(value = "execJob/{jobId}", method = RequestMethod.POST)
 	public @ResponseBody ApiResult<String> execJob(@PathVariable Integer jobId) {
-		costAccountFentanService.execJob(jobId);
-		return new ApiResult<String>("任务已执行完成");
+		try{
+			costAccountFentanService.execJob(jobId);
+			return new ApiResult<String>("任务已执行完成");
+		}catch(Exception e){
+			e.printStackTrace();
+			String message = e.getMessage();
+			message = message == null || message.isEmpty() ? "操作失败，服务器异常" : message;
+			return new ApiResult<String>(ResultCode.FAILURE.getCode(), message);
+		}
 	}
 
 	/**

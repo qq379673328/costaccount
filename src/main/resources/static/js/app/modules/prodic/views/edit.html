@@ -1,0 +1,101 @@
+<div class="navigation">
+	位置：
+	<a href="#">首页</a>
+</div>
+<form name="form">
+<div class="content">
+	<div class="mytable">
+		<div class="title">
+			<span>
+				项目字典编辑
+			</span>
+		</div>
+		<table>
+			<tbody>
+				<tr>
+					<td class="td-even">
+						<span class="warn">*</span>项目编码：
+						<input class="form-input" ng-model="prodic.proCode" />
+					</td>
+				</tr>
+				<tr>
+					<td class="td-even">
+						<span class="warn">*</span>项目名称：
+						<input class="form-input" ng-model="prodic.proName" />
+					</td>
+				</tr>
+				<tr>
+					<td class="td-even">
+						<span class="warn">*</span>计价单位：
+						<input class="form-input" ng-model="prodic.unit" />
+					</td>
+				</tr>
+				<tr>
+					<td class="td-even">
+						<span class="warn">*</span>现行价格：
+						<input class="form-input" ng-model="prodic.priceCurrent" />
+					</td>
+				</tr>
+				<tr>
+					<td class="td-even">
+						<span class="warn">*</span>项目耗时：
+						<input class="form-input" ng-model="prodic.costTime" />
+					</td>
+				</tr>
+				<tr>
+					<td class="td-even">
+						<span class="warn">*</span>医生人数：
+						<input class="form-input" ng-model="prodic.peopleCountDoctor" />
+					</td>
+				</tr>
+				<tr>
+					<td class="td-even">
+						<span class="warn">*</span>护士人数：
+						<input class="form-input" ng-model="prodic.peopleCountNurse" />
+					</td>
+				</tr>
+				<tr>
+					<td class="td-even">
+						<span class="warn">*</span>技师人数：
+						<input class="form-input" ng-model="prodic.peopleCountTech" />
+					</td>
+				</tr>
+				<tr>
+					<td class="td-even">
+						<span class="warn">*</span>低值易耗品成本：
+						<input class="form-input" ng-model="prodic.costLowLevel" />
+					</td>
+				</tr>
+				<tr>
+					<td class="td-even">
+						<span class="warn">*</span>内涵一次性耗材成本：
+						<input class="form-input" ng-model="prodic.costOnce" />
+					</td>
+				</tr>
+				
+				<tr>
+					<td class="td-even">
+						<div class="btn btn-lblue" 
+							ng-show="!isRuning"
+							ng-click="save()">
+							&nbsp;&nbsp;保存&nbsp;&nbsp;
+						</div>
+						<div ng-show="isRuning">
+							保存中，请稍后...
+						</div>
+
+					</td>
+				</tr>
+				
+				<tr>
+					<td colspan="2">
+						<div core-formresult result="formresult"></div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	
+</div>
+
+</form>

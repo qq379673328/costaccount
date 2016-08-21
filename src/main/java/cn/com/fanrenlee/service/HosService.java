@@ -51,7 +51,8 @@ public class HosService extends SimpleServiceImpl {
 	 * @return
 	 */
 	public void add(THospital hos) {
-		jdbcTemplate.update("insert into t_hospital (hos_name) values (?) ", new Object[] { hos.getHosName() });
+		jdbcTemplate.update("insert into t_hospital (hos_name, hos_code) values (?, ?) ",
+				new Object[] { hos.getHosName(), hos.getHosCode() });
 	}
 
 	/**
@@ -61,8 +62,8 @@ public class HosService extends SimpleServiceImpl {
 	 * @return
 	 */
 	public void edit(THospital hos) {
-		jdbcTemplate.update("update t_hospital set hos_name = ? where id = ? ",
-				new Object[] { hos.getHosName(), hos.getId() });
+		jdbcTemplate.update("update t_hospital set hos_name = ?, hos_code = ? where id = ? ",
+				new Object[] { hos.getHosName(), hos.getHosCode(), hos.getId() });
 	}
 
 	/**
@@ -78,9 +79,14 @@ public class HosService extends SimpleServiceImpl {
 		List<Object> values = new ArrayList<Object>();
 		StringBuffer sb = new StringBuffer(" SELECT t.* " + " FROM `t_hospital` t where 1=1 ");
 		// 医院名
-		if (!StrUtils.isNull(params.get("hosame"))) {
-			sb.append(" and t.hos_name = ? ");
-			values.add(params.get("hos_name"));
+		if (!StrUtils.isNull(params.get("hosName"))) {
+			sb.append(" and t.hos_name like ? ");
+			values.add("%" + params.get("hosName") + "%");
+		}
+		// 医院编码
+		if (!StrUtils.isNull(params.get("hosCode"))) {
+			sb.append(" and t.hos_code = ? ");
+			values.add(params.get("hosCode"));
 		}
 
 		sb.append(" ORDER BY t.create_time DESC ");

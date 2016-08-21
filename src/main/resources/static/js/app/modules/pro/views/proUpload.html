@@ -1,0 +1,59 @@
+<div class="navigation">
+	位置：
+	<a href="#">首页</a>
+</div>
+<form name="form">
+<div class="content">
+	<div class="mytable">
+		<div class="title">
+			<span>
+				项目数据上传
+			</span>
+		</div>
+		<table>
+			<tbody>
+				<tr>
+					<td class="td-even">业务数据</td>
+				</tr>
+				<tr>
+					<td class="td-even center" >
+						<input type="file"
+							ng-model="file"
+							ngf-select
+							name="file"
+							ngf-accept="'.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel'" 
+							ngf-max-size="50MB"
+							required
+							ngf-model-invalid="errorFile"
+							ngf-validate-force="false"
+							>
+							上传excel<div/>
+					</td>
+				</tr>
+				
+				<tr>
+					<td class="td-even" colspan="4">
+						<div class="btn btn-lblue" 
+							ng-show="!isRuning"
+							ng-click="save()">
+							&nbsp;&nbsp;保存&nbsp;&nbsp;
+						</div>
+						<div ng-show="isRuning">
+							上传中，请稍后...
+						</div>
+
+					</td>
+				</tr>
+				
+				<tr>
+					<td colspan="2">
+						<div core-formresult result="formresult"></div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	
+</div>
+
+</form>
