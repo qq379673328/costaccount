@@ -9,7 +9,7 @@ public class TCostaccountLevel1 {
 
     private String deptName;
 
-    private Float shareLevel1;
+    private Double shareLevel1;
 
     private String deptCodeShare;
 
@@ -19,17 +19,19 @@ public class TCostaccountLevel1 {
 
     private Date creatTime;
 
-    private Float shareItemPeople;
+    private Double shareItemPeople;
 
-    private Float shareItemOldHouseDeviceCommon;
+    private Double shareItemOldHouseDeviceCommon;
 
-    private Float shareItemOldDeviceSpecial;
+    private Double shareItemOldDeviceSpecial;
 
-    private Float shareItemAssetAmortize;
+    private Double shareItemAssetAmortize;
 
-    private Float shareItemVcFunds;
+    private Double shareItemVcFunds;
 
-    private Float shareItemOther;
+    private Double shareItemOther;
+    
+    private Double shareItemWscl;
 
     private Integer tJobId;
 
@@ -57,11 +59,11 @@ public class TCostaccountLevel1 {
         this.deptName = deptName == null ? null : deptName.trim();
     }
 
-    public Float getShareLevel1() {
+    public Double getShareLevel1() {
         return shareLevel1;
     }
 
-    public void setShareLevel1(Float shareLevel1) {
+    public void setShareLevel1(Double shareLevel1) {
         this.shareLevel1 = shareLevel1;
     }
 
@@ -97,51 +99,51 @@ public class TCostaccountLevel1 {
         this.creatTime = creatTime;
     }
 
-    public Float getShareItemPeople() {
+    public Double getShareItemPeople() {
         return shareItemPeople;
     }
 
-    public void setShareItemPeople(Float shareItemPeople) {
+    public void setShareItemPeople(Double shareItemPeople) {
         this.shareItemPeople = shareItemPeople;
     }
 
-    public Float getShareItemOldHouseDeviceCommon() {
+    public Double getShareItemOldHouseDeviceCommon() {
         return shareItemOldHouseDeviceCommon;
     }
 
-    public void setShareItemOldHouseDeviceCommon(Float shareItemOldHouseDeviceCommon) {
+    public void setShareItemOldHouseDeviceCommon(Double shareItemOldHouseDeviceCommon) {
         this.shareItemOldHouseDeviceCommon = shareItemOldHouseDeviceCommon;
     }
 
-    public Float getShareItemOldDeviceSpecial() {
+    public Double getShareItemOldDeviceSpecial() {
         return shareItemOldDeviceSpecial;
     }
 
-    public void setShareItemOldDeviceSpecial(Float shareItemOldDeviceSpecial) {
+    public void setShareItemOldDeviceSpecial(Double shareItemOldDeviceSpecial) {
         this.shareItemOldDeviceSpecial = shareItemOldDeviceSpecial;
     }
 
-    public Float getShareItemAssetAmortize() {
+    public Double getShareItemAssetAmortize() {
         return shareItemAssetAmortize;
     }
 
-    public void setShareItemAssetAmortize(Float shareItemAssetAmortize) {
+    public void setShareItemAssetAmortize(Double shareItemAssetAmortize) {
         this.shareItemAssetAmortize = shareItemAssetAmortize;
     }
 
-    public Float getShareItemVcFunds() {
+    public Double getShareItemVcFunds() {
         return shareItemVcFunds;
     }
 
-    public void setShareItemVcFunds(Float shareItemVcFunds) {
+    public void setShareItemVcFunds(Double shareItemVcFunds) {
         this.shareItemVcFunds = shareItemVcFunds;
     }
 
-    public Float getShareItemOther() {
+    public Double getShareItemOther() {
         return shareItemOther;
     }
 
-    public void setShareItemOther(Float shareItemOther) {
+    public void setShareItemOther(Double shareItemOther) {
         this.shareItemOther = shareItemOther;
     }
 
@@ -152,4 +154,12 @@ public class TCostaccountLevel1 {
     public void settJobId(Integer tJobId) {
         this.tJobId = tJobId;
     }
+
+	public Double getShareItemWscl() {
+		return shareItemWscl;
+	}
+
+	public void setShareItemWscl(Double shareItemWscl) {
+		this.shareItemWscl = shareItemWscl;
+	}
 }

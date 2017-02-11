@@ -20,41 +20,41 @@ public class ProItem {
 
 	private Integer deptId;
 
-	private Float costOldHouseDeviceCommon;
+	private Double costOldHouseDeviceCommon;
 
-	private Float costOldDeviceSpecial;
+	private Double costOldDeviceSpecial;
 
-	private Float costAssetAmortize;
+	private Double costAssetAmortize;
 
-	private Float costVcFunds;
+	private Double costVcFunds;
 
-	private Float costOther;
+	private Double costOther;
 
 	private Date createTime;
 
 	private Integer tJobId;
 
-	private Float workCountKdgzl;
+	private Double workCountKdgzl;
 
-	private Float workCountXdgzl;
+	private Double workCountXdgzl;
 
-	private Float workCountInhos;
+	private Double workCountInhos;
 
-	private Float workCountMz;
+	private Double workCountMz;
 
 	private Date updateTime;
 
-	private Float costPeopleZzys;
+	private Double costPeopleZzys;
 
-	private Float costPeopleFzzys;
+	private Double costPeopleFzzys;
 
-	private Float costPeopleZrys;
+	private Double costPeopleZrys;
 
-	private Float costPeopleJs;
+	private Double costPeopleJs;
 
-	private Float costPeopleHs;
+	private Double costPeopleHs;
 
-	private Float costPeopleQt;
+	private Double costPeopleQt;
 
 	private Integer peopleCountZzys;
 
@@ -68,9 +68,9 @@ public class ProItem {
 
 	private Integer peopleCountQt;
 
-	private Float workCountKdsr;
+	private Double workCountKdsr;
 
-	private Float workCountZxsr;
+	private Double workCountZxsr;
 
 	public String getProCode() {
 		return proCode;
@@ -112,43 +112,43 @@ public class ProItem {
 		this.deptId = deptId;
 	}
 
-	public Float getCostOldHouseDeviceCommon() {
+	public Double getCostOldHouseDeviceCommon() {
 		return costOldHouseDeviceCommon;
 	}
 
-	public void setCostOldHouseDeviceCommon(Float costOldHouseDeviceCommon) {
+	public void setCostOldHouseDeviceCommon(Double costOldHouseDeviceCommon) {
 		this.costOldHouseDeviceCommon = costOldHouseDeviceCommon;
 	}
 
-	public Float getCostOldDeviceSpecial() {
+	public Double getCostOldDeviceSpecial() {
 		return costOldDeviceSpecial;
 	}
 
-	public void setCostOldDeviceSpecial(Float costOldDeviceSpecial) {
+	public void setCostOldDeviceSpecial(Double costOldDeviceSpecial) {
 		this.costOldDeviceSpecial = costOldDeviceSpecial;
 	}
 
-	public Float getCostAssetAmortize() {
+	public Double getCostAssetAmortize() {
 		return costAssetAmortize;
 	}
 
-	public void setCostAssetAmortize(Float costAssetAmortize) {
+	public void setCostAssetAmortize(Double costAssetAmortize) {
 		this.costAssetAmortize = costAssetAmortize;
 	}
 
-	public Float getCostVcFunds() {
+	public Double getCostVcFunds() {
 		return costVcFunds;
 	}
 
-	public void setCostVcFunds(Float costVcFunds) {
+	public void setCostVcFunds(Double costVcFunds) {
 		this.costVcFunds = costVcFunds;
 	}
 
-	public Float getCostOther() {
+	public Double getCostOther() {
 		return costOther;
 	}
 
-	public void setCostOther(Float costOther) {
+	public void setCostOther(Double costOther) {
 		this.costOther = costOther;
 	}
 
@@ -168,35 +168,35 @@ public class ProItem {
 		this.tJobId = tJobId;
 	}
 
-	public Float getWorkCountKdgzl() {
+	public Double getWorkCountKdgzl() {
 		return workCountKdgzl;
 	}
 
-	public void setWorkCountKdgzl(Float workCountKdgzl) {
+	public void setWorkCountKdgzl(Double workCountKdgzl) {
 		this.workCountKdgzl = workCountKdgzl;
 	}
 
-	public Float getWorkCountXdgzl() {
+	public Double getWorkCountXdgzl() {
 		return workCountXdgzl;
 	}
 
-	public void setWorkCountXdgzl(Float workCountXdgzl) {
+	public void setWorkCountXdgzl(Double workCountXdgzl) {
 		this.workCountXdgzl = workCountXdgzl;
 	}
 
-	public Float getWorkCountInhos() {
+	public Double getWorkCountInhos() {
 		return workCountInhos;
 	}
 
-	public void setWorkCountInhos(Float workCountInhos) {
+	public void setWorkCountInhos(Double workCountInhos) {
 		this.workCountInhos = workCountInhos;
 	}
 
-	public Float getWorkCountMz() {
+	public Double getWorkCountMz() {
 		return workCountMz;
 	}
 
-	public void setWorkCountMz(Float workCountMz) {
+	public void setWorkCountMz(Double workCountMz) {
 		this.workCountMz = workCountMz;
 	}
 
@@ -208,51 +208,51 @@ public class ProItem {
 		this.updateTime = updateTime;
 	}
 
-	public Float getCostPeopleZzys() {
+	public Double getCostPeopleZzys() {
 		return costPeopleZzys;
 	}
 
-	public void setCostPeopleZzys(Float costPeopleZzys) {
+	public void setCostPeopleZzys(Double costPeopleZzys) {
 		this.costPeopleZzys = costPeopleZzys;
 	}
 
-	public Float getCostPeopleFzzys() {
+	public Double getCostPeopleFzzys() {
 		return costPeopleFzzys;
 	}
 
-	public void setCostPeopleFzzys(Float costPeopleFzzys) {
+	public void setCostPeopleFzzys(Double costPeopleFzzys) {
 		this.costPeopleFzzys = costPeopleFzzys;
 	}
 
-	public Float getCostPeopleZrys() {
+	public Double getCostPeopleZrys() {
 		return costPeopleZrys;
 	}
 
-	public void setCostPeopleZrys(Float costPeopleZrys) {
+	public void setCostPeopleZrys(Double costPeopleZrys) {
 		this.costPeopleZrys = costPeopleZrys;
 	}
 
-	public Float getCostPeopleJs() {
+	public Double getCostPeopleJs() {
 		return costPeopleJs;
 	}
 
-	public void setCostPeopleJs(Float costPeopleJs) {
+	public void setCostPeopleJs(Double costPeopleJs) {
 		this.costPeopleJs = costPeopleJs;
 	}
 
-	public Float getCostPeopleHs() {
+	public Double getCostPeopleHs() {
 		return costPeopleHs;
 	}
 
-	public void setCostPeopleHs(Float costPeopleHs) {
+	public void setCostPeopleHs(Double costPeopleHs) {
 		this.costPeopleHs = costPeopleHs;
 	}
 
-	public Float getCostPeopleQt() {
+	public Double getCostPeopleQt() {
 		return costPeopleQt;
 	}
 
-	public void setCostPeopleQt(Float costPeopleQt) {
+	public void setCostPeopleQt(Double costPeopleQt) {
 		this.costPeopleQt = costPeopleQt;
 	}
 
@@ -304,19 +304,19 @@ public class ProItem {
 		this.peopleCountQt = peopleCountQt;
 	}
 
-	public Float getWorkCountKdsr() {
+	public Double getWorkCountKdsr() {
 		return workCountKdsr;
 	}
 
-	public void setWorkCountKdsr(Float workCountKdsr) {
+	public void setWorkCountKdsr(Double workCountKdsr) {
 		this.workCountKdsr = workCountKdsr;
 	}
 
-	public Float getWorkCountZxsr() {
+	public Double getWorkCountZxsr() {
 		return workCountZxsr;
 	}
 
-	public void setWorkCountZxsr(Float workCountZxsr) {
+	public void setWorkCountZxsr(Double workCountZxsr) {
 		this.workCountZxsr = workCountZxsr;
 	}
 

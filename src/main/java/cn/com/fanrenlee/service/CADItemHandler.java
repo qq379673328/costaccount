@@ -3,6 +3,7 @@
  */
 package cn.com.fanrenlee.service;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,15 +79,18 @@ public class CADItemHandler {
 		deptTypePeopleCount.put("LC", 0);
 
 		// 基础信息初始化
-		baseInfo.setTotalCostKdgzl(0f);
-		baseInfo.setTotalCostKdsr(0f);
-		baseInfo.setTotalCostMzl(0f);
-		baseInfo.setTotalCostXdgzl(0f);
-		baseInfo.setTotalCostZxsr(0f);
-		baseInfo.setTotalCostZyrs(0f);
-		baseInfo.setTotalPeople(0);
+		baseInfo.setTotalCostInhos(0d);
+		baseInfo.setTotalCostKdsr(0d);
+		baseInfo.setTotalCostMz(0d);
+		baseInfo.setTotalCostXdgzl(0d);
+		baseInfo.setTotalCostZyzxsr(0d);
+		baseInfo.setTotalCostMzzxsr(0d);
 
 		for (CADItem item : cadItems) {
+			
+			// 为科室特殊类型赋值
+			item.setDeptSpecialCode(item.getDeptSpecialCode());
+			
 			String deptType = item.getDeptTypeCode();
 			String deptCode = item.getDeptCode();
 			String deptName = item.getDeptName();
@@ -100,33 +104,36 @@ public class CADItemHandler {
 			// 初始化分摊中间对象
 			CostItem newItem = new CostItem();
 			newItem.setCostSharePeople(item.getCostPeople());
-			
+
 			newItem.setCostSharePeopleZzys(item.getCostPeopleZzys());
 			newItem.setCostSharePeopleFzrys(item.getCostPeopleFzzys());
 			newItem.setCostSharePeopleZrys(item.getCostPeopleZrys());
 			newItem.setCostSharePeopleJs(item.getCostPeopleJs());
 			newItem.setCostSharePeopleHs(item.getCostPeopleHs());
 			newItem.setCostSharePeopleQt(item.getCostPeopleQt());
-			
+
 			newItem.setCostShareassetAmortize(item.getCostPeople());
+			newItem.setCostShareWscl(item.getCostWscl());
 			newItem.setCostShareOldHouseDeviceCommon(item.getCostOldHouseDeviceCommon());
+			newItem.setCostShareWscl(item.getCostWscl());
 			newItem.setCostShareOldDeviceSpecial(item.getCostOldDeviceSpecial());
 			newItem.setCostShareOther(item.getCostOther());
 			newItem.setCostSharevcFunds(item.getCostVcFunds());
 			costItemFentan.put(item.getDeptCode(), newItem);
 
 			// 计算基础整体数据
-			baseInfo.setTotalCostKdgzl(safeFloat(baseInfo.getTotalCostKdgzl()) + safeFloat(item.getWorkCountKdgzl()));
-			baseInfo.setTotalCostKdsr(safeFloat(baseInfo.getTotalCostKdsr()) + safeFloat(item.getWorkCountKdsr()));
-			baseInfo.setTotalCostMzl(safeFloat(baseInfo.getTotalCostMzl()) + safeFloat(item.getWorkCountMz()));
-			baseInfo.setTotalCostXdgzl(safeFloat(baseInfo.getTotalCostXdgzl()) + safeFloat(item.getWorkCountXdgzl()));
-			baseInfo.setTotalCostZxsr(safeFloat(baseInfo.getTotalCostZxsr()) + safeFloat(item.getWorkCountZxsr()));
-			baseInfo.setTotalCostZyrs(safeFloat(baseInfo.getTotalCostZyrs()) + safeFloat(item.getWorkCountInhos()));
+			baseInfo.setTotalCostInhos(baseInfo.getTotalCostInhos() + item.getWorkCountInhos());
+			baseInfo.setTotalCostKdsr(baseInfo.getTotalCostKdsr() + item.getWorkCountKdsr());
+			baseInfo.setTotalCostXdgzl(baseInfo.getTotalCostXdgzl() + item.getWorkCountXdgzl());
+			baseInfo.setTotalCostMz((baseInfo.getTotalCostMz() + item.getWorkCountMz()));
+			baseInfo.setTotalCostMzzxsr(baseInfo.getTotalCostMzzxsr() + item.getWorkCountMzzxsr());
+			baseInfo.setTotalCostZyzxsr(baseInfo.getTotalCostZyzxsr() + item.getWorkCountZyzxsr());
 
 			// 初始化多级分摊对象
 			TCostaccountFentan fentan = new TCostaccountFentan();
 			fentan.setDeptCode(deptCode);
 			fentan.setDeptName(deptName);
+
 			getFentanMulLev().put(deptCode, fentan);
 		}
 
@@ -137,13 +144,13 @@ public class CADItemHandler {
 	}
 
 	/**
-	 * float运算过滤null
+	 * Double运算过滤null
 	 * 
 	 * @param f
 	 * @return
 	 */
-	private Float safeFloat(Float f) {
-		return f == null ? 0f : f;
+	private Double safeDouble(Double f) {
+		return f == null ? 0d : f;
 	}
 
 	/**
@@ -157,6 +164,37 @@ public class CADItemHandler {
 	}
 
 	/**
+	 * Double 相加
+	 * 
+	 * @param items
+	 * @return
+	 */
+	private Double add(Double... items) {
+		BigDecimal ret = new BigDecimal(0);
+		for (Double item : items) {
+			ret = ret.add(new BigDecimal(item == null ? 0 : item));
+		}
+		return toDouble(ret);
+	}
+
+	private Double toDouble(BigDecimal item) {
+		if (item == null)
+			return 0d;
+		return item.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+	}
+
+	/**
+	 * 相乘
+	 * 
+	 * @param itemA
+	 * @param itemB
+	 * @return
+	 */
+	private Double mul(BigDecimal itemA, Double itemB) {
+		return itemA.multiply(new BigDecimal(itemB)).doubleValue();
+	}
+
+	/**
 	 * 处理数据
 	 */
 	public void handle() {
@@ -164,9 +202,9 @@ public class CADItemHandler {
 		for (CADItem cadItem : cadItems) {
 			String deptCode = cadItem.getDeptCode();
 			// 直接成本
-			float costDirect = cadItem.getCostAssetAmortize() + cadItem.getCostOldHouseDeviceCommon()
-					+ cadItem.getCostOldDeviceSpecial() + cadItem.getCostOther() + cadItem.getCostPeople()
-					+ cadItem.getCostVcFunds();
+			Double costDirect = add(cadItem.getCostWscl(), cadItem.getCostAssetAmortize(),
+					cadItem.getCostOldHouseDeviceCommon(), cadItem.getCostOldDeviceSpecial(), cadItem.getCostOther(),
+					cadItem.getCostPeople(), cadItem.getCostVcFunds());
 			// 直接成本
 			getFentanMulLev().get(deptCode).setCountDirect(costDirect);
 			// 全成本-直接成本部分
@@ -175,213 +213,141 @@ public class CADItemHandler {
 		}
 
 		// 计算一级分摊以及医辅全成本
+
+		// 所有行政后勤科室各个类型总成本数据
+		CADItem xzhqTemp = new CADItem();
+		for (CADItem cadItemIn : cadItems) {
+			// 非行政后勤科室过滤
+			if (!cadItemIn.isDeptTypeXZHQ()) {
+				continue;
+			}
+			xzhqTemp.setCostAssetAmortize(add(xzhqTemp.getCostAssetAmortize(), cadItemIn.getCostAssetAmortize()));
+			xzhqTemp.setCostOldDeviceSpecial(
+					add(xzhqTemp.getCostOldDeviceSpecial(), cadItemIn.getCostOldDeviceSpecial()));
+			xzhqTemp.setCostOldHouseDeviceCommon(
+					add(xzhqTemp.getCostOldHouseDeviceCommon(), cadItemIn.getCostOldHouseDeviceCommon()));
+			xzhqTemp.setCostOther(add(xzhqTemp.getCostOther(), cadItemIn.getCostOther()));
+			xzhqTemp.setCostVcFunds(add(xzhqTemp.getCostVcFunds(), cadItemIn.getCostVcFunds()));
+			xzhqTemp.setCostWscl(add(xzhqTemp.getCostWscl(), cadItemIn.getCostWscl()));
+
+			xzhqTemp.setCostPeople(add(xzhqTemp.getCostPeople(), cadItemIn.getCostPeople()));
+			xzhqTemp.setCostPeopleFzzys(add(xzhqTemp.getCostPeopleFzzys(), cadItemIn.getCostPeopleFzzys()));
+			xzhqTemp.setCostPeopleHs(add(xzhqTemp.getCostPeopleHs(), cadItemIn.getCostPeopleHs()));
+			xzhqTemp.setCostPeopleJs(add(xzhqTemp.getCostPeopleJs(), cadItemIn.getCostPeopleJs()));
+			xzhqTemp.setCostPeopleQt(add(xzhqTemp.getCostPeopleQt(), cadItemIn.getCostPeopleQt()));
+			xzhqTemp.setCostPeopleZrys(add(xzhqTemp.getCostPeopleZrys(), cadItemIn.getCostPeopleZrys()));
+			xzhqTemp.setCostPeopleZzys(add(xzhqTemp.getCostPeopleZzys(), cadItemIn.getCostPeopleZzys()));
+
+		}
+
 		for (CADItem cadItem : cadItems) {
 			String deptCode = cadItem.getDeptCode();
 			// 非行政后勤科室
 			if (!cadItem.isDeptTypeXZHQ()) {
-				// 临时成本
-				float levelTemp = 0f;
-				float levelTempPeople = 0f;
-				float levelTempDeviceCommon = 0f;
-				float levelTempDeviceSpe = 0f;
-				float levelTempAssert = 0f;
-				float levelTempVc = 0f;
-				float levelTempOther = 0f;
-				
-				float levelTempPeopleZzys = 0f;
-				float levelTempPeopleFzzys = 0f;
-				float levelTempPeopleZrys = 0f;
-				float levelTempPeopleJs = 0f;
-				float levelTempPeopleHs = 0f;
-				float levelTempPeopleQt = 0f;
-				for (CADItem cadItemIn : cadItems) {
-					String deptCodeIn = cadItemIn.getDeptCode();
-					// 非行政后勤科室过滤
-					if (!cadItemIn.isDeptTypeXZHQ()) {
-						continue;
-					}
-					// 该医辅科室人员数 /（全院人数 - 所有行政后勤科室人员数） × 该行政后勤科室全成本
-					Float baseCount = Float.valueOf(cadItem.getPeopleCount())
-							/ (getAllPeopleCount() - deptTypePeopleCount.get("XZHQ"));
 
-					Float baseCountDirect = Float.valueOf(cadItem.getPeopleCount())
-							/ (getAllPeopleCount() - deptTypePeopleCount.get("XZHQ"));
-
-					// 一级分摊
-					Float level1 = baseCount * getFentanMulLev().get(deptCodeIn).getCountAll();
-
-					float levelPeople = baseCountDirect * cadItemIn.getCostPeople();
-					float levelDeviceCommon = baseCountDirect * cadItemIn.getCostOldHouseDeviceCommon();
-					float levelDeviceSpe = baseCountDirect * cadItemIn.getCostOldDeviceSpecial();
-					float levelAssert = baseCountDirect * cadItemIn.getCostAssetAmortize();
-					float levelVc = baseCountDirect * cadItemIn.getCostVcFunds();
-					float levelOther = baseCountDirect * cadItemIn.getCostOther();
-
-					float levelPeopleZzys = baseCountDirect * cadItemIn.getCostPeopleZzys();
-					float levelPeopleFzzys = baseCountDirect * cadItemIn.getCostPeopleFzzys();
-					float levelPeopleZrys = baseCountDirect * cadItemIn.getCostPeopleZrys();
-					float levelPeopleJs = baseCountDirect * cadItemIn.getCostPeopleJs();
-					float levelPeopleHs = baseCountDirect * cadItemIn.getCostPeopleHs();
-					float levelPeopleQt = baseCountDirect * cadItemIn.getCostPeopleQt();
-					
-					CostItem costItem = new CostItem(level1, levelPeople, levelDeviceCommon, levelDeviceSpe,
-							levelAssert, levelVc, levelOther);
-					
-					getCostLevel1().put(deptCode + CODE_SEP + deptCodeIn, costItem);
-
-					// 重新计算分摊后成本
-					CostItem tempCostItem = costItemFentan.get(deptCode);
-					tempCostItem.setCostSharePeople(tempCostItem.getCostSharePeople() + costItem.getCostSharePeople());
-					tempCostItem.setCostShareOldHouseDeviceCommon(tempCostItem.getCostShareOldHouseDeviceCommon()
-							+ costItem.getCostShareOldHouseDeviceCommon());
-					tempCostItem.setCostShareOldDeviceSpecial(
-							tempCostItem.getCostShareOldDeviceSpecial() + costItem.getCostShareOldDeviceSpecial());
-					tempCostItem.setCostShareassetAmortize(
-							tempCostItem.getCostShareassetAmortize() + costItem.getCostShareassetAmortize());
-					tempCostItem
-							.setCostSharevcFunds(tempCostItem.getCostSharevcFunds() + costItem.getCostSharevcFunds());
-					tempCostItem.setCostShareOther(tempCostItem.getCostShareOther() + costItem.getCostShareOther());
-
-					// 全成本计算以及其他
-					levelTemp += level1;
-					levelTempPeople += levelPeople;
-					levelTempDeviceCommon += levelDeviceCommon;
-					levelTempDeviceSpe += levelDeviceSpe;
-					levelTempAssert += levelAssert;
-					levelTempVc += levelVc;
-					levelTempOther += levelOther;
-					
-					levelTempPeopleZzys += levelPeopleZzys;
-					levelTempPeopleFzzys += levelPeopleFzzys;
-					levelTempPeopleZrys += levelPeopleZrys;
-					levelTempPeopleJs += levelPeopleJs;
-					levelTempPeopleHs += levelPeopleHs;
-					levelTempPeopleQt += levelPeopleQt;
-
-				}
+				// 一级分摊：该科室人员数 /（全院人数 - 所有行政后勤科室人员数） × 所有行政后勤科室全成本
+				Integer deptPeopleCount = cadItem.getPeopleCount();// 该科室人员数
+				Integer allPeople = getAllPeopleCount();// 全院人数
+				Integer xzhqPeopleCount = deptTypePeopleCount.get("XZHQ");
+				// 所有行政后勤科室全成本
+				Double allCostXzhq = add(xzhqTemp.getCostAssetAmortize(), xzhqTemp.getCostOldDeviceSpecial(),
+						xzhqTemp.getCostOldHouseDeviceCommon(), xzhqTemp.getCostOther(), xzhqTemp.getCostVcFunds(),
+						xzhqTemp.getCostWscl() + xzhqTemp.getCostPeople());
+				// 基础数据
+				BigDecimal base = new BigDecimal(deptPeopleCount).divide(new BigDecimal(allPeople - xzhqPeopleCount),
+						10, BigDecimal.ROUND_HALF_DOWN);
 
 				TCostaccountFentan ft = getFentanMulLev().get(deptCode);
-				// 全成本重新计算
-				ft.setCountAll(ft.getCountAll() + levelTemp);
 				// 分摊表-一级分摊赋值
-				ft.setFxL1(levelTemp);
-				//分项成本赋值
-				ft.setFxL1People(levelTempPeople);
-				ft.setFxL1DeviceCommon(levelTempDeviceCommon);
-				ft.setFxL1DeviceSpe(levelTempDeviceSpe);
-				ft.setFxL1Asset(levelTempAssert);
-				ft.setFxL1Vc(levelTempVc);
-				ft.setFxL1Other(levelTempOther);
-				
-				ft.setFxL1PeopleZzys(levelTempPeopleZzys);
-				ft.setFxL1PeopleFzrys(levelTempPeopleFzzys);
-				ft.setFxL1PeopleZrys(levelTempPeopleZrys);
-				ft.setFxL1PeopleHs(levelTempPeopleHs);
-				ft.setFxL1PeopleJs(levelTempPeopleJs);
-				ft.setFxL1PeopleQt(levelTempPeopleQt);
-				
+				ft.setFxL1(base.multiply(new BigDecimal(allCostXzhq)).doubleValue());
+				// 分项成本赋值
+				ft.setFxL1People(mul(base, xzhqTemp.getCostPeople()));
+				ft.setFxL1Wscl(mul(base, xzhqTemp.getCostWscl()));
+				ft.setFxL1DeviceCommon(mul(base, xzhqTemp.getCostOldHouseDeviceCommon()));
+				ft.setFxL1DeviceSpe(mul(base, xzhqTemp.getCostOldDeviceSpecial()));
+				ft.setFxL1Asset(mul(base, xzhqTemp.getCostAssetAmortize()));
+				ft.setFxL1Vc(mul(base, xzhqTemp.getCostVcFunds()));
+				ft.setFxL1Other(mul(base, xzhqTemp.getCostOther()));
+
+				ft.setFxL1PeopleZzys(mul(base, xzhqTemp.getCostPeopleZzys()));
+				ft.setFxL1PeopleFzrys(mul(base, xzhqTemp.getCostPeopleFzzys()));
+				ft.setFxL1PeopleZrys(mul(base, xzhqTemp.getCostPeopleZrys()));
+				ft.setFxL1PeopleHs(mul(base, xzhqTemp.getCostPeopleHs()));
+				ft.setFxL1PeopleJs(mul(base, xzhqTemp.getCostPeopleJs()));
+				ft.setFxL1PeopleQt(mul(base, xzhqTemp.getCostPeopleQt()));
+
 			}
 		}
 
-		// 计算二级分摊以及医技全成本
+		// 计算二级分摊-临床科室、医技科室分摊的医辅科室成本
 		for (CADItem cadItem : cadItems) {
 			String deptCode = cadItem.getDeptCode();
 			// 医技科室和临床科室
 			if (cadItem.isDeptTypeYJ() || cadItem.isDeptTypeLC()) {
-				// 临时成本
-				float levelTemp = 0f;
-				float levelTempPeople = 0f;
-				float levelTempDeviceCommon = 0f;
-				float levelTempDeviceSpe = 0f;
-				float levelTempAssert = 0f;
-				float levelTempVc = 0f;
-				float levelTempOther = 0f;
-				
-				float levelTempPeopleZzys = 0f;
-				float levelTempPeopleFzzys = 0f;
-				float levelTempPeopleZrys = 0f;
-				float levelTempPeopleJs = 0f;
-				float levelTempPeopleHs = 0f;
-				float levelTempPeopleQt = 0f;
 				for (CADItem cadItemIn : cadItems) {
 					String deptCodeIn = cadItemIn.getDeptCode();
 					// 非医辅科室过滤
 					if (!cadItemIn.isDeptTypeYF()) {
 						continue;
 					}
+
 					// 二级分摊
-					Float baseCount = getLevel2BaseCount(cadItem, cadItemIn);
-					Float level2 = baseCount * getFentanMulLev().get(deptCodeIn).getCountAll();
-
-					CostItem cif = costItemFentan.get(deptCode);
-					float levelPeople = baseCount * cif.getCostSharePeople();
-					float levelDeviceCommon = baseCount * cif.getCostShareOldHouseDeviceCommon();
-					float levelDeviceSpe = baseCount * cif.getCostShareOldDeviceSpecial();
-					float levelAssert = baseCount * cif.getCostShareassetAmortize();
-					float levelVc = baseCount * cif.getCostSharevcFunds();
-					float levelOther = baseCount * cif.getCostShareOther();
+					// 1、某临床科室中的门诊科室分摊的供应室成本 = 该门诊科室消毒工作量 /
+					// 全院消毒工作总量 *（供应室直接成本 + 供应室分摊的行政后勤科室成本）
+					// 2、某临床科室中的门诊科室分摊的挂号收费处成本 = 该门诊科室门诊执行收入 /
+					// 全院门诊总收入 *（挂号收费处直接成本 + 挂号收费处分摊的行政后勤科室成本）
+					// 3、某临床科室中的住院科室分摊的供应室成本 = 该住院科室消毒工作量 /
+					// 全院消毒工作总量 *（供应室直接成本 + 供应室分摊的行政后勤科室成本）
+					// 4、某临床科室中的住院科室分摊的住院收费处成本 = 该住院科室住院人数 /
+					// 全院住院总人数 *（住院收费处直接成本 + 住院收费处分摊的行政后勤科室成本）
+					// 5、某临床科室中的住院科室分摊的病案室成本 = 该住院科室住院人数 /
+					// 全院住院总人数 *（病案室直接成本 + 病案室分摊的行政后勤科室成本）
+					// 6、某医技科室分摊的供应室成本 = 该医技科室消毒工作量 /
+					// 全院消毒工作总量 *（供应室直接成本 + 供应室分摊的行政后勤科室成本）
+					// 7、某医技科室分摊的挂号收费处成本 = 该医技科室门诊执行收入 /
+					// 全院门诊总收入 *（挂号收费处直接成本 + 挂号收费处分摊的行政后勤科室成本）
 					
-					float levelPeopleZzys = baseCount * cif.getCostSharePeopleZzys();
-					float levelPeopleFzzys = baseCount * cif.getCostSharePeopleFzrys();
-					float levelPeopleZrys = baseCount * cif.getCostSharePeopleZrys();
-					float levelPeopleJs = baseCount * cif.getCostSharePeopleJs();
-					float levelPeopleHs = baseCount * cif.getCostSharePeopleHs();
-					float levelPeopleQt = baseCount * cif.getCostSharePeopleQt();
+					// 分摊对象
+					TCostaccountFentan ttf = getFentanMulLev().get(deptCode);
+					TCostaccountFentan fentan = getFentanMulLev().get(deptCodeIn);
 
-					CostItem costItem = new CostItem(level2, levelPeople, levelDeviceCommon, levelDeviceSpe,
-							levelAssert, levelVc, levelOther);
+					// 不同类型的不同算法
+					Double base = getLevel2BaseCount(cadItem, cadItemIn);
+					if (base == null)// 未知算法-忽略
+						continue;
 
-					getCostLevel2().put(deptCode + CODE_SEP + deptCodeIn, costItem);
+					ttf.setFxL2(safeDouble(ttf.getFxL2()) + base * (cadItemIn.getDirectCount() + fentan.getFxL1()));
 
-					// 重新计算分摊后成本
-					CostItem tempCostItem = costItemFentan.get(deptCode);
-					tempCostItem.setCostSharePeople(tempCostItem.getCostSharePeople() + costItem.getCostSharePeople());
-					tempCostItem.setCostShareOldHouseDeviceCommon(tempCostItem.getCostShareOldHouseDeviceCommon()
-							+ costItem.getCostShareOldHouseDeviceCommon());
-					tempCostItem.setCostShareOldDeviceSpecial(
-							tempCostItem.getCostShareOldDeviceSpecial() + costItem.getCostShareOldDeviceSpecial());
-					tempCostItem.setCostShareassetAmortize(
-							tempCostItem.getCostShareassetAmortize() + costItem.getCostShareassetAmortize());
-					tempCostItem
-							.setCostSharevcFunds(tempCostItem.getCostSharevcFunds() + costItem.getCostSharevcFunds());
-					tempCostItem.setCostShareOther(tempCostItem.getCostShareOther() + costItem.getCostShareOther());
+					ttf.setFxL2Asset(safeDouble(ttf.getFxL2Asset())
+							+ base * (cadItemIn.getCostAssetAmortize() + fentan.getFxL1Asset()));
+					ttf.setFxL2DeviceCommon(safeDouble(ttf.getFxL2DeviceCommon())
+							+ base * (cadItemIn.getCostOldHouseDeviceCommon() + fentan.getFxL1DeviceCommon()));
 
-					// 全成本计算以及其他
-					levelTemp += level2;
-					levelTempPeople += levelPeople;
-					levelTempDeviceCommon += levelDeviceCommon;
-					levelTempDeviceSpe += levelDeviceSpe;
-					levelTempAssert += levelAssert;
-					levelTempVc += levelVc;
-					levelTempOther += levelOther;
-					
-					levelTempPeopleZzys += levelPeopleZzys;
-					levelTempPeopleFzzys += levelPeopleFzzys;
-					levelTempPeopleZrys += levelPeopleZrys;
-					levelTempPeopleJs += levelPeopleJs;
-					levelTempPeopleHs += levelPeopleHs;
-					levelTempPeopleQt += levelPeopleQt;
+					ttf.setFxL2DeviceSpe(safeDouble(ttf.getFxL2DeviceSpe())
+							+ base * (cadItemIn.getCostOldDeviceSpecial() + fentan.getFxL1DeviceSpe()));
+					ttf.setFxL2Other(
+							safeDouble(ttf.getFxL3Other()) + base * (cadItemIn.getCostOther() + fentan.getFxL1Other()));
+					ttf.setFxL2Vc(
+							safeDouble(ttf.getFxL2Vc()) + base * (cadItemIn.getCostVcFunds() + fentan.getFxL1Vc()));
+					ttf.setFxL2Wscl(
+							safeDouble(ttf.getFxL2Wscl()) + base * (cadItemIn.getCostWscl() + fentan.getFxL1Wscl()));
+
+					ttf.setFxL2People(safeDouble(ttf.getFxL2People())
+							+ base * (cadItemIn.getCostPeople() + fentan.getFxL1People()));
+					ttf.setFxL2PeopleFzrys(safeDouble(ttf.getFxL2PeopleFzrys())
+							+ base * (cadItemIn.getCostPeopleFzzys() + fentan.getFxL1PeopleFzrys()));
+					ttf.setFxL2PeopleHs(safeDouble(ttf.getFxL2PeopleHs())
+							+ base * (cadItemIn.getCostPeopleHs() + fentan.getFxL1PeopleHs()));
+					ttf.setFxL2PeopleJs(safeDouble(ttf.getFxL2PeopleJs())
+							+ base * (cadItemIn.getCostPeopleJs() + fentan.getFxL1PeopleJs()));
+					ttf.setFxL2PeopleQt(safeDouble(ttf.getFxL2PeopleQt())
+							+ base * (cadItemIn.getCostPeopleQt() + fentan.getFxL1PeopleQt()));
+					ttf.setFxL2PeopleZrys(safeDouble(ttf.getFxL2PeopleZrys())
+							+ base * (cadItemIn.getCostPeopleZrys() + fentan.getFxL1PeopleZrys()));
+					ttf.setFxL2PeopleZzys(safeDouble(ttf.getFxL2PeopleZzys())
+							+ base * (cadItemIn.getCostPeopleZzys() + fentan.getFxL1PeopleZzys()));
+
 				}
-
-				TCostaccountFentan ttf = getFentanMulLev().get(deptCode);
-				// 全成本重新计算
-				ttf.setCountAll(ttf.getCountAll() + levelTemp);
-				// 分摊表-二级分摊赋值
-				ttf.setFxL2(levelTemp);
-				//分项成本赋值
-				ttf.setFxL2People(levelTempPeople);
-				ttf.setFxL2DeviceCommon(levelTempDeviceCommon);
-				ttf.setFxL2DeviceSpe(levelTempDeviceSpe);
-				ttf.setFxL2Asset(levelTempAssert);
-				ttf.setFxL2Vc(levelTempVc);
-				ttf.setFxL2Other(levelTempOther);
-				
-				ttf.setFxL2PeopleZzys(levelTempPeopleZzys);
-				ttf.setFxL2PeopleFzrys(levelTempPeopleFzzys);
-				ttf.setFxL2PeopleZrys(levelTempPeopleZrys);
-				ttf.setFxL2PeopleHs(levelTempPeopleHs);
-				ttf.setFxL2PeopleJs(levelTempPeopleJs);
-				ttf.setFxL2PeopleQt(levelTempPeopleQt);
 
 			}
 		}
@@ -391,21 +357,7 @@ public class CADItemHandler {
 			// 临床科室
 			if (cadItem.isDeptTypeLC()) {
 				String deptCode = cadItem.getDeptCode();
-				// 临时成本
-				float levelTemp = 0f;
-				float levelTempPeople = 0f;
-				float levelTempDeviceCommon = 0f;
-				float levelTempDeviceSpe = 0f;
-				float levelTempAssert = 0f;
-				float levelTempVc = 0f;
-				float levelTempOther = 0f;
-				
-				float levelTempPeopleZzys = 0f;
-				float levelTempPeopleFzzys = 0f;
-				float levelTempPeopleZrys = 0f;
-				float levelTempPeopleJs = 0f;
-				float levelTempPeopleHs = 0f;
-				float levelTempPeopleQt = 0f;
+
 				for (CADItem cadItemIn : cadItems) {
 					String deptCodeIn = cadItemIn.getDeptCode();
 					// 非医技科室过滤
@@ -413,92 +365,84 @@ public class CADItemHandler {
 						continue;
 					}
 					// 三级分摊
-					// 该临床科室开单工作量 / 该医技科室全年工作量 × 该医技科室全成本
-					Float baseCount = safeFloat(cadItem.getWorkCountKdgzl()) / safeFloat(cadItemIn.getWorkCount());
-					Float level3 = baseCount * getFentanMulLev().get(deptCodeIn).getCountAll();
+					// 某临床科室分摊的某医技科室成本 =
+					// 该临床科室对该医技科室的开单工作量 / 该医技科室全年工作量 *
+					// （该医技科室直接成本 + 该医技科室分摊的医辅科室成本 + 该医技科室分摊的行政后勤科室成本）
+					Double kdgzl = getKdgzl(cadItem.getDeptCode(), cadItemIn.getDeptCode());// 开单工作量
+					Double totalCount = cadItemIn.getWorkCountTotal();// 医技科室全年工作量
+					TCostaccountFentan fentan = getFentanMulLev().get(deptCodeIn);
+
+					Double base = kdgzl / totalCount;
 					
-					CostItem cif = costItemFentan.get(deptCode);
-					float levelPeople = baseCount * cif.getCostSharePeople();
-					float levelDeviceCommon = baseCount * cif.getCostShareOldHouseDeviceCommon();
-					float levelDeviceSpe = baseCount * cif.getCostShareOldDeviceSpecial();
-					float levelAssert = baseCount * cif.getCostShareassetAmortize();
-					float levelVc = baseCount * cif.getCostSharevcFunds();
-					float levelOther = baseCount * cif.getCostShareOther();
-					
-					float levelPeopleZzys = baseCount * cif.getCostSharePeopleZzys();
-					float levelPeopleFzzys = baseCount * cif.getCostSharePeopleFzrys();
-					float levelPeopleZrys = baseCount * cif.getCostSharePeopleZrys();
-					float levelPeopleJs = baseCount * cif.getCostSharePeopleJs();
-					float levelPeopleHs = baseCount * cif.getCostSharePeopleHs();
-					float levelPeopleQt = baseCount * cif.getCostSharePeopleQt();
+					// 分摊对象
+					TCostaccountFentan ttf = getFentanMulLev().get(deptCode);
 
+					ttf.setFxL3(safeDouble(ttf.getFxL3())
+							+ base * (cadItemIn.getDirectCount() + fentan.getFxL1() + fentan.getFxL2()));
 
-					CostItem costItem = new CostItem(level3, levelPeople, levelDeviceCommon, levelDeviceSpe,
-							levelAssert, levelVc, levelOther);
+					ttf.setFxL3Asset(safeDouble(ttf.getFxL3Asset()) + base
+							* (cadItemIn.getCostAssetAmortize() + fentan.getFxL1Asset() + fentan.getFxL2Asset()));
+					ttf.setFxL3DeviceCommon(
+							safeDouble(ttf.getFxL3DeviceCommon()) + base * (cadItemIn.getCostOldHouseDeviceCommon()
+									+ fentan.getFxL1DeviceCommon() + fentan.getFxL2DeviceCommon()));
+					ttf.setFxL3DeviceSpe(
+							safeDouble(ttf.getFxL3DeviceSpe()) + base * (cadItemIn.getCostOldDeviceSpecial()
+									+ fentan.getFxL1DeviceSpe() + fentan.getFxL2DeviceSpe()));
+					ttf.setFxL3Other(safeDouble(ttf.getFxL3Other())
+							+ base * (cadItemIn.getCostOther() + fentan.getFxL1Other() + fentan.getFxL2Other()));
+					ttf.setFxL3Vc(safeDouble(ttf.getFxL3Vc())
+							+ base * (cadItemIn.getCostVcFunds() + fentan.getFxL1Vc() + fentan.getFxL2Vc()));
+					ttf.setFxL3Wscl(safeDouble(ttf.getFxL3Wscl())
+							+ base * (cadItemIn.getCostWscl() + fentan.getFxL1Wscl() + fentan.getFxL2Wscl()));
 
-					getCostLevel3().put(deptCode + CODE_SEP + deptCodeIn, costItem);
+					ttf.setFxL3People(safeDouble(ttf.getFxL3People())
+							+ base * (cadItemIn.getCostPeople() + fentan.getFxL1People() + fentan.getFxL2People()));
+					ttf.setFxL3PeopleFzrys(safeDouble(ttf.getFxL3PeopleFzrys()) + base * (cadItemIn.getCostPeopleFzzys()
+							+ fentan.getFxL1PeopleFzrys() + fentan.getFxL2PeopleFzrys()));
+					ttf.setFxL3PeopleHs(safeDouble(ttf.getFxL3PeopleHs()) + base
+							* (cadItemIn.getCostPeopleHs() + fentan.getFxL1PeopleHs() + fentan.getFxL2PeopleHs()));
+					ttf.setFxL3PeopleJs(safeDouble(ttf.getFxL3PeopleJs()) + base
+							* (cadItemIn.getCostPeopleJs() + fentan.getFxL1PeopleJs() + fentan.getFxL2PeopleJs()));
+					ttf.setFxL3PeopleQt(safeDouble(ttf.getFxL3PeopleQt()) + base
+							* (cadItemIn.getCostPeopleQt() + fentan.getFxL1PeopleQt() + fentan.getFxL2PeopleQt()));
+					ttf.setFxL3PeopleZrys(safeDouble(ttf.getFxL3PeopleZrys()) + base * (cadItemIn.getCostPeopleZrys()
+							+ fentan.getFxL1PeopleZrys() + fentan.getFxL2PeopleZrys()));
+					ttf.setFxL3PeopleZzys(safeDouble(ttf.getFxL3PeopleZzys()) + base * (cadItemIn.getCostPeopleZzys()
+							+ fentan.getFxL1PeopleZzys() + fentan.getFxL2PeopleZzys()));
 
-					// 全成本计算以及其他
-					levelTemp += level3;
-					levelTempPeople += levelPeople;
-					levelTempDeviceCommon += levelDeviceCommon;
-					levelTempDeviceSpe += levelDeviceSpe;
-					levelTempAssert += levelAssert;
-					levelTempVc += levelVc;
-					levelTempOther += levelOther;
-
-					levelTempPeopleZzys += levelPeopleZzys;
-					levelTempPeopleFzzys += levelPeopleFzzys;
-					levelTempPeopleZrys += levelPeopleZrys;
-					levelTempPeopleJs += levelPeopleJs;
-					levelTempPeopleHs += levelPeopleHs;
-					levelTempPeopleQt += levelPeopleQt;
 				}
-
-				TCostaccountFentan ttf = getFentanMulLev().get(deptCode);
-				// 全成本重新计算
-				ttf.setCountAll(ttf.getCountAll() + levelTemp);
-				// 分摊表-三级分摊赋值
-				ttf.setFxL3(levelTemp);
-				//分项成本赋值
-				ttf.setFxL3People(levelTempPeople);
-				ttf.setFxL3DeviceCommon(levelTempDeviceCommon);
-				ttf.setFxL3DeviceSpe(levelTempDeviceSpe);
-				ttf.setFxL3Asset(levelTempAssert);
-				ttf.setFxL3Vc(levelTempVc);
-				ttf.setFxL3Other(levelTempOther);
-
-				ttf.setFxL3PeopleZzys(levelTempPeopleZzys);
-				ttf.setFxL3PeopleFzrys(levelTempPeopleFzzys);
-				ttf.setFxL3PeopleZrys(levelTempPeopleZrys);
-				ttf.setFxL3PeopleHs(levelTempPeopleHs);
-				ttf.setFxL3PeopleJs(levelTempPeopleJs);
-				ttf.setFxL3PeopleQt(levelTempPeopleQt);
 
 			}
 		}
 
 	}
 
+	// 二级分摊：该临床科室对该医技科室的开单工作量
+	private Double getKdgzl(String deptCodeLc, String deptCodeYj) {
+		// TODO 待实现
+		return 0d;
+	}
+
 	// 处理二级分摊
-	private Float getLevel2BaseCount(CADItem cadItem, CADItem cadItemIn) {
+	private Double getLevel2BaseCount(CADItem cadItem, CADItem cadItemIn) {
 		// 二级分摊
-		Float level2 = 0f;
-
-		// 1、针对所有“挂号、门诊收费处”分摊：分摊比例为（门诊执行收入/全院门诊总收入）
-		if (cadItemIn.isDeptSpecialRegister() || cadItemIn.isDeptSpecialOutpatientCashier()) {
-			level2 = cadItem.getWorkCountZxsr() / getTotalWorkOutpatient();
-			// 2、针对所有“供应室”全成本分摊 = 该医技科室消毒工作量 / 全院消毒工作总量 × 供应室全成本
-		} else if (cadItemIn.isDeptSpecialSupply()) {
-			level2 = cadItem.getWorkCountXdgzl() / getTotalWorkDisinfected();
-			// 针对所有病案室成本分摊 = 该住院科室住院人数 / 全院住院总人数 × 病案室全成本
-		} else if (cadItemIn.isDeptSpecialMedicalRecord()) {
-			level2 = cadItem.getWorkCountInhos() / getTotalInhos();
-		} else {// 默认
-			level2 = cadItem.getWorkCount() / getTotalWork();
+		Double ret = null;
+		if (cadItem.isDeptSpecialOutpatient() && cadItemIn.isDeptSpecialSupply()) {// 1
+			ret = baseInfo.getTotalCostXdgzl() == 0 ? 0 : cadItem.getWorkCountXdgzl() / baseInfo.getTotalCostXdgzl();
+		} else if (cadItem.isDeptSpecialOutpatient() && cadItemIn.isDeptSpecialRegister()) {// 2
+			ret = baseInfo.getTotalCostMzzxsr() == 0 ? 0 : cadItem.getWorkCountMzzxsr() / baseInfo.getTotalCostMzzxsr();
+		} else if (cadItem.isDeptSpecialInhos() && cadItemIn.isDeptSpecialSupply()) {// 3
+			ret = baseInfo.getTotalCostXdgzl() == 0 ? 0 : cadItem.getWorkCountXdgzl() / baseInfo.getTotalCostXdgzl();
+		} else if (cadItem.isDeptSpecialInhos() && cadItemIn.isDeptSpecialInhosCashier()) {// 4
+			ret = baseInfo.getTotalCostInhos() == 0 ? 0 : cadItem.getWorkCountInhos() / baseInfo.getTotalCostInhos();
+		} else if (cadItem.isDeptSpecialInhos() && cadItemIn.isDeptSpecialMedicalRecord()) {// 5
+			ret = baseInfo.getTotalCostInhos() == 0 ? 0 : cadItem.getWorkCountInhos() / baseInfo.getTotalCostInhos();
+		} else if (cadItem.isDeptTypeYJ() && cadItemIn.isDeptSpecialSupply()) {// 6
+			ret = baseInfo.getTotalCostXdgzl() == 0 ? 0 : cadItem.getWorkCountXdgzl() / baseInfo.getTotalCostXdgzl();
+		} else if (cadItem.isDeptTypeYJ() && cadItemIn.isDeptSpecialRegister()) {// 7
+			ret = baseInfo.getTotalCostMzzxsr() == 0 ? 0 : cadItem.getWorkCountMzzxsr() / baseInfo.getTotalCostMzzxsr();
 		}
-
-		return level2;
+		return ret;
 	}
 
 	/**
@@ -506,34 +450,6 @@ public class CADItemHandler {
 	 */
 	private Integer getAllPeopleCount() {
 		return this.getBaseInfo().getTotalPeople();
-	}
-
-	/**
-	 * 全院总工作量
-	 */
-	private Float getTotalWork() {
-		return this.getBaseInfo().getTotalCost();
-	}
-
-	/**
-	 * 全院消毒总工作量
-	 */
-	private Float getTotalWorkDisinfected() {
-		return this.getBaseInfo().getTotalCostXdgzl();
-	}
-
-	/**
-	 * 全院住院总人数
-	 */
-	private Float getTotalInhos() {
-		return this.getBaseInfo().getTotalCostZyrs();
-	}
-
-	/**
-	 * 全院门诊总收入=执行收入总和
-	 */
-	private Float getTotalWorkOutpatient() {
-		return this.getBaseInfo().getTotalCostZxsr();
 	}
 
 	public List<CADItem> getCadItems() {

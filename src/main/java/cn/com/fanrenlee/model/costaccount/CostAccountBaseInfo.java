@@ -11,84 +11,92 @@ public class CostAccountBaseInfo {
 	/**
 	 * 总工作量-开单收入
 	 */
-	private Float totalCostKdsr;
+	private Double totalCostKdsr;
 
 	/**
-	 * 总工作量-执行收入
+	 * 总工作量-门诊执行收入
 	 */
-	private Float totalCostZxsr;
+	private Double totalCostMzzxsr;
+
+	/**
+	 * 总工作量-住院执行收入
+	 */
+	private Double totalCostZyzxsr;
 
 	/**
 	 * 总工作量-消毒工作量
 	 */
-	private Float totalCostXdgzl;
-
-	/**
-	 * 总工作量-开单工作量
-	 */
-	private Float totalCostKdgzl;
+	private Double totalCostXdgzl;
 
 	/**
 	 * 总工作量-住院人数
 	 */
-	private Float totalCostZyrs;
+	private Double totalCostInhos;
 
 	/**
-	 * 总工作量-门诊量
+	 * 总工作量-门诊人次
 	 */
-	private Float totalCostMzl;
-
+	private Double totalCostMz;
+	
 	/**
 	 * 总人数
 	 */
 	private Integer totalPeople;
 
-	public Float getTotalCostKdsr() {
-		return totalCostKdsr;
+	public Double getTotalCostKdsr() {
+		return totalCostKdsr == null ? 0d : totalCostKdsr;
 	}
 
-	public void setTotalCostKdsr(Float totalCostKdsr) {
+	public void setTotalCostKdsr(Double totalCostKdsr) {
 		this.totalCostKdsr = totalCostKdsr;
 	}
 
-	public Float getTotalCostZxsr() {
-		return totalCostZxsr;
+	public Double getTotalCostMzzxsr() {
+		return totalCostMzzxsr == null ? 0d : totalCostMzzxsr;
 	}
 
-	public void setTotalCostZxsr(Float totalCostZxsr) {
-		this.totalCostZxsr = totalCostZxsr;
+	public void setTotalCostMzzxsr(Double totalCostMzzxsr) {
+		this.totalCostMzzxsr = totalCostMzzxsr;
 	}
 
-	public Float getTotalCostXdgzl() {
-		return totalCostXdgzl;
+	public Double getTotalCostZyzxsr() {
+		return totalCostZyzxsr == null ? 0d : totalCostZyzxsr;
 	}
 
-	public void setTotalCostXdgzl(Float totalCostXdgzl) {
+	public void setTotalCostZyzxsr(Double totalCostZyzxsr) {
+		this.totalCostZyzxsr = totalCostZyzxsr;
+	}
+
+	public Double getTotalCostXdgzl() {
+		return totalCostXdgzl == null ? 0d : totalCostXdgzl;
+	}
+
+	public void setTotalCostXdgzl(Double totalCostXdgzl) {
 		this.totalCostXdgzl = totalCostXdgzl;
 	}
 
-	public Float getTotalCostKdgzl() {
-		return totalCostKdgzl;
+	public Double getTotalCostInhos() {
+		return totalCostInhos == null ? 0d : totalCostInhos;
 	}
 
-	public void setTotalCostKdgzl(Float totalCostKdgzl) {
-		this.totalCostKdgzl = totalCostKdgzl;
+	public void setTotalCostInhos(Double totalCostInhos) {
+		this.totalCostInhos = totalCostInhos;
 	}
 
-	public Float getTotalCostZyrs() {
-		return totalCostZyrs;
+	public Double getTotalCostMz() {
+		return totalCostMz == null ? 0d : totalCostMz;
 	}
 
-	public void setTotalCostZyrs(Float totalCostZyrs) {
-		this.totalCostZyrs = totalCostZyrs;
+	public void setTotalCostMz(Double totalCostMz) {
+		this.totalCostMz = totalCostMz;
 	}
 
-	public Float getTotalCostMzl() {
-		return totalCostMzl;
-	}
-
-	public void setTotalCostMzl(Float totalCostMzl) {
-		this.totalCostMzl = totalCostMzl;
+	/*
+	 * 获取总工作量
+	 */
+	public Double getTotalCost() {
+		return getTotalCostInhos() + getTotalCostKdsr() + getTotalCostMz() + getTotalCostXdgzl() + getTotalCostMzzxsr()
+				+ getTotalCostZyzxsr();
 	}
 
 	public Integer getTotalPeople() {
@@ -97,14 +105,6 @@ public class CostAccountBaseInfo {
 
 	public void setTotalPeople(Integer totalPeople) {
 		this.totalPeople = totalPeople;
-	}
-
-	/*
-	 * 获取总工作量
-	 */
-	public Float getTotalCost() {
-		return this.totalCostKdgzl + this.totalCostKdsr + this.totalCostMzl + this.totalCostXdgzl + this.totalCostZxsr
-				+ this.totalCostZyrs + this.totalPeople;
 	}
 
 }

@@ -11,11 +11,11 @@ public class TProResult {
 
     private String deptName;
 
-    private Float costDirect;
+    private Double costDirect;
 
-    private Float costServe;
+    private Double costServe;
 
-    private Float costAll;
+    private Double costAll;
 
     private Integer tJobId;
 
@@ -59,27 +59,27 @@ public class TProResult {
         this.deptName = deptName == null ? null : deptName.trim();
     }
 
-    public Float getCostDirect() {
+    public Double getCostDirect() {
         return costDirect;
     }
 
-    public void setCostDirect(Float costDirect) {
+    public void setCostDirect(Double costDirect) {
         this.costDirect = costDirect;
     }
 
-    public Float getCostServe() {
+    public Double getCostServe() {
         return costServe;
     }
 
-    public void setCostServe(Float costServe) {
+    public void setCostServe(Double costServe) {
         this.costServe = costServe;
     }
 
-    public Float getCostAll() {
+    public Double getCostAll() {
         return costAll;
     }
 
-    public void setCostAll(Float costAll) {
+    public void setCostAll(Double costAll) {
         this.costAll = costAll;
     }
 

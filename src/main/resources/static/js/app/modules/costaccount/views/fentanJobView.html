@@ -107,24 +107,21 @@
 	<!-- 原始数据 -->
 	<div class="mytable" ng-show="show=='srcData'" style="overflow-x: scroll;">
 		<table class="my-table table-width" ng-table="tableParamsSrc"
-			style="width: 1500px;">
+			style="width: 2000px;">
 			<thead>
 				<tr>
 					<th rowspan="2">序号</th>
 					<th rowspan="2">科室</th>
 					<th colspan="6">人员经费</th>
+					<th rowspan="2">卫生<br/>材料费</th>
 					<th rowspan="2">房屋、通用设备<br/>折旧费</th>
 					<th rowspan="2">专用设备<br/>折旧费</th>
 					<th rowspan="2">无形资产<br/>摊销费</th>
 					<th rowspan="2">医疗风险<br/>基金</th>
 					<th rowspan="2">其他<br/>费用</th>
 					<th colspan="6">人员数</th>
-					<th rowspan="2">开单<br/>收入</th>
-					<th rowspan="2">执行<br/>收入</th>
-					<th rowspan="2">消毒<br/>工作量</th>
-					<th rowspan="2">开单<br/>工作量</th>
-					<th rowspan="2">住院<br/>人数</th>
-					<th rowspan="2">门诊量</th>
+					<th colspan="6">各类工作量</th>
+					
 				</tr>
 				<tr>
 					<th>主治<br/>医师</th>
@@ -140,6 +137,13 @@
 					<th>技师</th>
 					<th>护士</th>
 					<th>其他</th>
+					
+					<th>开单<br/>收入</th>
+					<th>门诊<br/>执行收入</th>
+					<th>住院<br/>执行收入</th>
+					<th>消毒<br/>工作量</th>
+					<th>门诊<br/>人次</th>
+					<th>住院人数</th>
 					
 				</tr>
 			</thead>
@@ -156,6 +160,7 @@
 				<td>{{ item.cost_people_hs | tableShowNull}}</td>
 				<td>{{ item.cost_people_qt | tableShowNull}}</td>
 				
+				<td>{{ item.cost_wscl | tableShowNull}}</td>
 				<td>{{ item.cost_old_house_device_common | tableShowNull}}</td>
 				<td>{{ item.cost_old_device_special | tableShowNull}}</td>
 				<td>{{ item.cost_asset_amortize | tableShowNull}}</td>
@@ -170,11 +175,11 @@
 				<td>{{ item.people_count_qt | tableShowNull}}</td>
 				
 				<td>{{ item.work_count_kdsr | tableShowNull}}</td>
-				<td>{{ item.work_count_zxsr | tableShowNull}}</td>
+				<td>{{ item.work_count_mzzxsr | tableShowNull}}</td>
+				<td>{{ item.work_count_zyzxsr | tableShowNull}}</td>
 				<td>{{ item.work_count_xdgzl | tableShowNull}}</td>
-				<td>{{ item.work_count_kdgzl | tableShowNull}}</td>
-				<td>{{ item.work_count_inhos | tableShowNull}}</td>
 				<td>{{ item.work_count_mz | tableShowNull}}</td>
+				<td>{{ item.work_count_zy | tableShowNull}}</td>
 				
 			</tr>
 		</table>
@@ -191,27 +196,28 @@
 					<th rowspan="3">直接<br/>成本</th>
 					<th rowspan="3">全成本</th>
 					
-					<th colspan="8">一级分摊</th>
-					<th colspan="8">二级分摊</th>
-					<th colspan="8">三级分摊</th>
+					<th colspan="9">一级分摊</th>
+					<th colspan="9">二级分摊</th>
+					<th colspan="9">三级分摊</th>
 					
 				</tr>
 				<tr>
 					<th rowspan="2">分摊后<br/>成本</th>
 					<th rowspan="2">间接<br/>成本</th>
-					<th colspan="6">分项成本</th>
+					<th colspan="7">分项成本</th>
 					
 					<th rowspan="2">分摊后<br/>成本</th>
 					<th rowspan="2">间接<br/>成本</th>
-					<th colspan="6">分项成本</th>
+					<th colspan="7">分项成本</th>
 					
 					<th rowspan="2">分摊后<br/>成本</th>
 					<th rowspan="2">间接<br/>成本</th>
-					<th colspan="6">分项成本</th>
+					<th colspan="7">分项成本</th>
 					
 				</tr>
 				<tr>
 					<th>人员<br/>经费</th>
+					<th>卫生<br/>材料费</th>
 					<th>房屋、通用<br/>设备折旧费</th>
 					<th>专用设备<br/>折旧费</th>
 					<th>无形资产<br/>摊销费</th>
@@ -219,6 +225,7 @@
 					<th>其他费用</th>
 					
 					<th>人员经费</th>
+					<th>卫生<br/>材料费</th>
 					<th>房屋、通用<br/>设备折旧费</th>
 					<th>专用设备<br/>折旧费</th>
 					<th>无形资产<br/>摊销费</th>
@@ -226,6 +233,7 @@
 					<th>其他费用</th>
 					
 					<th>人员经费</th>
+					<th>卫生<br/>材料费</th>
 					<th>房屋、通用<br/>设备折旧费</th>
 					<th>专用设备<br/>折旧费</th>
 					<th>无形资产<br/>摊销费</th>
@@ -241,11 +249,12 @@
 				<td>{{ item.dept_name }}[{{ item.dept_code }}]</td>
 				
 				<td>{{ item.count_direct | number:2| tableShowNull}}</td>
-				<td>{{ item.count_all | number:2| tableShowNull}}</td>
+				<td>{{ item.count_direct + item.fx_l1 + item.fx_l2 + item.fx_l3 | number:2| tableShowNull}}</td>
 				
 				<td>{{ item.count_direct + item.fx_l1 | number:2 | tableShowNull}}</td>
 				<td>{{ item.fx_l1 | number:2 | tableShowNull}}</td>
 				<td>{{ item.fx_l1_people | number:2 | tableShowNull}}</td>
+				<td>{{ item.fx_l1_wscl | number:2 | tableShowNull}}</td>
 				<td>{{ item.fx_l1_device_common | number:2 | tableShowNull}}</td>
 				<td>{{ item.fx_l1_device_spe | number:2 | tableShowNull}}</td>
 				<td>{{ item.fx_l1_asset | number:2 | tableShowNull}}</td>
@@ -255,6 +264,7 @@
 				<td>{{ item.count_direct + item.fx_l1 + item.fx_l2 | number:2 | tableShowNull}}</td>
 				<td>{{ item.fx_l2 | number:2 | tableShowNull}}</td>
 				<td>{{ item.fx_l2_people | number:2 | tableShowNull}}</td>
+				<td>{{ item.fx_l2_wscl | number:2 | tableShowNull}}</td>
 				<td>{{ item.fx_l2_device_common | number:2 | tableShowNull}}</td>
 				<td>{{ item.fx_l2_device_spe | number:2 | tableShowNull}}</td>
 				<td>{{ item.fx_l2_asset | number:2 | tableShowNull}}</td>
@@ -264,6 +274,7 @@
 				<td>{{ item.count_direct + item.fx_l1 + item.fx_l2 + item.fx_l3 | number:2 | tableShowNull}}</td>
 				<td>{{ item.fx_l3 | number:2 | tableShowNull}}</td>
 				<td>{{ item.fx_l3_people | number:2 | tableShowNull}}</td>
+				<td>{{ item.fx_l3_wscl | number:2 | tableShowNull}}</td>
 				<td>{{ item.fx_l3_device_common | number:2 | tableShowNull}}</td>
 				<td>{{ item.fx_l3_device_spe | number:2 | tableShowNull}}</td>
 				<td>{{ item.fx_l3_asset | number:2 | tableShowNull}}</td>
@@ -283,10 +294,11 @@
 					<th rowspan="2">科室</th>
 					<th rowspan="2">分摊费用</th>
 					<th rowspan="2">被分摊科室</th>
-					<th colspan="7">分项成本</th>
+					<th colspan="8">分项成本</th>
 				</tr>
 				<tr>
 					<th>人员<br/>经费</th>
+					<th>卫生<br/>材料费</th>
 					<th>房屋、通用设备<br/>折旧费</th>
 					<th>专用设备<br/>折旧费</th>
 					<th>无形资产<br/>摊销费</th>
@@ -303,6 +315,7 @@
 				<td>{{ item.dept_name_share }}[{{ item.dept_code_share }}]</td>
 				
 				<td>{{ item.share_item_people | number:2}}</td>
+				<td>{{ item.share_item_wscl | number:2 | tableShowNull}}</td>
 				<td>{{ item.share_item_old_house_device_common | number:2 }}</td>
 				<td>{{ item.share_item_old_device_special | number:2 }}</td>
 				<td>{{ item.share_item_asset_amortize | number:2 }}</td>
@@ -321,10 +334,11 @@
 					<th rowspan="2">科室</th>
 					<th rowspan="2">分摊费用</th>
 					<th rowspan="2">被分摊科室</th>
-					<th colspan="7">分项成本</th>
+					<th colspan="8">分项成本</th>
 				</tr>
 				<tr>
 					<th>人员<br/>经费</th>
+					<th>卫生<br/>材料费</th>
 					<th>房屋、通用设备<br/>折旧费</th>
 					<th>专用设备<br/>折旧费</th>
 					<th>无形资产<br/>摊销费</th>
@@ -341,6 +355,7 @@
 				<td>{{ item.dept_name_share }}[{{ item.dept_code_share }}]</td>
 				
 				<td>{{ item.share_item_people | number:2 }}</td>
+				<td>{{ item.share_item_wscl | number:2 | tableShowNull}}</td>
 				<td>{{ item.share_item_old_house_device_common | number:2 }}</td>
 				<td>{{ item.share_item_old_device_special | number:2 }}</td>
 				<td>{{ item.share_item_asset_amortize | number:2 }}</td>
@@ -359,10 +374,11 @@
 					<th rowspan="2">科室</th>
 					<th rowspan="2">分摊费用</th>
 					<th rowspan="2">被分摊科室</th>
-					<th colspan="7">分项成本</th>
+					<th colspan="8">分项成本</th>
 				</tr>
 				<tr>
 					<th>人员<br/>经费</th>
+					<th>卫生<br/>材料费</th>
 					<th>房屋通用设备<br/>折旧费</th>
 					<th>专用设备<br/>折旧费</th>
 					<th>无形资产<br/>摊销费</th>
@@ -379,6 +395,7 @@
 				<td>{{ item.dept_name_share }}[{{ item.dept_code_share }}]</td>
 				
 				<td>{{ item.share_item_people | number:2 }}</td>
+				<td>{{ item.share_item_wscl | number:2 | tableShowNull}}</td>
 				<td>{{ item.share_item_old_house_device_common | number:2 }}</td>
 				<td>{{ item.share_item_old_device_special | number:2 }}</td>
 				<td>{{ item.share_item_asset_amortize | number:2 }}</td>

@@ -9,9 +9,9 @@ public class TProDic {
 
     private String unit;
 
-    private Float priceCurrent;
+    private Double priceCurrent;
 
-    private Float costTime;
+    private Double costTime;
 
     private Integer peopleCountDoctor;
 
@@ -19,9 +19,9 @@ public class TProDic {
 
     private Integer peopleCountTech;
 
-    private Float costLowLevel;
+    private Double costLowLevel;
 
-    private Float costOnce;
+    private Double costOnce;
 
     private Integer tHospitalId;
 
@@ -57,19 +57,19 @@ public class TProDic {
         this.unit = unit == null ? null : unit.trim();
     }
 
-    public Float getPriceCurrent() {
+    public Double getPriceCurrent() {
         return priceCurrent;
     }
 
-    public void setPriceCurrent(Float priceCurrent) {
+    public void setPriceCurrent(Double priceCurrent) {
         this.priceCurrent = priceCurrent;
     }
 
-    public Float getCostTime() {
+    public Double getCostTime() {
         return costTime;
     }
 
-    public void setCostTime(Float costTime) {
+    public void setCostTime(Double costTime) {
         this.costTime = costTime;
     }
 
@@ -97,19 +97,19 @@ public class TProDic {
         this.peopleCountTech = peopleCountTech;
     }
 
-    public Float getCostLowLevel() {
+    public Double getCostLowLevel() {
         return costLowLevel;
     }
 
-    public void setCostLowLevel(Float costLowLevel) {
+    public void setCostLowLevel(Double costLowLevel) {
         this.costLowLevel = costLowLevel;
     }
 
-    public Float getCostOnce() {
+    public Double getCostOnce() {
         return costOnce;
     }
 
-    public void setCostOnce(Float costOnce) {
+    public void setCostOnce(Double costOnce) {
         this.costOnce = costOnce;
     }
 

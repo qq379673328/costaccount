@@ -16,137 +16,139 @@ public class CADItem {
 	/**
 	 * 费用-人员经费
 	 */
-	private Float costPeople;
-	
+	private Double costPeople;
+
 	/**
 	 * 费用-人员经费-主治医师
 	 */
-	private Float costPeopleZzys;
-	
+	private Double costPeopleZzys;
+
 	/**
 	 * 费用-人员经费-副主任医师
 	 */
-	private Float costPeopleFzzys;
-	
+	private Double costPeopleFzzys;
+
 	/**
 	 * 费用-人员经费-主任医师
 	 */
-	private Float costPeopleZrys;
+	private Double costPeopleZrys;
 
-	
 	/**
 	 * 费用-人员经费-技师
 	 */
-	private Float costPeopleJs;
+	private Double costPeopleJs;
 
-	
 	/**
 	 * 费用-人员经费-护士
 	 */
-	private Float costPeopleHs;
+	private Double costPeopleHs;
 
-	
 	/**
 	 * 费用-人员经费-其它
 	 */
-	private Float costPeopleQt;
+	private Double costPeopleQt;
 
-	public Float getCostPeopleZzys() {
-		return costPeopleZzys;
+	public Double getCostPeopleZzys() {
+		return costPeopleZzys == null ? 0f : costPeopleZzys;
 	}
 
-	public void setCostPeopleZzys(Float costPeopleZzys) {
+	public void setCostPeopleZzys(Double costPeopleZzys) {
 		this.costPeopleZzys = costPeopleZzys;
 	}
 
-	public Float getCostPeopleFzzys() {
-		return costPeopleFzzys;
+	public Double getCostPeopleFzzys() {
+		return costPeopleFzzys == null ? 0f : costPeopleFzzys;
 	}
 
-	public void setCostPeopleFzzys(Float costPeopleFzzys) {
+	public void setCostPeopleFzzys(Double costPeopleFzzys) {
 		this.costPeopleFzzys = costPeopleFzzys;
 	}
 
-	public Float getCostPeopleZrys() {
-		return costPeopleZrys;
+	public Double getCostPeopleZrys() {
+		return costPeopleZrys == null ? 0f : costPeopleZrys;
 	}
 
-	public void setCostPeopleZrys(Float costPeopleZrys) {
+	public void setCostPeopleZrys(Double costPeopleZrys) {
 		this.costPeopleZrys = costPeopleZrys;
 	}
 
-	public Float getCostPeopleJs() {
-		return costPeopleJs;
+	public Double getCostPeopleJs() {
+		return costPeopleJs == null ? 0f : costPeopleJs;
 	}
 
-	public void setCostPeopleJs(Float costPeopleJs) {
+	public void setCostPeopleJs(Double costPeopleJs) {
 		this.costPeopleJs = costPeopleJs;
 	}
 
-	public Float getCostPeopleHs() {
-		return costPeopleHs;
+	public Double getCostPeopleHs() {
+		return costPeopleHs == null ? 0f : costPeopleHs;
 	}
 
-	public void setCostPeopleHs(Float costPeopleHs) {
+	public void setCostPeopleHs(Double costPeopleHs) {
 		this.costPeopleHs = costPeopleHs;
 	}
 
-	public Float getCostPeopleQt() {
-		return costPeopleQt;
+	public Double getCostPeopleQt() {
+		return costPeopleQt == null ? 0f : costPeopleQt;
 	}
 
-	public void setCostPeopleQt(Float costPeopleQt) {
+	public void setCostPeopleQt(Double costPeopleQt) {
 		this.costPeopleQt = costPeopleQt;
 	}
 
-	public void setCostPeople(Float costPeople) {
+	public void setCostPeople(Double costPeople) {
 		this.costPeople = costPeople;
 	}
 
-	public void setCostOldHouseDeviceCommon(Float costOldHouseDeviceCommon) {
+	public void setCostOldHouseDeviceCommon(Double costOldHouseDeviceCommon) {
 		this.costOldHouseDeviceCommon = costOldHouseDeviceCommon;
 	}
 
-	public void setCostOldDeviceSpecial(Float costOldDeviceSpecial) {
+	public void setCostOldDeviceSpecial(Double costOldDeviceSpecial) {
 		this.costOldDeviceSpecial = costOldDeviceSpecial;
 	}
 
-	public void setCostAssetAmortize(Float costAssetAmortize) {
+	public void setCostAssetAmortize(Double costAssetAmortize) {
 		this.costAssetAmortize = costAssetAmortize;
 	}
 
-	public void setCostVcFunds(Float costVcFunds) {
+	public void setCostVcFunds(Double costVcFunds) {
 		this.costVcFunds = costVcFunds;
 	}
 
-	public void setCostOther(Float costOther) {
+	public void setCostOther(Double costOther) {
 		this.costOther = costOther;
 	}
 
 	/**
 	 * 费用-房屋、通用设备折旧费
 	 */
-	private Float costOldHouseDeviceCommon;
+	private Double costOldHouseDeviceCommon;
+
+	/**
+	 * 卫生材料
+	 */
+	private Double costWscl;
 
 	/**
 	 * 费用-专用设备折旧费
 	 */
-	private Float costOldDeviceSpecial;
+	private Double costOldDeviceSpecial;
 
 	/**
 	 * 费用-无形资产摊销费
 	 */
-	private Float costAssetAmortize;
+	private Double costAssetAmortize;
 
 	/**
 	 * 费用-计提医疗风险基金
 	 */
-	private Float costVcFunds;
+	private Double costVcFunds;
 
 	/**
 	 * 费用-其它
 	 */
-	private Float costOther;
+	private Double costOther;
 
 	/**
 	 * 科室id
@@ -209,7 +211,7 @@ public class CADItem {
 	private boolean isDeptSpecialOutpatientCashier;
 
 	/**
-	 * 是否挂号处科室
+	 * 是否挂号处收费处科室
 	 */
 	private boolean isDeptSpecialRegister;
 
@@ -259,13 +261,13 @@ public class CADItem {
 	}
 
 	public void setDeptTypeCode(String deptTypeCode) {
-		if(DeptTypeInfos.TYPECODE_LC.equals(deptTypeCode)){
+		if (DeptTypeInfos.TYPECODE_LC.equals(deptTypeCode)) {
 			this.isDeptTypeLC = true;
-		}else if(DeptTypeInfos.TYPECODE_XZHQ.equals(deptTypeCode)){
+		} else if (DeptTypeInfos.TYPECODE_XZHQ.equals(deptTypeCode)) {
 			this.isDeptTypeXZHQ = true;
-		}else if(DeptTypeInfos.TYPECODE_YF.equals(deptTypeCode)){
+		} else if (DeptTypeInfos.TYPECODE_YF.equals(deptTypeCode)) {
 			this.isDeptTypeYF = true;
-		}else if(DeptTypeInfos.TYPECODE_YJ.equals(deptTypeCode)){
+		} else if (DeptTypeInfos.TYPECODE_YJ.equals(deptTypeCode)) {
 			this.isDeptTypeYJ = true;
 		}
 		this.deptTypeCode = deptTypeCode;
@@ -284,23 +286,23 @@ public class CADItem {
 	}
 
 	public void setDeptSpecialCode(String deptSpecialCode) {
-		
-		if(DeptTypeInfos.TYPESPE_CASHIER.equals(deptTypeCode)){
+
+		if (DeptTypeInfos.TYPESPE_CASHIER.equals(deptSpecialCode)) {
 			this.isDeptSpecialInhosCashier = true;
-		}else if(DeptTypeInfos.TYPESPE_INHOS.equals(deptTypeCode)){
+		} else if (DeptTypeInfos.TYPESPE_INHOS.equals(deptSpecialCode)) {
 			this.isDeptSpecialInhos = true;
-		}else if(DeptTypeInfos.TYPESPE_MEDICALRECORD.equals(deptTypeCode)){
+		} else if (DeptTypeInfos.TYPESPE_MEDICALRECORD.equals(deptSpecialCode)) {
 			this.isDeptSpecialMedicalRecord = true;
-		}else if(DeptTypeInfos.TYPESPE_OUTPATIENT.equals(deptTypeCode)){
+		} else if (DeptTypeInfos.TYPESPE_OUTPATIENT.equals(deptSpecialCode)) {
 			this.isDeptSpecialOutpatient = true;
-		}else if(DeptTypeInfos.TYPESPE_OUTPATIENTCASHIER.equals(deptTypeCode)){
+		} else if (DeptTypeInfos.TYPESPE_OUTPATIENTCASHIER.equals(deptSpecialCode)) {
 			this.isDeptSpecialOutpatientCashier = true;
-		}else if(DeptTypeInfos.TYPESPE_REGISTER.equals(deptTypeCode)){
+		} else if (DeptTypeInfos.TYPESPE_REGISTER.equals(deptSpecialCode)) {
 			this.isDeptSpecialRegister = true;
-		}else if(DeptTypeInfos.TYPESPE_SUPPLY.equals(deptTypeCode)){
+		} else if (DeptTypeInfos.TYPESPE_SUPPLY.equals(deptSpecialCode)) {
 			this.isDeptSpecialSupply = true;
 		}
-		
+
 		this.deptSpecialCode = deptSpecialCode;
 	}
 
@@ -348,8 +350,7 @@ public class CADItem {
 		return isDeptSpecialOutpatientCashier;
 	}
 
-	public void setDeptSpecialOutpatientCashier(
-			boolean isDeptSpecialOutpatientCashier) {
+	public void setDeptSpecialOutpatientCashier(boolean isDeptSpecialOutpatientCashier) {
 		this.isDeptSpecialOutpatientCashier = isDeptSpecialOutpatientCashier;
 	}
 
@@ -397,8 +398,7 @@ public class CADItem {
 		return isDeptSpecialMedicalRecord;
 	}
 
-	public void setDeptSpecialMedicalRecord(
-			boolean isDeptSpecialMedicalRecord) {
+	public void setDeptSpecialMedicalRecord(boolean isDeptSpecialMedicalRecord) {
 		this.isDeptSpecialMedicalRecord = isDeptSpecialMedicalRecord;
 	}
 
@@ -410,162 +410,147 @@ public class CADItem {
 		this.deptId = deptId;
 	}
 
-	public float getCostPeople() {
-		return costPeople;
+	public Double getCostPeople() {
+		return costPeople == null ? 0f : costPeople;
 	}
 
-	public void setCostPeople(float costPeople) {
-		this.costPeople = costPeople;
+	public Double getCostOldDeviceSpecial() {
+		return costOldDeviceSpecial == null ? 0f : costOldDeviceSpecial;
 	}
 
-	public float getCostOldDeviceSpecial() {
-		return costOldDeviceSpecial;
+	public Double getCostAssetAmortize() {
+		return costAssetAmortize == null ? 0f : costAssetAmortize;
 	}
 
-	public void setCostOldDeviceSpecial(float costOldDeviceSpecial) {
-		this.costOldDeviceSpecial = costOldDeviceSpecial;
+	public Double getCostVcFunds() {
+		return costVcFunds == null ? 0f : costVcFunds;
 	}
 
-	public float getCostAssetAmortize() {
-		return costAssetAmortize;
+	public Double getCostOther() {
+		return costOther == null ? 0f : costOther;
 	}
 
-	public void setCostAssetAmortize(float costAssetAmortize) {
-		this.costAssetAmortize = costAssetAmortize;
-	}
-
-	public float getCostVcFunds() {
-		return costVcFunds;
-	}
-
-	public void setCostVcFunds(float costVcFunds) {
-		this.costVcFunds = costVcFunds;
-	}
-
-	public float getCostOther() {
-		return costOther;
-	}
-
-	public void setCostOther(float costOther) {
-		this.costOther = costOther;
-	}
-	
 	public Integer getPeopleCount() {
-		return peopleCount;
+		return peopleCount == null ? 0 : peopleCount;
 	}
 
 	public void setPeopleCount(Integer peopleCount) {
 		this.peopleCount = peopleCount;
 	}
 
-	public Float getWorkCountInhos() {
-		return workCountInhos;
+	public Double getWorkCountInhos() {
+		return workCountInhos == null ? 0f : workCountInhos;
 	}
 
-	public void setWorkCountInhos(Float workCountInhos) {
+	public void setWorkCountInhos(Double workCountInhos) {
 		this.workCountInhos = workCountInhos;
 	}
 
-	public Float getWorkCountMz() {
-		return workCountMz;
+	public Double getWorkCountMz() {
+		return workCountMz == null ? 0f : workCountMz;
 	}
 
-	public void setWorkCountMz(Float workCountMz) {
+	public void setWorkCountMz(Double workCountMz) {
 		this.workCountMz = workCountMz;
 	}
 
-	public float getCostOldHouseDeviceCommon() {
-		return costOldHouseDeviceCommon;
+	public Double getCostOldHouseDeviceCommon() {
+		return costOldHouseDeviceCommon == null ? 0f : costOldHouseDeviceCommon;
 	}
 
-	public void setCostOldHouseDeviceCommon(float costOldHouseDeviceCommon) {
-		this.costOldHouseDeviceCommon = costOldHouseDeviceCommon;
+	public Double getWorkCountKdsr() {
+		return workCountKdsr == null ? 0f : workCountKdsr;
 	}
 
-	public Float getWorkCountKdgzl() {
-		return workCountKdgzl;
-	}
-
-	public void setWorkCountKdgzl(Float workCountKdgzl) {
-		this.workCountKdgzl = workCountKdgzl;
-	}
-
-	public Float getWorkCountXdgzl() {
-		return workCountXdgzl;
-	}
-
-	public void setWorkCountXdgzl(Float workCountXdgzl) {
-		this.workCountXdgzl = workCountXdgzl;
-	}
-
-	public Float getWorkCountKdsr() {
-		return workCountKdsr;
-	}
-
-	public void setWorkCountKdsr(Float workCountKdsr) {
+	public void setWorkCountKdsr(Double workCountKdsr) {
 		this.workCountKdsr = workCountKdsr;
-	}
-
-	public Float getWorkCountZxsr() {
-		return workCountZxsr;
-	}
-
-	public void setWorkCountZxsr(Float workCountZxsr) {
-		this.workCountZxsr = workCountZxsr;
 	}
 
 	/**
 	 * 科室人员数
 	 */
 	private Integer peopleCount;
-	
+
 	/**
-	 * 科室开单工作量
+	 * 工作量-住院执行收入
 	 */
-	private Float workCountKdgzl;
-	
+	private Double workCountZyzxsr;
+
 	/**
-	 * 科室消毒工作量
+	 * 工作量-门诊执行收入
 	 */
-	private Float workCountXdgzl;
-	
+	private Double workCountMzzxsr;
+
 	/**
-	 * 科室住院人数
+	 * 工作量-住院人数
 	 */
-	private Float workCountInhos;
-	
+	private Double workCountInhos;
+
 	/**
-	 * 科室门诊量
+	 * 工作量-门诊人次
 	 */
-	private Float workCountMz;
-	
+	private Double workCountMz;
+
 	/**
 	 * 工作量-开单收入
 	 */
-	private Float workCountKdsr;
-	
+	private Double workCountKdsr;
+
 	/**
-	 * 工作量-执行收入
+	 * 工作量-消毒工作量
 	 */
-	private Float workCountZxsr;
-	
+	private Double workCountXdgzl;
+
 	/**
-	 * 获取工作量
+	 * 获取总工作量
+	 * 
 	 * @return
 	 */
-	public Float getWorkCount(){
-		//挂号处、门诊收费处
-		if(isDeptSpecialOutpatientCashier() || isDeptSpecialRegister()){
-			return this.workCountZxsr;
-		//住院科室
-		}else if(isDeptSpecialInhos()){
-			return this.workCountInhos;
-		//医技科室
-		}else if(isDeptTypeYJ()){
-			return this.workCountXdgzl;
-		}else{
-			return this.workCountZxsr;
-		}
+	public Double getWorkCountTotal() {
+		return getWorkCountInhos() + getWorkCountKdsr() + getWorkCountMz() + getWorkCountXdgzl() + getWorkCountMzzxsr()
+				+ getWorkCountZyzxsr();
 	}
-	
+
+	/**
+	 * 获取直接成本
+	 * 
+	 * @return
+	 */
+	public Double getDirectCount() {
+		return getCostAssetAmortize() + getCostOldDeviceSpecial() + getCostOldHouseDeviceCommon() + getCostOther()
+				+ getCostVcFunds() + getCostWscl() + getCostPeople();
+	}
+
+	public Double getCostWscl() {
+		return costWscl == null ? 0f : costWscl;
+	}
+
+	public void setCostWscl(Double costWscl) {
+		this.costWscl = costWscl;
+	}
+
+	public Double getWorkCountZyzxsr() {
+		return workCountZyzxsr == null ? 0f : workCountZyzxsr;
+	}
+
+	public void setWorkCountZyzxsr(Double workCountZyzxsr) {
+		this.workCountZyzxsr = workCountZyzxsr;
+	}
+
+	public Double getWorkCountMzzxsr() {
+		return workCountMzzxsr == null ? 0f : workCountMzzxsr;
+	}
+
+	public void setWorkCountMzzxsr(Double workCountMzzxsr) {
+		this.workCountMzzxsr = workCountMzzxsr;
+	}
+
+	public Double getWorkCountXdgzl() {
+		return workCountXdgzl == null ? 0f : workCountXdgzl;
+	}
+
+	public void setWorkCountXdgzl(Double workCountXdgzl) {
+		this.workCountXdgzl = workCountXdgzl;
+	}
+
 }

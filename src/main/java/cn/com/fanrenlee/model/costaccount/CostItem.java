@@ -14,123 +14,130 @@ public class CostItem {
 	/**
 	 * 直接成本
 	 */
-	private Float costShare;
+	private Double costShare;
 	/**
 	 * 分项-人员经费
 	 */
-	private Float costSharePeople;
+	private Double costSharePeople;
 	
 	/**
 	 * 分项-人员经费-主治医师
 	 */
-	private Float costSharePeopleZzys;
+	private Double costSharePeopleZzys;
 	
 	/**
 	 * 分项-人员经费-副主任医师
 	 */
-	private Float costSharePeopleFzrys;
+	private Double costSharePeopleFzrys;
 	
 	/**
 	 * 分项-人员经费-主任医师
 	 */
-	private Float costSharePeopleZrys;
+	private Double costSharePeopleZrys;
 	
 	/**
 	 * 分项-人员经费-主任技师
 	 */
-	private Float costSharePeopleJs;
+	private Double costSharePeopleJs;
 	
 	/**
 	 * 分项-人员经费-护士
 	 */
-	private Float costSharePeopleHs;
+	private Double costSharePeopleHs;
 	
 	/**
 	 * 分项-人员经费-其他
 	 */
-	private Float costSharePeopleQt;
+	private Double costSharePeopleQt;
 	
 	
-	public Float getCostSharePeopleZzys() {
+	public Double getCostSharePeopleZzys() {
 		return costSharePeopleZzys;
 	}
 
-	public void setCostSharePeopleZzys(Float costSharePeopleZzys) {
+	public void setCostSharePeopleZzys(Double costSharePeopleZzys) {
 		this.costSharePeopleZzys = costSharePeopleZzys;
 	}
 
-	public Float getCostSharePeopleFzrys() {
+	public Double getCostSharePeopleFzrys() {
 		return costSharePeopleFzrys;
 	}
 
-	public void setCostSharePeopleFzrys(Float costSharePeopleFzrys) {
+	public void setCostSharePeopleFzrys(Double costSharePeopleFzrys) {
 		this.costSharePeopleFzrys = costSharePeopleFzrys;
 	}
 
-	public Float getCostSharePeopleZrys() {
+	public Double getCostSharePeopleZrys() {
 		return costSharePeopleZrys;
 	}
 
-	public void setCostSharePeopleZrys(Float costSharePeopleZrys) {
+	public void setCostSharePeopleZrys(Double costSharePeopleZrys) {
 		this.costSharePeopleZrys = costSharePeopleZrys;
 	}
 
-	public Float getCostSharePeopleJs() {
+	public Double getCostSharePeopleJs() {
 		return costSharePeopleJs;
 	}
 
-	public void setCostSharePeopleJs(Float costSharePeopleJs) {
+	public void setCostSharePeopleJs(Double costSharePeopleJs) {
 		this.costSharePeopleJs = costSharePeopleJs;
 	}
 
-	public Float getCostSharePeopleHs() {
+	public Double getCostSharePeopleHs() {
 		return costSharePeopleHs;
 	}
 
-	public void setCostSharePeopleHs(Float costSharePeopleHs) {
+	public void setCostSharePeopleHs(Double costSharePeopleHs) {
 		this.costSharePeopleHs = costSharePeopleHs;
 	}
 
-	public Float getCostSharePeopleQt() {
+	public Double getCostSharePeopleQt() {
 		return costSharePeopleQt;
 	}
 
-	public void setCostSharePeopleQt(Float costSharePeopleQt) {
+	public void setCostSharePeopleQt(Double costSharePeopleQt) {
 		this.costSharePeopleQt = costSharePeopleQt;
 	}
 
 	/**
 	 * 分项-房屋、通用设备折旧费
 	 */
-	private Float costShareOldHouseDeviceCommon;
+	private Double costShareOldHouseDeviceCommon;
 	/**
 	 * 分项-专用设备折旧费
 	 */
-	private Float costShareOldDeviceSpecial;
+	private Double costShareOldDeviceSpecial;
+	
+	/**
+	 * 分项-卫生材料
+	 */
+	private Double costShareWscl;
+	
 	/**
 	 * 分项-无形资产摊销费
 	 */
-	private Float costShareassetAmortize;
+	private Double costShareassetAmortize;
 	/**
 	 * 分项-计提医疗风险基金
 	 */
-	private Float costSharevcFunds;
+	private Double costSharevcFunds;
 	/**
 	 * 分项-其它
 	 */
-	private Float costShareOther;
+	private Double costShareOther;
 	
 	public CostItem(){
 		
 	}
 
-	public CostItem(Float costShare, Float costSharePeople,
-			Float costShareOldHouseDeviceCommon, Float costShareOldDeviceSpecial,
-			Float costShareassetAmortize,
-			Float costSharevcFunds, Float costShareOther) {
+	public CostItem(Double costShare, Double costSharePeople, Double costShareWscl,
+			Double costShareOldHouseDeviceCommon, Double costShareOldDeviceSpecial,
+			Double costShareassetAmortize,
+			Double costSharevcFunds, Double costShareOther) {
 		super();
 		this.costShare = costShare;
 		this.costSharePeople = costSharePeople;
+		this.costShareWscl = costShareWscl;
 		this.costShareOldHouseDeviceCommon = costShareOldHouseDeviceCommon;
 		this.costShareOldDeviceSpecial = costShareOldDeviceSpecial;
 		this.costShareassetAmortize = costShareassetAmortize;
@@ -138,60 +145,68 @@ public class CostItem {
 		this.costShareOther = costShareOther;
 	}
 
-	public Float getCostShare() {
+	public Double getCostShare() {
 		return costShare;
 	}
 
-	public void setCostShare(Float costShare) {
+	public void setCostShare(Double costShare) {
 		this.costShare = costShare;
 	}
 
-	public Float getCostSharePeople() {
+	public Double getCostSharePeople() {
 		return costSharePeople;
 	}
 
-	public void setCostSharePeople(Float costSharePeople) {
+	public void setCostSharePeople(Double costSharePeople) {
 		this.costSharePeople = costSharePeople;
 	}
 
-	public Float getCostShareOldHouseDeviceCommon() {
+	public Double getCostShareOldHouseDeviceCommon() {
 		return costShareOldHouseDeviceCommon;
 	}
 
-	public void setCostShareOldHouseDeviceCommon(Float costShareOldHouseDeviceCommon) {
+	public void setCostShareOldHouseDeviceCommon(Double costShareOldHouseDeviceCommon) {
 		this.costShareOldHouseDeviceCommon = costShareOldHouseDeviceCommon;
 	}
 
-	public Float getCostShareOldDeviceSpecial() {
+	public Double getCostShareOldDeviceSpecial() {
 		return costShareOldDeviceSpecial;
 	}
 
-	public void setCostShareOldDeviceSpecial(Float costShareOldDeviceSpecial) {
+	public void setCostShareOldDeviceSpecial(Double costShareOldDeviceSpecial) {
 		this.costShareOldDeviceSpecial = costShareOldDeviceSpecial;
 	}
 
-	public Float getCostShareassetAmortize() {
+	public Double getCostShareassetAmortize() {
 		return costShareassetAmortize;
 	}
 
-	public void setCostShareassetAmortize(Float costShareassetAmortize) {
+	public void setCostShareassetAmortize(Double costShareassetAmortize) {
 		this.costShareassetAmortize = costShareassetAmortize;
 	}
 
-	public Float getCostSharevcFunds() {
+	public Double getCostSharevcFunds() {
 		return costSharevcFunds;
 	}
 
-	public void setCostSharevcFunds(Float costSharevcFunds) {
+	public void setCostSharevcFunds(Double costSharevcFunds) {
 		this.costSharevcFunds = costSharevcFunds;
 	}
 
-	public Float getCostShareOther() {
+	public Double getCostShareOther() {
 		return costShareOther;
 	}
 
-	public void setCostShareOther(Float costShareOther) {
+	public void setCostShareOther(Double costShareOther) {
 		this.costShareOther = costShareOther;
+	}
+
+	public Double getCostShareWscl() {
+		return costShareWscl;
+	}
+
+	public void setCostShareWscl(Double costShareWscl) {
+		this.costShareWscl = costShareWscl;
 	}
 
 }
