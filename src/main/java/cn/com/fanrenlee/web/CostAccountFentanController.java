@@ -83,10 +83,10 @@ public class CostAccountFentanController {
 	 */
 	@RequestMapping(value = "execJob/{jobId}", method = RequestMethod.POST)
 	public @ResponseBody ApiResult<String> execJob(@PathVariable Integer jobId) {
-		try{
+		try {
 			costAccountFentanService.execJob(jobId);
 			return new ApiResult<String>("任务已执行完成");
-		}catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 			String message = e.getMessage();
 			message = message == null || message.isEmpty() ? "操作失败，服务器异常" : message;
@@ -112,7 +112,7 @@ public class CostAccountFentanController {
 		Map<String, Object> item = costAccountFentanService.getJobDetail(jobId);
 		return item == null ? new HashMap<String, Object>() : item;
 	}
-	
+
 	/**
 	 * 获取分摊基本信息
 	 *
@@ -122,24 +122,23 @@ public class CostAccountFentanController {
 		Map<String, Object> item = costAccountFentanService.fentanBase(jobId);
 		return item == null ? new HashMap<String, Object>() : item;
 	}
-	
-	/**
-	 * 获取原始数据列表
-	 *
-	 */
-	@RequestMapping(value = "getSrcDataList", method = RequestMethod.POST)
-	public @ResponseBody PagingResult getSrcDataList(@RequestParam Map<String, String> params, PageParam pageParams) {
-		return costAccountFentanService.getSrcDataList(params, pageParams);
-	}
 
 	/**
-	 * 获取分摊数据列表
+	 * 获取处理结果数据
 	 *
 	 */
-	@RequestMapping(value = "getFentanList", method = RequestMethod.POST)
-	public @ResponseBody PagingResult getFentanList(@RequestParam Map<String, String> params, PageParam pageParams,
-			Integer level) {
-		return costAccountFentanService.getFentanList(params, pageParams, level);
+	@RequestMapping(value = "getHandleData/{jobId}", method = RequestMethod.POST)
+	public @ResponseBody Map<String, Object> getSrcDataList(@PathVariable("jobId") Integer jobId,
+			@RequestParam Map<String, String> params, PageParam pageParams) {
+		Map<String, Object> ret = new HashMap<String, Object>();
+		params.put("jobId", String.valueOf(jobId));
+
+		ret.put("job", costAccountFentanService.getJobByJobid(jobId));
+		ret.put("base", costAccountFentanService.fentanBase(String.valueOf(jobId)));
+		ret.put("src", costAccountFentanService.getSrcDataList(params));
+		ret.put("srcKdgzl", costAccountFentanService.getSrcDataKdgzlList(params));
+		ret.put("fentan", costAccountFentanService.getFentanList(params, 0));
+		return ret;
 	}
 
 }

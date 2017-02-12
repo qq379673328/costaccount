@@ -12,6 +12,7 @@ import cn.com.fanrenlee.model.costaccount.CADItem;
 import cn.com.fanrenlee.model.costaccount.CostAccountBaseInfo;
 import cn.com.fanrenlee.model.costaccount.CostItem;
 import cn.com.fanrenlee.model.tables.TCostaccountFentan;
+import cn.com.fanrenlee.model.tables.TCostaccountSrcKdgzl;
 
 /**
  * 成本核算分摊处理工具类
@@ -69,8 +70,37 @@ public class CADItemHandler {
 	 */
 	private Map<String, Integer> deptTypePeopleCount = new HashMap<String, Integer>();
 
-	public CADItemHandler(List<CADItem> cadItems) {
+	/**
+	 * 对医技科室开单工作量
+	 */
+	private Map<String, Double> kdgzlMap = new HashMap<String, Double>();
+	/**
+	 * 医技科室全年工作量-总-key:医技科室编码,value:全年工作量
+	 */
+	private Map<String, Double> kdgzlAllMap = new HashMap<String, Double>();
+
+	public CADItemHandler(List<CADItem> cadItems, List<TCostaccountSrcKdgzl> srcDataKdgzl) {
+
 		this.cadItems = cadItems;
+
+		// 开单工作量
+		if (srcDataKdgzl != null) {
+			for (TCostaccountSrcKdgzl kdgzlItem : srcDataKdgzl) {
+				String yjDeptCode = kdgzlItem.getDeptCodeYj();
+				Double kdgzl = kdgzlItem.getKdgzl();
+
+				// 下划线相连
+				kdgzlMap.put(kdgzlItem.getDeptCodeBase() + "_" + yjDeptCode, kdgzl);
+
+				// 全年工作量
+				if (kdgzlAllMap.get(yjDeptCode) == null) {
+					kdgzlAllMap.put(yjDeptCode, kdgzl);
+				} else {
+					kdgzlAllMap.put(yjDeptCode, kdgzlAllMap.get(yjDeptCode) + kdgzl);
+				}
+
+			}
+		}
 
 		// 各类型科室总人数
 		deptTypePeopleCount.put("XZHQ", 0);
@@ -87,10 +117,10 @@ public class CADItemHandler {
 		baseInfo.setTotalCostMzzxsr(0d);
 
 		for (CADItem item : cadItems) {
-			
+
 			// 为科室特殊类型赋值
 			item.setDeptSpecialCode(item.getDeptSpecialCode());
-			
+
 			String deptType = item.getDeptTypeCode();
 			String deptCode = item.getDeptCode();
 			String deptName = item.getDeptName();
@@ -306,7 +336,7 @@ public class CADItemHandler {
 					// 全院消毒工作总量 *（供应室直接成本 + 供应室分摊的行政后勤科室成本）
 					// 7、某医技科室分摊的挂号收费处成本 = 该医技科室门诊执行收入 /
 					// 全院门诊总收入 *（挂号收费处直接成本 + 挂号收费处分摊的行政后勤科室成本）
-					
+
 					// 分摊对象
 					TCostaccountFentan ttf = getFentanMulLev().get(deptCode);
 					TCostaccountFentan fentan = getFentanMulLev().get(deptCodeIn);
@@ -369,11 +399,13 @@ public class CADItemHandler {
 					// 该临床科室对该医技科室的开单工作量 / 该医技科室全年工作量 *
 					// （该医技科室直接成本 + 该医技科室分摊的医辅科室成本 + 该医技科室分摊的行政后勤科室成本）
 					Double kdgzl = getKdgzl(cadItem.getDeptCode(), cadItemIn.getDeptCode());// 开单工作量
-					Double totalCount = cadItemIn.getWorkCountTotal();// 医技科室全年工作量
+					Double totalCount = kdgzlAllMap.get(cadItemIn.getDeptCode());// 医技科室全年工作量（开单）
+					totalCount = totalCount == null ? 0 : totalCount;
+
 					TCostaccountFentan fentan = getFentanMulLev().get(deptCodeIn);
 
-					Double base = kdgzl / totalCount;
-					
+					Double base = totalCount == 0 ? 0 : kdgzl / totalCount;
+
 					// 分摊对象
 					TCostaccountFentan ttf = getFentanMulLev().get(deptCode);
 
@@ -419,8 +451,8 @@ public class CADItemHandler {
 
 	// 二级分摊：该临床科室对该医技科室的开单工作量
 	private Double getKdgzl(String deptCodeLc, String deptCodeYj) {
-		// TODO 待实现
-		return 0d;
+		Double kdgzl = kdgzlMap.get(deptCodeLc + "_" + deptCodeYj);
+		return kdgzl == null ? 0d : kdgzl;
 	}
 
 	// 处理二级分摊

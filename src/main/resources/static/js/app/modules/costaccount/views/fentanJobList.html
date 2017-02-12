@@ -81,12 +81,6 @@
 						>编辑</a>
 					-->
 						
-					<a class="btn btn-small btn-danger"
-						ng-click="item.prepareDel = !item.prepareDel"
-						ng-show="!item.ishanding"
-						>删除</a>
-						
-					&nbsp;&nbsp;&nbsp;
 					<a class="btn btn-small btn-success"
 						ng-click="runJob(item)"
 						ng-show="!item.ishanding"
@@ -95,8 +89,9 @@
 						href="#costaccount/jobView/{{item.id}}"
 						ng-show="!item.ishanding"
 						>查看科室全成本</a>
+					<br/>
 					
-					&nbsp;&nbsp;&nbsp;
+					<!-- 
 					<a class="btn btn-small btn-primary"
 						href="#proUpload/{{item.id}}"
 						ng-show="!item.ishanding"
@@ -109,6 +104,12 @@
 						href="#pro/view/{{item.id}}"
 						ng-show="!item.ishanding"
 						>查看项目理论成本</a>
+					 -->
+					
+					<a class="btn btn-small btn-danger"
+						ng-click="item.prepareDel = !item.prepareDel"
+						ng-show="!item.ishanding"
+						>删除</a>
 					
 					<a class="btn btn-small btn-w4"
 						ng-show="item.ishanding"

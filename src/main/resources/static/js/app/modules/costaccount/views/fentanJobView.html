@@ -4,13 +4,13 @@
 	&gt;
 	成本核算
 	&gt;
-	{{job.job_desc}} {{job.state}}
+	{{job.job_desc}}
 </div>
 <div class="content">
 
 	<div ng-if="job.state == '2'">
 		
-		科室名:<input ng-model="search.filterStr" />
+		科室名:<input ng-model="queryParams.deptName" />
 		<div class="btn btn-lblue" 
 			ng-click="reload();">
 			过滤
@@ -24,14 +24,18 @@
 				ng-class="{true: 'select', false: 'unselect'}[show=='baseinfo']" >基本信息</a>
 			<a class="item" ng-show="job.state == '2'" ng-click="show='srcData'"
 				ng-class="{true: 'select', false: 'unselect'}[show=='srcData']" >原始数据</a>
-			<a class="item" ng-show="job.state == '2'" ng-click="show='fentanData'"
-				ng-class="{true: 'select', false: 'unselect'}[show=='fentanData']" >分摊数据</a>
-			<a class="item" ng-show="job.state == '2'" ng-click="show='level1Data'" 
-				ng-class="{true: 'select', false: 'unselect'}[show=='level1Data']">一级分摊</a>
+			<a class="item" ng-show="job.state == '2'" ng-click="show='srcDataKdgzl'"
+				ng-class="{true: 'select', false: 'unselect'}[show=='srcDataKdgzl']" >原始数据【开单工作量】</a>
+			<a class="item" ng-show="job.state == '2'" ng-click="show='fentanData1'"
+				ng-class="{true: 'select', false: 'unselect'}[show=='fentanData1']" >展示报表1</a>
+			<a class="item" ng-show="job.state == '2'" ng-click="show='fentanData2'"
+				ng-class="{true: 'select', false: 'unselect'}[show=='fentanData2']" >展示报表2</a>
+			<a class="item" ng-show="job.state == '2'" ng-click="show='level1Data'"
+				ng-class="{true: 'select', false: 'unselect'}[show=='level1Data']" >分摊行政后勤科室费用表</a>
 			<a class="item" ng-show="job.state == '2'" ng-click="show='level2Data'"
-				ng-class="{true: 'select', false: 'unselect'}[show=='level2Data']" >二级分摊</a>
+				ng-class="{true: 'select', false: 'unselect'}[show=='level2Data']" >分摊医辅科室费用表</a>
 			<a class="item" ng-show="job.state == '2'" ng-click="show='level3Data'"
-				ng-class="{true: 'select', false: 'unselect'}[show=='level3Data']" >三级分摊</a>
+				ng-class="{true: 'select', false: 'unselect'}[show=='level3Data']" >分摊医技科室费用表</a>
 		</div>
 	</div>
 	
@@ -42,7 +46,7 @@
 				<tr>
 					<td class="td-odd">医院名称：</td>
 					<td class="td-even">
-						{{job.hos_name}}
+						{{job.hosName}}
 					</td>
 					<td class="td-odd"></td>
 					<td class="td-even">
@@ -52,37 +56,37 @@
 				<tr ng-if="job.state == '2'">
 					<td class="td-odd">总开单收入：</td>
 					<td class="td-even">
-						{{baseInfo.total_cost_kdsr}}
+						{{dataBase.total_cost_kdsr}}
 					</td>
-					<td class="td-odd">总执行收入：</td>
+					<td class="td-odd">总门诊执行收入：</td>
 					<td class="td-even">
-						{{baseInfo.total_cost_zxsr}}
+						{{dataBase.total_cost_mzzxsr}}
 					</td>
 				</tr>
 				<tr ng-if="job.state == '2'">
 					<td class="td-odd">总消毒工作量：</td>
 					<td class="td-even">
-						{{baseInfo.total_cost_xdgzl}}
+						{{dataBase.total_cost_xdgzl}}
 					</td>
-					<td class="td-odd">总开单工作量：</td>
+					<td class="td-odd">总住院执行收入：</td>
 					<td class="td-even">
-						{{baseInfo.total_cost_kdgzl}}
+						{{dataBase.total_cost_zyzxsr}}
 					</td>
 				</tr>
 				<tr ng-if="job.state == '2'">
 					<td class="td-odd">总住院人数：</td>
 					<td class="td-even">
-						{{baseInfo.total_cost_zyrs}}
+						{{dataBase.total_cost_inhos}}
 					</td>
-					<td class="td-odd">总门诊量：</td>
+					<td class="td-odd">总门诊人次：</td>
 					<td class="td-even">
-						{{baseInfo.total_Cost_mzl}}
+						{{dataBase.total_Cost_mz}}
 					</td>
 				</tr>
 				<tr ng-if="job.state == '2'">
 					<td class="td-odd">总人数：</td>
 					<td class="td-even">
-						{{baseInfo.total_people}}
+						{{dataBase.total_people}}
 					</td>
 					<td class="td-odd"></td>
 					<td class="td-even">
@@ -92,11 +96,11 @@
 				<tr>
 					<td class="td-odd">创建时间：</td>
 					<td class="td-even">
-						{{job.create_time | date: 'yyyy/MM/dd HH:mm:ss'}}
+						{{job.createTime | date: 'yyyy/MM/dd HH:mm:ss'}}
 					</td>
 					<td class="td-odd">更新时间：</td>
 					<td class="td-even">
-						{{job.update_time | date: 'yyyy/MM/dd HH:mm:ss'}}
+						{{job.updateTime | date: 'yyyy/MM/dd HH:mm:ss'}}
 					</td>
 				</tr>
 			</tbody>
@@ -106,7 +110,7 @@
 	
 	<!-- 原始数据 -->
 	<div class="mytable" ng-show="show=='srcData'" style="overflow-x: scroll;">
-		<table class="my-table table-width" ng-table="tableParamsSrc"
+		<table class="my-table table-width"
 			style="width: 2000px;">
 			<thead>
 				<tr>
@@ -147,9 +151,8 @@
 					
 				</tr>
 			</thead>
-			<tr ng-show="!$data"><td colspan="4">加载中...</td></tr>
-			<tr ng-repeat="item in $data">
-				<td>{{ (queryParamsSrc.page - 1) * queryParamsSrc.rows + $index + 1 }}</td>
+			<tr ng-repeat="item in dataSrc">
+				<td>{{ $index + 1 }}</td>
 				
 				<td>{{ item.dept_name }}[{{ item.dept_code }}]</td>
 				
@@ -185,75 +188,203 @@
 		</table>
 	</div>
 	
-	<!-- 分摊成本 -->
-	<div class="mytable" ng-show="show=='fentanData'" style="overflow-x: scroll;">
-		<table class="my-table table-width" ng-table="tableParamsFentan"
+	<!-- 原始数据-开单工作量 -->
+	<div class="mytable" ng-show="show=='srcDataKdgzl'">
+		<table class="my-table">
+			<thead>
+				<tr>
+					<th>序号</th>
+					<th>科室名称</th>
+					<th>医技科室名称</th>
+					<th>开单工作量</th>
+				</tr>
+			</thead>
+			<tr ng-repeat="item in dataSrcKdgzl">
+				<td>{{ $index + 1 }}</td>
+				
+				<td>{{ item.dept_name_base }}</td>
+				<td>{{ item.dept_name_yj }}</td>
+				<td>{{ item.kdgzl | tableShowNull}}</td>
+				
+			</tr>
+		</table>
+	</div>
+	
+	<!-- 分摊成本-展示1 -->
+	<div class="mytable" ng-show="show=='fentanData1'" style="overflow-x: scroll;">
+		<table class="my-table table-width"
 		 style="width: 2000px;">
 			<thead>
 				<tr>
-					<th rowspan="3">序号</th>
-					<th rowspan="3">科室</th>
-					<th rowspan="3">直接<br/>成本</th>
-					<th rowspan="3">全成本</th>
+					<th rowspan="2">序号</th>
+					<th rowspan="2">科室名称</th>
+					<th colspan="6">人员经费</th>
 					
-					<th colspan="9">一级分摊</th>
-					<th colspan="9">二级分摊</th>
-					<th colspan="9">三级分摊</th>
+					<th rowspan="2">卫生材料费</th>
+					<th rowspan="2">房屋、通用<br/>设备折旧费</th>
+					<th rowspan="2">专用设备<br/>折旧费</th>
+					<th rowspan="2">无形资产<br/>摊销费</th>
+					<th rowspan="2">医疗风险<br/>基金</th>
+					<th rowspan="2">其他费用</th>
 					
-				</tr>
-				<tr>
-					<th rowspan="2">分摊后<br/>成本</th>
-					<th rowspan="2">间接<br/>成本</th>
-					<th colspan="7">分项成本</th>
+					<th rowspan="2">直接成本</th>
 					
-					<th rowspan="2">分摊后<br/>成本</th>
-					<th rowspan="2">间接<br/>成本</th>
-					<th colspan="7">分项成本</th>
+					<th colspan="3">间接成本</th>
 					
-					<th rowspan="2">分摊后<br/>成本</th>
-					<th rowspan="2">间接<br/>成本</th>
-					<th colspan="7">分项成本</th>
+					<th rowspan="2">全成本</th>
 					
 				</tr>
 				<tr>
-					<th>人员<br/>经费</th>
-					<th>卫生<br/>材料费</th>
-					<th>房屋、通用<br/>设备折旧费</th>
-					<th>专用设备<br/>折旧费</th>
-					<th>无形资产<br/>摊销费</th>
-					<th>医疗风险<br/>基金</th>
-					<th>其他费用</th>
+					<th>主治医师</th>
+					<th>副主任医师</th>
+					<th>主任医师</th>
+					<th>技师</th>
+					<th>护士</th>
+					<th>其他</th>
 					
-					<th>人员经费</th>
-					<th>卫生<br/>材料费</th>
-					<th>房屋、通用<br/>设备折旧费</th>
-					<th>专用设备<br/>折旧费</th>
-					<th>无形资产<br/>摊销费</th>
-					<th>医疗风险<br/>基金</th>
-					<th>其他费用</th>
-					
-					<th>人员经费</th>
-					<th>卫生<br/>材料费</th>
-					<th>房屋、通用<br/>设备折旧费</th>
-					<th>专用设备<br/>折旧费</th>
-					<th>无形资产<br/>摊销费</th>
-					<th>医疗风险<br/>基金</th>
-					<th>其他费用</th>
+					<th>一级分摊</th>
+					<th>二级分摊</th>
+					<th>三级分摊</th>
 					
 				</tr>
 			</thead>
-			<tr ng-show="!$data"><td colspan="4">加载中...</td></tr>
-			<tr ng-repeat="item in $data">
-				<td>{{ (queryParamsFentan.page - 1) * queryParamsFentan.rows + $index + 1 }}</td>
+			<tr ng-repeat="item in dataFentan">
+				<td>{{ $index + 1 }}</td>
 				
-				<td>{{ item.dept_name }}[{{ item.dept_code }}]</td>
+				<td>{{ item.dept_name }}</td>
+				
+				<td>{{ item.cost_people_zzys | number:2| tableShowNull}}</td>
+				<td>{{ item.cost_people_fzzys | number:2| tableShowNull}}</td>
+				<td>{{ item.cost_people_zrys | number:2| tableShowNull}}</td>
+				<td>{{ item.cost_people_js | number:2| tableShowNull}}</td>
+				<td>{{ item.cost_people_hs | number:2| tableShowNull}}</td>
+				<td>{{ item.cost_people_qt | number:2| tableShowNull}}</td>
+				
+				<td>{{ item.cost_wscl | number:2| tableShowNull}}</td>
+				<td>{{ item.cost_old_house_device_common | number:2| tableShowNull}}</td>
+				<td>{{ item.cost_old_device_special | number:2| tableShowNull}}</td>
+				<td>{{ item.cost_asset_amortize | number:2| tableShowNull}}</td>
+				<td>{{ item.cost_vc_funds | number:2| tableShowNull}}</td>
+				<td>{{ item.cost_other | number:2| tableShowNull}}</td>
 				
 				<td>{{ item.count_direct | number:2| tableShowNull}}</td>
-				<td>{{ item.count_direct + item.fx_l1 + item.fx_l2 + item.fx_l3 | number:2| tableShowNull}}</td>
 				
-				<td>{{ item.count_direct + item.fx_l1 | number:2 | tableShowNull}}</td>
-				<td>{{ item.fx_l1 | number:2 | tableShowNull}}</td>
-				<td>{{ item.fx_l1_people | number:2 | tableShowNull}}</td>
+				<td>{{ item.fx_l1 | number:2| tableShowNull}}</td>
+				<td>{{ item.fx_l2 | number:2| tableShowNull}}</td>
+				<td>{{ item.fx_l3 | number:2| tableShowNull}}</td>
+				
+				<td>{{ item.count_direct + item.fx_l1 + item.fx_l2 + item.fx_l3 | number:2| tableShowNull}}</td>
+			</tr>
+		</table>
+	</div>
+	
+	<!-- 分摊成本-展示2 -->
+	<div class="mytable" ng-show="show=='fentanData2'" style="overflow-x: scroll;">
+		<table class="my-table table-width"
+		 style="width: 2000px;">
+			<thead>
+				<tr>
+					<th rowspan="2">序号</th>
+					<th rowspan="2">科室名称</th>
+					
+					<th colspan="2">人员经费</th>
+					<th colspan="2">卫生材料费</th>
+					<th colspan="2">房屋、通用设备折旧费</th>
+					<th colspan="2">专用设备折旧费</th>
+					<th colspan="2">无形资产摊销费</th>
+					<th colspan="2">医疗风险基金</th>
+					<th colspan="2">其他费用</th>
+					
+					<th colspan="3">全成本</th>
+					
+				</tr>
+				<tr>
+					<th>直接成本</th>
+					<th>间接成本</th>
+					<th>直接成本</th>
+					<th>间接成本</th>
+					<th>直接成本</th>
+					<th>间接成本</th>
+					<th>直接成本</th>
+					<th>间接成本</th>
+					<th>直接成本</th>
+					<th>间接成本</th>
+					<th>直接成本</th>
+					<th>间接成本</th>
+					<th>直接成本</th>
+					<th>间接成本</th>
+					
+					<th>直接成本</th>
+					<th>间接成本</th>
+					<th>合计</th>
+					
+				</tr>
+			</thead>
+			<tr ng-repeat="item in dataFentan">
+				<td>{{ $index + 1 }}</td>
+				
+				<td>{{ item.dept_name }}</td>
+				
+				<td>{{ item.cost_people_zzys + item.cost_people_fzzys + item.cost_people_zrys + item.cost_people_js + item.cost_people_hs + item.cost_people_qt | number:2| tableShowNull}}</td>
+				<td>{{ item.fx_l1_people + item.fx_l2_people + item.fx_l3_people  | number:2| tableShowNull}}</td>
+				<td>{{ item.cost_wscl | number:2| tableShowNull}}</td>
+				<td>{{ item.fx_l1_wscl + item.fx_l2_wscl + item.fx_l3_wscl  | number:2| tableShowNull}}</td>
+				<td>{{ item.cost_old_house_device_common | number:2| tableShowNull}}</td>
+				<td>{{ item.fx_l1_device_common + item.fx_l2_device_common + item.fx_l3_device_common  | number:2| tableShowNull}}</td>
+				<td>{{ item.cost_old_device_special | number:2| tableShowNull}}</td>
+				<td>{{ item.fx_l1_device_spe + item.fx_l2_device_spe + item.fx_l3_device_spe  | number:2| tableShowNull}}</td>
+				<td>{{ item.cost_asset_amortize | number:2| tableShowNull}}</td>
+				<td>{{ item.fx_l1_asset + item.fx_l2_asset + item.fx_l3_asset  | number:2| tableShowNull}}</td>
+				<td>{{ item.cost_vc_funds | number:2| tableShowNull}}</td>
+				<td>{{ item.fx_l1_vc + item.fx_l2_vc + item.fx_l3_vc  | number:2| tableShowNull}}</td>
+				<td>{{ item.cost_other | number:2| tableShowNull}}</td>
+				<td>{{ item.fx_l1_other + item.fx_l2_other + item.fx_l3_other  | number:2| tableShowNull}}</td>
+				
+				<td>{{ item.count_direct | number:2| tableShowNull}}</td>
+				<td>{{ item.fx_l1 + item.fx_l2 + item.fx_l3 | number:2| tableShowNull}}</td>
+				<td>{{ item.count_direct + item.fx_l1 + item.fx_l2 + item.fx_l3 | number:2| tableShowNull}}</td>
+			</tr>
+		</table>
+	</div>
+	
+	<!-- 一级分摊 -->
+	<div class="mytable" ng-show="show=='level1Data'">
+		<table class="my-table">
+			<thead>
+				<tr>
+					<th rowspan="2">序号</th>
+					<th rowspan="2">科室名称</th>
+					
+					<th colspan="6">人员经费</th>
+					
+					<th rowspan="2">卫生材料费</th>
+					<th rowspan="2">房屋、通用<br/>设备折旧费</th>
+					<th rowspan="2">专用设备<br/>折旧费</th>
+					<th rowspan="2">无形资产<br/>摊销费</th>
+					<th rowspan="2">医疗风险<br/>基金</th>
+					<th rowspan="2">其他费用</th>
+				</tr>
+				<tr>
+					<th>主治医师</th>
+					<th>副主任医师</th>
+					<th>主任医师</th>
+					<th>技师</th>
+					<th>护士</th>
+					<th>其他</th>
+				</tr>
+			</thead>
+			<tr ng-repeat="item in dataFentan | filter: filterL1">
+				<td>{{ $index + 1 }}</td>
+				
+				<td>{{ item.dept_name }}</td>
+				
+				<td>{{ item.fx_l1_people_zzys | number:2 | tableShowNull}}</td>
+				<td>{{ item.fx_l1_people_fzrys | number:2 | tableShowNull}}</td>
+				<td>{{ item.fx_l1_people_zrys | number:2 | tableShowNull}}</td>
+				<td>{{ item.fx_l1_people_js | number:2 | tableShowNull}}</td>
+				<td>{{ item.fx_l1_people_hs | number:2 | tableShowNull}}</td>
+				<td>{{ item.fx_l1_people_qt | number:2 | tableShowNull}}</td>
+				
 				<td>{{ item.fx_l1_wscl | number:2 | tableShowNull}}</td>
 				<td>{{ item.fx_l1_device_common | number:2 | tableShowNull}}</td>
 				<td>{{ item.fx_l1_device_spe | number:2 | tableShowNull}}</td>
@@ -261,9 +392,48 @@
 				<td>{{ item.fx_l1_vc | number:2 | tableShowNull}}</td>
 				<td>{{ item.fx_l1_other | number:2 | tableShowNull}}</td>
 				
-				<td>{{ item.count_direct + item.fx_l1 + item.fx_l2 | number:2 | tableShowNull}}</td>
-				<td>{{ item.fx_l2 | number:2 | tableShowNull}}</td>
-				<td>{{ item.fx_l2_people | number:2 | tableShowNull}}</td>
+			</tr>
+		</table>
+	</div>
+	
+	<!-- 二级分摊 -->
+	<div class="mytable" ng-show="show=='level2Data'">
+		<table class="my-table">
+			<thead>
+				<tr>
+					<th rowspan="2">序号</th>
+					<th rowspan="2">科室名称</th>
+					
+					<th colspan="6">人员经费</th>
+					
+					<th rowspan="2">卫生材料费</th>
+					<th rowspan="2">房屋、通用<br/>设备折旧费</th>
+					<th rowspan="2">专用设备<br/>折旧费</th>
+					<th rowspan="2">无形资产<br/>摊销费</th>
+					<th rowspan="2">医疗风险<br/>基金</th>
+					<th rowspan="2">其他费用</th>
+				</tr>
+				<tr>
+					<th>主治医师</th>
+					<th>副主任医师</th>
+					<th>主任医师</th>
+					<th>技师</th>
+					<th>护士</th>
+					<th>其他</th>
+				</tr>
+			</thead>
+			<tr ng-repeat="item in dataFentan | filter: filterL2">
+				<td>{{ $index + 1 }}</td>
+				
+				<td>{{ item.dept_name }}</td>
+				
+				<td>{{ item.fx_l2_people_zzys | number:2 | tableShowNull}}</td>
+				<td>{{ item.fx_l2_people_fzrys | number:2 | tableShowNull}}</td>
+				<td>{{ item.fx_l2_people_zrys | number:2 | tableShowNull}}</td>
+				<td>{{ item.fx_l2_people_js | number:2 | tableShowNull}}</td>
+				<td>{{ item.fx_l2_people_hs | number:2 | tableShowNull}}</td>
+				<td>{{ item.fx_l2_people_qt | number:2 | tableShowNull}}</td>
+				
 				<td>{{ item.fx_l2_wscl | number:2 | tableShowNull}}</td>
 				<td>{{ item.fx_l2_device_common | number:2 | tableShowNull}}</td>
 				<td>{{ item.fx_l2_device_spe | number:2 | tableShowNull}}</td>
@@ -271,9 +441,48 @@
 				<td>{{ item.fx_l2_vc | number:2 | tableShowNull}}</td>
 				<td>{{ item.fx_l2_other | number:2 | tableShowNull}}</td>
 				
-				<td>{{ item.count_direct + item.fx_l1 + item.fx_l2 + item.fx_l3 | number:2 | tableShowNull}}</td>
-				<td>{{ item.fx_l3 | number:2 | tableShowNull}}</td>
-				<td>{{ item.fx_l3_people | number:2 | tableShowNull}}</td>
+			</tr>
+		</table>
+	</div>
+	
+	<!-- 三级分摊 -->
+	<div class="mytable" ng-show="show=='level3Data'">
+		<table class="my-table">
+			<thead>
+				<tr>
+					<th rowspan="2">序号</th>
+					<th rowspan="2">科室名称</th>
+					
+					<th colspan="6">人员经费</th>
+					
+					<th rowspan="2">卫生材料费</th>
+					<th rowspan="2">房屋、通用<br/>设备折旧费</th>
+					<th rowspan="2">专用设备<br/>折旧费</th>
+					<th rowspan="2">无形资产<br/>摊销费</th>
+					<th rowspan="2">医疗风险<br/>基金</th>
+					<th rowspan="2">其他费用</th>
+				</tr>
+				<tr>
+					<th>主治医师</th>
+					<th>副主任医师</th>
+					<th>主任医师</th>
+					<th>技师</th>
+					<th>护士</th>
+					<th>其他</th>
+				</tr>
+			</thead>
+			<tr ng-repeat="item in dataFentan | filter: filterL3">
+				<td>{{ $index + 1 }}</td>
+				
+				<td>{{ item.dept_name }}</td>
+				
+				<td>{{ item.fx_l3_people_zzys | number:2 | tableShowNull}}</td>
+				<td>{{ item.fx_l3_people_fzrys | number:2 | tableShowNull}}</td>
+				<td>{{ item.fx_l3_people_zrys | number:2 | tableShowNull}}</td>
+				<td>{{ item.fx_l3_people_js | number:2 | tableShowNull}}</td>
+				<td>{{ item.fx_l3_people_hs | number:2 | tableShowNull}}</td>
+				<td>{{ item.fx_l3_people_qt | number:2 | tableShowNull}}</td>
+				
 				<td>{{ item.fx_l3_wscl | number:2 | tableShowNull}}</td>
 				<td>{{ item.fx_l3_device_common | number:2 | tableShowNull}}</td>
 				<td>{{ item.fx_l3_device_spe | number:2 | tableShowNull}}</td>
@@ -285,124 +494,6 @@
 		</table>
 	</div>
 	
-	<!-- 一级分摊 -->
-	<div class="mytable" ng-show="show=='level1Data'">
-		<table class="my-table" ng-table="tableParamsLevel1">
-			<thead>
-				<tr>
-					<th rowspan="2">序号</th>
-					<th rowspan="2">科室</th>
-					<th rowspan="2">分摊费用</th>
-					<th rowspan="2">被分摊科室</th>
-					<th colspan="8">分项成本</th>
-				</tr>
-				<tr>
-					<th>人员<br/>经费</th>
-					<th>卫生<br/>材料费</th>
-					<th>房屋、通用设备<br/>折旧费</th>
-					<th>专用设备<br/>折旧费</th>
-					<th>无形资产<br/>摊销费</th>
-					<th>计提医疗<br/>风险基金</th>
-					<th>其它</th>
-				</tr>
-			</thead>
-			<tr ng-show="!$data"><td colspan="4">加载中...</td></tr>
-			<tr ng-repeat="item in $data">
-				<td>{{ (queryParamsLevel1.page - 1) * queryParamsLevel1.rows + $index + 1 }}</td>
-				
-				<td>{{ item.dept_name }}[{{ item.dept_code }}]</td>
-				<td>{{ item.share_level1 | number:2}}</td>
-				<td>{{ item.dept_name_share }}[{{ item.dept_code_share }}]</td>
-				
-				<td>{{ item.share_item_people | number:2}}</td>
-				<td>{{ item.share_item_wscl | number:2 | tableShowNull}}</td>
-				<td>{{ item.share_item_old_house_device_common | number:2 }}</td>
-				<td>{{ item.share_item_old_device_special | number:2 }}</td>
-				<td>{{ item.share_item_asset_amortize | number:2 }}</td>
-				<td>{{ item.share_item_vc_funds | number:2 }}</td>
-				<td>{{ item.share_item_other | number:2 }}</td>
-			</tr>
-		</table>
-	</div>
 	
-	<!-- 二级分摊 -->
-	<div class="mytable" ng-show="show=='level2Data'">
-		<table class="my-table" ng-table="tableParamsLevel2">
-			<thead>
-				<tr>
-					<th rowspan="2">序号</th>
-					<th rowspan="2">科室</th>
-					<th rowspan="2">分摊费用</th>
-					<th rowspan="2">被分摊科室</th>
-					<th colspan="8">分项成本</th>
-				</tr>
-				<tr>
-					<th>人员<br/>经费</th>
-					<th>卫生<br/>材料费</th>
-					<th>房屋、通用设备<br/>折旧费</th>
-					<th>专用设备<br/>折旧费</th>
-					<th>无形资产<br/>摊销费</th>
-					<th>计提医疗<br/>风险基金</th>
-					<th>其它</th>
-				</tr>
-			</thead>
-			<tr ng-show="!$data"><td colspan="4">加载中...</td></tr>
-			<tr ng-repeat="item in $data">
-				<td>{{ (queryParamsLevel2.page - 1) * queryParamsLevel2.rows + $index + 1 }}</td>
-				
-				<td>{{ item.dept_name }}[{{ item.dept_code }}]</td>
-				<td>{{ item.share_level2 | number:2}}</td>
-				<td>{{ item.dept_name_share }}[{{ item.dept_code_share }}]</td>
-				
-				<td>{{ item.share_item_people | number:2 }}</td>
-				<td>{{ item.share_item_wscl | number:2 | tableShowNull}}</td>
-				<td>{{ item.share_item_old_house_device_common | number:2 }}</td>
-				<td>{{ item.share_item_old_device_special | number:2 }}</td>
-				<td>{{ item.share_item_asset_amortize | number:2 }}</td>
-				<td>{{ item.share_item_vc_funds | number:2 }}</td>
-				<td>{{ item.share_item_other | number:2 }}</td>
-			</tr>
-		</table>
-	</div>
-	
-	<!-- 三级分摊 -->
-	<div class="mytable" ng-show="show=='level3Data'">
-		<table class="my-table" ng-table="tableParamsLevel3">
-			<thead>
-				<tr>
-					<th rowspan="2">序号</th>
-					<th rowspan="2">科室</th>
-					<th rowspan="2">分摊费用</th>
-					<th rowspan="2">被分摊科室</th>
-					<th colspan="8">分项成本</th>
-				</tr>
-				<tr>
-					<th>人员<br/>经费</th>
-					<th>卫生<br/>材料费</th>
-					<th>房屋通用设备<br/>折旧费</th>
-					<th>专用设备<br/>折旧费</th>
-					<th>无形资产<br/>摊销费</th>
-					<th>计提医疗<br/>风险基金</th>
-					<th>其它</th>
-				</tr>
-			</thead>
-			<tr ng-show="!$data"><td colspan="4">加载中...</td></tr>
-			<tr ng-repeat="item in $data">
-				<td>{{ (queryParamsLevel3.page - 1) * queryParamsLevel3.rows + $index + 1 }}</td>
-				
-				<td>{{ item.dept_name }}[{{ item.dept_code }}]</td>
-				<td>{{ item.share_level3 | number:2}}</td>
-				<td>{{ item.dept_name_share }}[{{ item.dept_code_share }}]</td>
-				
-				<td>{{ item.share_item_people | number:2 }}</td>
-				<td>{{ item.share_item_wscl | number:2 | tableShowNull}}</td>
-				<td>{{ item.share_item_old_house_device_common | number:2 }}</td>
-				<td>{{ item.share_item_old_device_special | number:2 }}</td>
-				<td>{{ item.share_item_asset_amortize | number:2 }}</td>
-				<td>{{ item.share_item_vc_funds | number:2 }}</td>
-				<td>{{ item.share_item_other | number:2 }}</td>
-			</tr>
-		</table>
-	</div>
 
 </div>

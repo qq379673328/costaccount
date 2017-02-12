@@ -8,7 +8,7 @@ public class TCostaccountJob {
     private String jobDesc;
 
     private Integer tHosId;
-
+    
     private String hosCode;
 
     private String hosName;

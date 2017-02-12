@@ -23,43 +23,9 @@
 						<span class="warn">*</span>选择医院：<div core-hos-select ng-model="selectHos" hosid="t_hos_id"></div>
 					</td>
 				</tr>
-				<!--
-				<tr>
-					<td class="td-even" colspan="4">基础数据</td>
-				</tr>
-				<tr>
-					<td class="td-odd"><span class="warn">*</span>全院工作总量：</td>
-					<td class="td-even">
-						<input class="form-input" ng-model="job.totalWork" />
-					</td>
-					<td class="td-odd"><span class="warn">*</span>全院消毒工作总量：</td>
-					<td class="td-even">
-						<input class="form-input" ng-model="job.totalWorkDisinfected" />
-					</td>
-				</tr>
-				<tr>
-					<td class="td-odd"><span class="warn">*</span>全院总人数：</td>
-					<td class="td-even">
-						<input class="form-input" ng-model="job.totalPeople" />
-					</td>
-					<td class="td-odd"><span class="warn">*</span>全院住院总人数：</td>
-					<td class="td-even">
-						<input class="form-input" ng-model="job.totalInhos" />
-					</td>
-				</tr>
-				<tr class="line">
-					<td class="td-odd"><span class="warn">*</span>全院门诊总量：</td>
-					<td class="td-even">
-						<input class="form-input" ng-model="job.totalWorkOutpatient" />
-					</td>
-					<td class="td-odd"></td>
-					<td class="td-even">
-					</td>
-				</tr>
-				-->
 				
 				<tr>
-					<td class="td-even">业务数据</td>
+					<td class="td-even"><span class="warn">*</span>业务数据</td>
 				</tr>
 				<tr>
 					<td class="td-even center" >
@@ -73,7 +39,7 @@
 							ngf-model-invalid="errorFile"
 							ngf-validate-force="false"
 							>
-							上传excel<div/>
+							请上传excel<div/>
 					</td>
 				</tr>
 				
@@ -84,6 +50,7 @@
 							ng-click="save()">
 							&nbsp;&nbsp;保存&nbsp;&nbsp;
 						</div>
+						<span class="warn">{{validInfo}}</span>
 						<div ng-show="isRuning">
 							上传中，请稍后...
 						</div>

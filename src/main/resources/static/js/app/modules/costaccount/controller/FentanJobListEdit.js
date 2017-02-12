@@ -24,6 +24,20 @@ app.controller('FentanJobEditCtrl',function($scope,
 	
 	//保存
 	$scope.save = function(){
+		$scope.validInfo = "";
+		if (!$scope.job.jobDesc) {
+			$scope.validInfo = "请填写任务描述";
+			return;
+		}
+		if (!$scope.selectHos.id) {
+			$scope.validInfo = "请选择医院";
+			return;
+		}
+		if (!$scope.form.file.$valid || !$scope.file) {
+			$scope.validInfo = "请选择需要上传的文件";
+			return;
+		}
+		
 		if ($scope.form.file.$valid && $scope.file) {
 			$scope.job.file = $scope.file;
 			$scope.job.tHosId = $scope.selectHos.id;
@@ -34,7 +48,10 @@ app.controller('FentanJobEditCtrl',function($scope,
 				url: 'costaccount/uploadSrcData',
 				data: $scope.job
 			}).then(function (resp) {
-				$state.go("costaccountFentanJoblist");
+				if(resp && resp.data && resp.data.success == "1"){
+					$state.go("costaccountFentanJoblist");
+				}
+				$scope.isRuning = false;
 			});
 		}
 	};
