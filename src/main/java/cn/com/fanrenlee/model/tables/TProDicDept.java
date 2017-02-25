@@ -1,6 +1,6 @@
 package cn.com.fanrenlee.model.tables;
 
-public class TProSrc {
+public class TProDicDept {
     private Integer id;
 
     private String proCode;
@@ -12,8 +12,6 @@ public class TProSrc {
     private String deptName;
 
     private Integer tDeptId;
-
-    private Integer tJobId;
 
     public Integer getId() {
         return id;
@@ -63,11 +61,4 @@ public class TProSrc {
         this.tDeptId = tDeptId;
     }
 
-    public Integer gettJobId() {
-        return tJobId;
-    }
-
-    public void settJobId(Integer tJobId) {
-        this.tJobId = tJobId;
-    }
 }

@@ -19,6 +19,16 @@ app.controller('ProdicEditCtrl',function($scope,
 	
 	//保存
 	$scope.save = function(){
+		
+		if (!$scope.prodic.proCode) {
+			$scope.validInfo = "项目编码不能为空";
+			return;
+		}
+		if (!$scope.prodic.proName) {
+			$scope.validInfo = "项目名称不能为空";
+			return;
+		}
+		
 		$scope.isRuning = true;
 		var url = id ? "prodic/edit" : "prodic/add";
 		$scope.prodic.tHospitalId = hosId;

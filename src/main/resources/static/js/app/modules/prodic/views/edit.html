@@ -26,50 +26,44 @@
 				</tr>
 				<tr>
 					<td class="td-even">
-						<span class="warn">*</span>计价单位：
-						<input class="form-input" ng-model="prodic.unit" />
+						卫生材料费：
+						<input class="form-input" ng-model="prodic.wsclf" />
 					</td>
 				</tr>
 				<tr>
 					<td class="td-even">
-						<span class="warn">*</span>现行价格：
-						<input class="form-input" ng-model="prodic.priceCurrent" />
+						医疗风险基金：
+						<input class="form-input" ng-model="prodic.ylfxjj" />
 					</td>
 				</tr>
 				<tr>
 					<td class="td-even">
-						<span class="warn">*</span>项目耗时：
-						<input class="form-input" ng-model="prodic.costTime" />
+						基本人力消耗（医生）：
+						<input class="form-input" ng-model="prodic.pcYs" />
 					</td>
 				</tr>
 				<tr>
 					<td class="td-even">
-						<span class="warn">*</span>医生人数：
-						<input class="form-input" ng-model="prodic.peopleCountDoctor" />
+						基本人力消耗（护士）：
+						<input class="form-input" ng-model="prodic.pcHs" />
 					</td>
 				</tr>
 				<tr>
 					<td class="td-even">
-						<span class="warn">*</span>护士人数：
-						<input class="form-input" ng-model="prodic.peopleCountNurse" />
+						基本人力消耗（技师）：
+						<input class="form-input" ng-model="prodic.pcJs" />
 					</td>
 				</tr>
 				<tr>
 					<td class="td-even">
-						<span class="warn">*</span>技师人数：
+						基本人力消耗（其他）：
 						<input class="form-input" ng-model="prodic.peopleCountTech" />
 					</td>
 				</tr>
 				<tr>
 					<td class="td-even">
-						<span class="warn">*</span>低值易耗品成本：
-						<input class="form-input" ng-model="prodic.costLowLevel" />
-					</td>
-				</tr>
-				<tr>
-					<td class="td-even">
-						<span class="warn">*</span>内涵一次性耗材成本：
-						<input class="form-input" ng-model="prodic.costOnce" />
+						项目耗时（分钟）：
+						<input class="form-input" ng-model="prodic.costTime" />
 					</td>
 				</tr>
 				
@@ -80,9 +74,11 @@
 							ng-click="save()">
 							&nbsp;&nbsp;保存&nbsp;&nbsp;
 						</div>
+						<span class="warn">{{validInfo}}</span>
 						<div ng-show="isRuning">
 							保存中，请稍后...
 						</div>
+						<btn-back />
 
 					</td>
 				</tr>

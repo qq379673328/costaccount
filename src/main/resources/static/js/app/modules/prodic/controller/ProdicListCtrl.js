@@ -11,6 +11,15 @@ app.controller('ProdicListCtrl',function($scope,
 	var initpage = 1,
 		initrows = 10;
 	$scope.search = {};
+	
+	// 根据医院id获取医院详情
+	//加载医院信息
+	$http.post("hos/getById/" + hosId)
+	.success(function(data){
+		$scope.hos = data.data;
+	});
+	
+	
 	$scope.queryParams = {rows: initrows, hosId: hosId};
 	$scope.initParams = function(pageNotChange){
 		var iPage = initpage;

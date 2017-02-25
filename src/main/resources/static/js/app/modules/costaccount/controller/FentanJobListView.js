@@ -14,10 +14,15 @@ app.controller('FentanJobViewCtrl',function($scope,
 		.success(function(data){
 			if(data){
 				$scope.job = data.job;
+				$scope.hos = data.hos;
 				$scope.dataBase = data.base;
 				$scope.dataSrc = data.src;
 				$scope.dataSrcKdgzl = data.srcKdgzl;
 				$scope.dataFentan = data.fentan;
+				$scope.procosts = data.proresult;
+				
+				handleCncbl(data.proresultCncbl)
+				$scope.proresultCncbl = data.proresultCncbl;
 				
 				// 将原始数据中部分数据放入分摊数据中
 				if(data.fentan && data.src){
@@ -49,5 +54,22 @@ app.controller('FentanJobViewCtrl',function($scope,
 	$scope.filterL3 = function(item){
 		return item.dept_type_code=='LC' ? true : false;
 	}
+	
+	function handleCncbl(items){
+		if(items){
+			for(var i in items){
+				items[i].type = getCncblType(items[i].type);
+			}
+		}
+	}
+	
+	function getCncblType(type){
+		if(type == 1) return '直接成本';
+		if(type == 2) return '业务成本';
+		if(type == 3) return '全成本';
+		return '';
+	}
+	
+	
 	
 });

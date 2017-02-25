@@ -4,6 +4,7 @@
 package cn.com.fanrenlee.service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,8 +12,12 @@ import java.util.Map;
 import cn.com.fanrenlee.model.costaccount.CADItem;
 import cn.com.fanrenlee.model.costaccount.CostAccountBaseInfo;
 import cn.com.fanrenlee.model.costaccount.CostItem;
+import cn.com.fanrenlee.model.pro.Cncbl;
+import cn.com.fanrenlee.model.pro.ProCost;
 import cn.com.fanrenlee.model.tables.TCostaccountFentan;
+import cn.com.fanrenlee.model.tables.TCostaccountJob;
 import cn.com.fanrenlee.model.tables.TCostaccountSrcKdgzl;
+import cn.com.fanrenlee.model.tables.TProDic;
 
 /**
  * 成本核算分摊处理工具类
@@ -21,6 +26,11 @@ import cn.com.fanrenlee.model.tables.TCostaccountSrcKdgzl;
  * @since 2016年7月26日
  */
 public class CADItemHandler {
+
+	/**
+	 * 有效劳动时间
+	 */
+	private static final Double VALID_TIME = 99600d;
 
 	/**
 	 * 科室code分隔符
@@ -79,9 +89,36 @@ public class CADItemHandler {
 	 */
 	private Map<String, Double> kdgzlAllMap = new HashMap<String, Double>();
 
-	public CADItemHandler(List<CADItem> cadItems, List<TCostaccountSrcKdgzl> srcDataKdgzl) {
+	/**
+	 * 项目字典信息-map
+	 */
+	private Map<String, TProDic> proDicsMap = new HashMap<String, TProDic>();
+	/**
+	 * 项目字典信息-list
+	 */
+	private List<TProDic> proDicsList = new ArrayList<TProDic>();
+
+	private TCostaccountJob job;
+
+	/**
+	 * 
+	 * @param cadItems
+	 * @param srcDataKdgzl
+	 * @param proDics
+	 */
+	public CADItemHandler(List<CADItem> cadItems, List<TCostaccountSrcKdgzl> srcDataKdgzl, List<TProDic> proDics,
+			TCostaccountJob job) {
 
 		this.cadItems = cadItems;
+		this.job = job;
+
+		// 处理项目字典信息
+		if (proDics != null) {
+			proDicsList = proDics;
+			for (TProDic proDic : proDics) {
+				proDicsMap.put(proDic.getProCode(), proDic);
+			}
+		}
 
 		// 开单工作量
 		if (srcDataKdgzl != null) {
@@ -225,6 +262,50 @@ public class CADItemHandler {
 	}
 
 	/**
+	 * 相除
+	 * 
+	 * @param a
+	 * @param b
+	 * @return
+	 */
+	private Double div(Double a, double b) {
+		return a == 0 || b == 0 ? 0 : a / b;
+	}
+
+	// 理论成本相关处理结果
+	// 1、科室级-直接成本产能成本率
+	private Map<String, Cncbl> deptZjcbCncbl = new HashMap<String, Cncbl>();
+	// 2、科室级-分摊的医辅科室成本产能成本率
+	private Map<String, Cncbl> deptFtyfCncbl = new HashMap<String, Cncbl>();
+	// 3、科室级-分摊的行政后勤科室成本产能成本率
+	private Map<String, Cncbl> deptFtxzhqCncbl = new HashMap<String, Cncbl>();
+	// 4、科室级-业务成本产能成本率
+	private Map<String, Cncbl> deptYwcbCncbl = new HashMap<String, Cncbl>();
+	// 5、科室级-全成本产能成本率
+	private Map<String, Cncbl> deptQcbCncbl = new HashMap<String, Cncbl>();
+	// 6、院级-直接成本产能成本率
+	private Cncbl hosZjcbCncbl = new Cncbl();
+	// 7、院级-分摊的医辅科室成本产能成本率
+	private Cncbl hosFtyfCncbl = new Cncbl();
+	// 8、院级-分摊的行政后勤科室成本产能成本率
+	private Cncbl hosFtxzhqCncbl = new Cncbl();
+	// 9、院级-业务成本产能成本率
+	private Cncbl hosYwcbCncbl = new Cncbl();
+	// 10、院级-全成本产能成本率
+	private Cncbl hosQcbCncbl = new Cncbl();
+
+	// 理论成本-结果验证
+	// 1、科室级-项目理论成本（直接成本）
+	// 2、科室级-项目理论成本（业务成本）
+	// 3、科室级-项目理论成本（全成本）
+	private List<ProCost> deptProCosts = new ArrayList<ProCost>();
+
+	// 4、院级-项目理论成本（直接成本）
+	// 5、院级-项目理论成本（业务成本）
+	// 6、院级-项目理论成本（全成本）
+	private List<ProCost> hosCncblCosts = new ArrayList<ProCost>();
+
+	/**
 	 * 处理数据
 	 */
 	public void handle() {
@@ -242,8 +323,46 @@ public class CADItemHandler {
 
 		}
 
-		// 计算一级分摊以及医辅全成本
+		// 1、科室级-直接成本产能成本率
+		for (CADItem cadItem : cadItems) {
+			// 临床或者医技科室
+			if (cadItem.isDeptTypeLC() || cadItem.isDeptTypeYJ()) {
+				String deptCode = cadItem.getDeptCode();
+				Cncbl cncbl = new Cncbl();
+				cncbl.settJobId(job.getId());
+				cncbl.setLevel(1);
+				cncbl.setType(1);
+				cncbl.setDeptCode(deptCode);
+				cncbl.setDeptName(cadItem.getDeptName());
 
+				// 医生
+				cncbl.setYsCncbl(div(
+						cadItem.getCostPeopleZzys() + cadItem.getCostPeopleZrys() + cadItem.getCostPeopleFzzys(),
+						(cadItem.getPeopleCountZzys() + cadItem.getPeopleCountZrys() + cadItem.getPeopleCountFzrys())
+								* VALID_TIME));
+				// 护士
+				cncbl.setHsCncbl(div(cadItem.getCostPeopleHs(), (cadItem.getPeopleCountHs() * VALID_TIME)));
+				// 技师
+				cncbl.setJsCncbl(div(cadItem.getCostPeopleJs(), (cadItem.getPeopleCountJs() * VALID_TIME)));
+				// 其他人员
+				cncbl.setOpCncbl(div(cadItem.getCostPeopleQt(), (cadItem.getPeopleCountQt() * VALID_TIME)));
+
+				// 房屋、通用设备
+				cncbl.setHouseCncbl(
+						div(cadItem.getCostOldHouseDeviceCommon(), (cadItem.getPeopleCount() * VALID_TIME)));
+				// 专用设备
+				cncbl.setSpeCncbl(div(cadItem.getCostOldDeviceSpecial(), VALID_TIME));
+				// 无形资产
+				cncbl.setAssetCncbl(div(cadItem.getCostAssetAmortize(), (cadItem.getPeopleCount() * VALID_TIME)));
+				// 其他费用
+				cncbl.setOcCncbl(div(cadItem.getCostOther(), (cadItem.getPeopleCount() * VALID_TIME)));
+
+				deptZjcbCncbl.put(deptCode, cncbl);
+			}
+		}
+
+		// 计算一级分摊以及医辅全成本-分摊行政后勤
+		// 3、科室级-分摊的行政后勤科室成本产能成本率
 		// 所有行政后勤科室各个类型总成本数据
 		CADItem xzhqTemp = new CADItem();
 		for (CADItem cadItemIn : cadItems) {
@@ -307,9 +426,38 @@ public class CADItemHandler {
 				ft.setFxL1PeopleQt(mul(base, xzhqTemp.getCostPeopleQt()));
 
 			}
+
+			// 分摊对象
+			TCostaccountFentan ttf = getFentanMulLev().get(deptCode);
+			Cncbl cncbl = new Cncbl();
+			cncbl.setDeptCode(deptCode);
+			cncbl.setDeptName(cadItem.getDeptName());
+
+			// 医生
+			cncbl.setYsCncbl(div(ttf.getFxL1PeopleFzrys() + ttf.getFxL1PeopleZrys() + ttf.getFxL1PeopleZzys(),
+					(cadItem.getPeopleCountZzys() + cadItem.getPeopleCountZrys() + cadItem.getPeopleCountFzrys())
+							* VALID_TIME));
+			// 护士
+			cncbl.setHsCncbl(div(ttf.getFxL1PeopleHs(), (cadItem.getPeopleCountHs() * VALID_TIME)));
+			// 技师
+			cncbl.setJsCncbl(div(ttf.getFxL1PeopleJs(), (cadItem.getPeopleCountJs() * VALID_TIME)));
+			// 其他人员
+			cncbl.setOpCncbl(div(ttf.getFxL1PeopleQt(), (cadItem.getPeopleCountQt() * VALID_TIME)));
+
+			// 房屋、通用设备
+			cncbl.setHouseCncbl(div(ttf.getFxL1DeviceCommon(), (cadItem.getPeopleCount() * VALID_TIME)));
+			// 专用设备
+			cncbl.setSpeCncbl(div(ttf.getFxL1DeviceSpe(), VALID_TIME));
+			// 无形资产
+			cncbl.setAssetCncbl(div(ttf.getFxL1Asset(), (cadItem.getPeopleCount() * VALID_TIME)));
+			// 其他费用
+			cncbl.setOcCncbl(div(ttf.getFxL1Other(), (cadItem.getPeopleCount() * VALID_TIME)));
+
+			deptFtxzhqCncbl.put(deptCode, cncbl);
 		}
 
 		// 计算二级分摊-临床科室、医技科室分摊的医辅科室成本
+		// 2、科室级-分摊的医辅科室成本产能成本率
 		for (CADItem cadItem : cadItems) {
 			String deptCode = cadItem.getDeptCode();
 			// 医技科室和临床科室
@@ -356,7 +504,7 @@ public class CADItemHandler {
 					ttf.setFxL2DeviceSpe(safeDouble(ttf.getFxL2DeviceSpe())
 							+ base * (cadItemIn.getCostOldDeviceSpecial() + fentan.getFxL1DeviceSpe()));
 					ttf.setFxL2Other(
-							safeDouble(ttf.getFxL3Other()) + base * (cadItemIn.getCostOther() + fentan.getFxL1Other()));
+							safeDouble(ttf.getFxL2Other()) + base * (cadItemIn.getCostOther() + fentan.getFxL1Other()));
 					ttf.setFxL2Vc(
 							safeDouble(ttf.getFxL2Vc()) + base * (cadItemIn.getCostVcFunds() + fentan.getFxL1Vc()));
 					ttf.setFxL2Wscl(
@@ -380,9 +528,38 @@ public class CADItemHandler {
 				}
 
 			}
+
+			// 分摊对象
+			TCostaccountFentan ttf = getFentanMulLev().get(deptCode);
+			Cncbl cncbl = new Cncbl();
+			cncbl.setDeptCode(deptCode);
+			cncbl.setDeptName(cadItem.getDeptName());
+
+			// 医生
+			cncbl.setYsCncbl(div(ttf.getFxL2PeopleFzrys() + ttf.getFxL2PeopleZrys() + ttf.getFxL2PeopleZzys(),
+					(cadItem.getPeopleCountZzys() + cadItem.getPeopleCountZrys() + cadItem.getPeopleCountFzrys())
+							* VALID_TIME));
+			// 护士
+			cncbl.setHsCncbl(div(ttf.getFxL2PeopleHs(), (cadItem.getPeopleCountHs() * VALID_TIME)));
+			// 技师
+			cncbl.setJsCncbl(div(ttf.getFxL2PeopleJs(), (cadItem.getPeopleCountJs() * VALID_TIME)));
+			// 其他人员
+			cncbl.setOpCncbl(div(ttf.getFxL2PeopleQt(), (cadItem.getPeopleCountQt() * VALID_TIME)));
+
+			// 房屋、通用设备
+			cncbl.setHouseCncbl(div(ttf.getFxL2DeviceCommon(), (cadItem.getPeopleCount() * VALID_TIME)));
+			// 专用设备
+			cncbl.setSpeCncbl(div(ttf.getFxL2DeviceSpe(), VALID_TIME));
+			// 无形资产
+			cncbl.setAssetCncbl(div(ttf.getFxL2Asset(), (cadItem.getPeopleCount() * VALID_TIME)));
+			// 其他费用
+			cncbl.setOcCncbl(div(ttf.getFxL2Other(), (cadItem.getPeopleCount() * VALID_TIME)));
+
+			deptFtyfCncbl.put(deptCode, cncbl);
+
 		}
 
-		// 计算三级分摊以及临床全成本
+		// 计算三级分摊以及临床全成本-分摊医技
 		for (CADItem cadItem : cadItems) {
 			// 临床科室
 			if (cadItem.isDeptTypeLC()) {
@@ -447,6 +624,294 @@ public class CADItemHandler {
 			}
 		}
 
+		// 4、科室级-业务成本产能成本率
+		// 5、科室级-全成本产能成本率
+		for (CADItem cadItem : cadItems) {
+			// 临床或者医技科室
+			if (cadItem.isDeptTypeLC() || cadItem.isDeptTypeYJ()) {
+				String deptCode = cadItem.getDeptCode();
+
+				Cncbl zcbjCncblDept = deptZjcbCncbl.get(deptCode);
+				Cncbl ftyfCncblDept = deptFtyfCncbl.get(deptCode);
+				Cncbl ftxzhqCncblDept = deptFtxzhqCncbl.get(deptCode);
+
+				// 业务成本
+				Cncbl ywcbCncblY = new Cncbl();
+				ywcbCncblY.settJobId(job.getId());
+				ywcbCncblY.setLevel(1);
+				ywcbCncblY.setType(2);
+				ywcbCncblY.setDeptCode(deptCode);
+				ywcbCncblY.setDeptName(cadItem.getDeptName());
+				// 医生
+				ywcbCncblY.setYsCncbl(zcbjCncblDept.getYsCncbl() + ftyfCncblDept.getYsCncbl());
+				// 护士
+				ywcbCncblY.setHsCncbl(zcbjCncblDept.getHsCncbl() + ftyfCncblDept.getHsCncbl());
+				// 技师
+				ywcbCncblY.setJsCncbl(zcbjCncblDept.getJsCncbl() + ftyfCncblDept.getJsCncbl());
+				// 其他人员
+				ywcbCncblY.setOpCncbl(zcbjCncblDept.getOpCncbl() + ftyfCncblDept.getOpCncbl());
+
+				// 房屋、通用设备
+				ywcbCncblY.setHouseCncbl(zcbjCncblDept.getHouseCncbl() + ftyfCncblDept.getHouseCncbl());
+				// 专用设备
+				ywcbCncblY.setSpeCncbl(zcbjCncblDept.getSpeCncbl() + ftyfCncblDept.getSpeCncbl());
+				// 无形资产
+				ywcbCncblY.setAssetCncbl(zcbjCncblDept.getAssetCncbl() + ftyfCncblDept.getAssetCncbl());
+				// 其他费用
+				ywcbCncblY.setOcCncbl(zcbjCncblDept.getOcCncbl() + ftyfCncblDept.getOcCncbl());
+
+				deptYwcbCncbl.put(deptCode, ywcbCncblY);
+
+				// 全成本
+				Cncbl qcbCncblY = new Cncbl();
+				qcbCncblY.settJobId(job.getId());
+				qcbCncblY.setLevel(1);
+				qcbCncblY.setType(3);
+				qcbCncblY.setDeptCode(deptCode);
+				qcbCncblY.setDeptName(cadItem.getDeptName());
+				// 医生
+				qcbCncblY.setYsCncbl(
+						zcbjCncblDept.getYsCncbl() + ftyfCncblDept.getYsCncbl() + ftxzhqCncblDept.getYsCncbl());
+				// 护士
+				qcbCncblY.setHsCncbl(
+						zcbjCncblDept.getHsCncbl() + ftyfCncblDept.getHsCncbl() + ftxzhqCncblDept.getHsCncbl());
+				// 技师
+				qcbCncblY.setJsCncbl(
+						zcbjCncblDept.getJsCncbl() + ftyfCncblDept.getJsCncbl() + ftxzhqCncblDept.getJsCncbl());
+				// 其他人员
+				qcbCncblY.setOpCncbl(
+						zcbjCncblDept.getOpCncbl() + ftyfCncblDept.getOpCncbl() + ftxzhqCncblDept.getOpCncbl());
+				// 房屋、通用设备
+				qcbCncblY.setHouseCncbl(zcbjCncblDept.getHouseCncbl() + ftyfCncblDept.getHouseCncbl()
+						+ ftxzhqCncblDept.getHouseCncbl());
+				// 专用设备
+				qcbCncblY.setSpeCncbl(
+						zcbjCncblDept.getSpeCncbl() + ftyfCncblDept.getSpeCncbl() + ftxzhqCncblDept.getSpeCncbl());
+				// 无形资产
+				qcbCncblY.setAssetCncbl(zcbjCncblDept.getAssetCncbl() + ftyfCncblDept.getAssetCncbl()
+						+ ftxzhqCncblDept.getAssetCncbl());
+				// 其他费用
+				qcbCncblY.setOcCncbl(
+						zcbjCncblDept.getOcCncbl() + ftyfCncblDept.getOcCncbl() + ftxzhqCncblDept.getOcCncbl());
+
+				deptQcbCncbl.put(deptCode, qcbCncblY);
+
+			}
+
+		}
+
+		// 6、院级-直接成本产能成本率
+		hosZjcbCncbl = handleHosCncbl(deptZjcbCncbl);
+		hosZjcbCncbl.settJobId(job.getId());
+		hosZjcbCncbl.setLevel(2);
+		hosZjcbCncbl.setType(1);
+		// 7、院级-分摊的医辅科室成本产能成本率
+		hosFtyfCncbl = handleHosCncbl(deptFtyfCncbl);
+		// 8、院级-分摊的行政后勤科室成本产能成本率
+		hosFtxzhqCncbl = handleHosCncbl(deptFtxzhqCncbl);
+
+		// 9、院级-业务成本产能成本率
+		// 医生
+		hosYwcbCncbl.setYsCncbl(hosZjcbCncbl.getYsCncbl() + hosFtyfCncbl.getYsCncbl());
+		// 护士
+		hosYwcbCncbl.setHsCncbl(hosZjcbCncbl.getHsCncbl() + hosFtyfCncbl.getHsCncbl());
+		// 技师
+		hosYwcbCncbl.setJsCncbl(hosZjcbCncbl.getJsCncbl() + hosFtyfCncbl.getJsCncbl());
+		// 其他人员
+		hosYwcbCncbl.setOpCncbl(hosZjcbCncbl.getOpCncbl() + hosFtyfCncbl.getOpCncbl());
+		// 房屋、通用设备
+		hosYwcbCncbl.setHouseCncbl(hosZjcbCncbl.getHouseCncbl() + hosFtyfCncbl.getHouseCncbl());
+		// 专用设备
+		hosYwcbCncbl.setSpeCncbl(hosZjcbCncbl.getSpeCncbl() + hosFtyfCncbl.getSpeCncbl());
+		// 无形资产
+		hosYwcbCncbl.setAssetCncbl(hosZjcbCncbl.getAssetCncbl() + hosFtyfCncbl.getAssetCncbl());
+		// 其他费用
+		hosYwcbCncbl.setOcCncbl(hosZjcbCncbl.getOcCncbl() + hosFtyfCncbl.getOcCncbl());
+		hosYwcbCncbl.settJobId(job.getId());
+		hosYwcbCncbl.setLevel(2);
+		hosYwcbCncbl.setType(2);
+
+		// 10、院级-全成本产能成本率
+		// 医生
+		hosQcbCncbl.setYsCncbl(hosZjcbCncbl.getYsCncbl() + hosFtyfCncbl.getYsCncbl() + hosFtxzhqCncbl.getYsCncbl());
+		// 护士
+		hosQcbCncbl.setHsCncbl(hosZjcbCncbl.getHsCncbl() + hosFtyfCncbl.getHsCncbl() + hosFtxzhqCncbl.getHsCncbl());
+		// 技师
+		hosQcbCncbl.setJsCncbl(hosZjcbCncbl.getJsCncbl() + hosFtyfCncbl.getJsCncbl() + hosFtxzhqCncbl.getJsCncbl());
+		// 其他人员
+		hosQcbCncbl.setOpCncbl(hosZjcbCncbl.getOpCncbl() + hosFtyfCncbl.getOpCncbl() + hosFtxzhqCncbl.getOpCncbl());
+		// 房屋、通用设备
+		hosQcbCncbl.setHouseCncbl(
+				hosZjcbCncbl.getHouseCncbl() + hosFtyfCncbl.getHouseCncbl() + hosFtxzhqCncbl.getHouseCncbl());
+		// 专用设备
+		hosQcbCncbl.setSpeCncbl(hosZjcbCncbl.getSpeCncbl() + hosFtyfCncbl.getSpeCncbl() + hosFtxzhqCncbl.getSpeCncbl());
+		// 无形资产
+		hosQcbCncbl.setAssetCncbl(
+				hosZjcbCncbl.getAssetCncbl() + hosFtyfCncbl.getAssetCncbl() + hosFtxzhqCncbl.getAssetCncbl());
+		// 其他费用
+		hosQcbCncbl.setOcCncbl(hosZjcbCncbl.getOcCncbl() + hosFtyfCncbl.getOcCncbl() + hosFtxzhqCncbl.getOcCncbl());
+		hosQcbCncbl.settJobId(job.getId());
+		hosQcbCncbl.setLevel(2);
+		hosQcbCncbl.setType(3);
+
+		// 项目理论成本结果
+		// 1、科室级-项目理论成本（直接成本）
+		// 2、科室级-项目理论成本（业务成本）
+		// 3、科室级-项目理论成本（全成本）
+		for (CADItem cadItem : cadItems) {
+			String deptCode = cadItem.getDeptCode();
+			// 临床或者医技科室
+			if (cadItem.isDeptTypeLC() || cadItem.isDeptTypeYJ()) {
+				for (TProDic proDic : proDicsList) {
+					ProCost proCost = new ProCost();
+					proCost.settJobId(job.getId());
+					proCost.setLevel(1);
+					proCost.setDeptCode(deptCode);
+					proCost.setDeptName(cadItem.getDeptName());
+					proCost.setProCode(proDic.getProCode());
+					proCost.setProName(proDic.getProName());
+					proCost.setCostWsclf(proDic.getWsclf());
+					proCost.setCostYlfxjj(proDic.getYlfxjj());
+
+					// 项目消耗
+					Double proCostTemp = proDic.getCostTime()
+							* (proDic.getPcYs() + proDic.getPcHs() + proDic.getPcJs() + proDic.getPcO());
+
+					// 直接成本
+					Cncbl zjcbCncbl = deptZjcbCncbl.get(deptCode);
+					proCost.setCostPeopleDirect(proCostTemp * (zjcbCncbl.getYsCncbl() + zjcbCncbl.getHsCncbl()
+							+ zjcbCncbl.getJsCncbl() + zjcbCncbl.getOpCncbl()));
+					proCost.setCostHouseDirect(proCostTemp * zjcbCncbl.getHouseCncbl());
+					proCost.setCostSpeDirect(proCostTemp * zjcbCncbl.getSpeCncbl());
+					proCost.setCostAssetDirect(proCostTemp * zjcbCncbl.getAssetCncbl());
+					proCost.setCostOtherDirect(proCostTemp * zjcbCncbl.getOcCncbl());
+
+					// 间接成本-业务成本
+					Cncbl ftyfCncbl = deptFtyfCncbl.get(deptCode);
+					proCost.setCostPeopleMidYw(proCostTemp * (ftyfCncbl.getYsCncbl() + ftyfCncbl.getHsCncbl()
+							+ ftyfCncbl.getJsCncbl() + ftyfCncbl.getOpCncbl()));
+					proCost.setCostHouseMidYw(proCostTemp * ftyfCncbl.getHouseCncbl());
+					proCost.setCostSpeMidYw(proCostTemp * ftyfCncbl.getSpeCncbl());
+					proCost.setCostAssetMidYw(proCostTemp * ftyfCncbl.getAssetCncbl());
+					proCost.setCostOtherMidYw(proCostTemp * ftyfCncbl.getOcCncbl());
+
+					// 间接成本-全成本
+					Cncbl ftxzhqCncbl = deptFtxzhqCncbl.get(deptCode);
+					proCost.setCostPeopleMidAll(proCostTemp * (ftyfCncbl.getYsCncbl() + ftyfCncbl.getHsCncbl()
+							+ ftyfCncbl.getJsCncbl() + ftyfCncbl.getOpCncbl() + ftxzhqCncbl.getYsCncbl()
+							+ ftxzhqCncbl.getHsCncbl() + ftxzhqCncbl.getJsCncbl() + ftxzhqCncbl.getOpCncbl()));
+					proCost.setCostHouseMidAll(proCostTemp * (ftyfCncbl.getHouseCncbl() + ftxzhqCncbl.getHouseCncbl()));
+					proCost.setCostSpeMidAll(proCostTemp * (ftyfCncbl.getSpeCncbl() + ftxzhqCncbl.getSpeCncbl()));
+					proCost.setCostAssetMidAll(proCostTemp * (ftyfCncbl.getAssetCncbl() + ftxzhqCncbl.getAssetCncbl()));
+					proCost.setCostOtherMidAll(proCostTemp * (ftyfCncbl.getOcCncbl() + ftxzhqCncbl.getOcCncbl()));
+
+					deptProCosts.add(proCost);
+
+				}
+
+			}
+		}
+
+		// 4、院级-项目理论成本（直接成本）
+		// 5、院级-项目理论成本（业务成本）
+		// 6、院级-项目理论成本（全成本）
+		for (TProDic proDic : proDicsList) {
+			ProCost hosCncblCost = new ProCost();
+			hosCncblCost.settJobId(job.getId());
+			hosCncblCost.setLevel(2);
+			hosCncblCost.setProCode(proDic.getProCode());
+			hosCncblCost.setProName(proDic.getProName());
+			hosCncblCost.setCostWsclf(proDic.getWsclf());
+			hosCncblCost.setCostYlfxjj(proDic.getYlfxjj());
+
+			// 项目消耗
+			Double proCostTemp = proDic.getCostTime()
+					* (proDic.getPcYs() + proDic.getPcHs() + proDic.getPcJs() + proDic.getPcO());
+
+			// 直接成本
+			hosCncblCost.setCostPeopleDirect(proCostTemp * (hosZjcbCncbl.getYsCncbl() + hosZjcbCncbl.getHsCncbl()
+					+ hosZjcbCncbl.getJsCncbl() + hosZjcbCncbl.getOpCncbl()));
+			hosCncblCost.setCostHouseDirect(proCostTemp * hosZjcbCncbl.getHouseCncbl());
+			hosCncblCost.setCostSpeDirect(proCostTemp * hosZjcbCncbl.getSpeCncbl());
+			hosCncblCost.setCostAssetDirect(proCostTemp * hosZjcbCncbl.getAssetCncbl());
+			hosCncblCost.setCostOtherDirect(proCostTemp * hosZjcbCncbl.getOcCncbl());
+
+			// 间接成本-业务成本
+
+			hosCncblCost.setCostPeopleMidYw(proCostTemp * (hosFtyfCncbl.getYsCncbl() + hosFtyfCncbl.getHsCncbl()
+					+ hosFtyfCncbl.getJsCncbl() + hosFtyfCncbl.getOpCncbl()));
+			hosCncblCost.setCostHouseMidYw(proCostTemp * hosFtyfCncbl.getHouseCncbl());
+			hosCncblCost.setCostSpeMidYw(proCostTemp * hosFtyfCncbl.getSpeCncbl());
+			hosCncblCost.setCostAssetMidYw(proCostTemp * hosFtyfCncbl.getAssetCncbl());
+			hosCncblCost.setCostOtherMidYw(proCostTemp * hosFtyfCncbl.getOcCncbl());
+
+			// 间接成本-全成本
+			hosCncblCost.setCostPeopleMidAll(proCostTemp * (hosFtyfCncbl.getYsCncbl() + hosFtyfCncbl.getHsCncbl()
+					+ hosFtyfCncbl.getJsCncbl() + hosFtyfCncbl.getOpCncbl() + hosFtxzhqCncbl.getYsCncbl()
+					+ hosFtxzhqCncbl.getHsCncbl() + hosFtxzhqCncbl.getJsCncbl() + hosFtxzhqCncbl.getOpCncbl()));
+			hosCncblCost
+					.setCostHouseMidAll(proCostTemp * (hosFtyfCncbl.getHouseCncbl() + hosFtxzhqCncbl.getHouseCncbl()));
+			hosCncblCost.setCostSpeMidAll(proCostTemp * (hosFtyfCncbl.getSpeCncbl() + hosFtxzhqCncbl.getSpeCncbl()));
+			hosCncblCost
+					.setCostAssetMidAll(proCostTemp * (hosFtyfCncbl.getAssetCncbl() + hosFtxzhqCncbl.getAssetCncbl()));
+			hosCncblCost.setCostOtherMidAll(proCostTemp * (hosFtyfCncbl.getOcCncbl() + hosFtxzhqCncbl.getOcCncbl()));
+
+			hosCncblCosts.add(hosCncblCost);
+		}
+
+	}
+
+	private Cncbl handleHosCncbl(Map<String, Cncbl> cncbls) {
+		Cncbl ret = new Cncbl();
+		// 产能成本率不为0的科室数目
+		int not0Ys = 0;
+		int not0Hs = 0;
+		int not0Js = 0;
+		int not0Op = 0;
+		int not0House = 0;
+		int not0Spe = 0;
+		int not0Asset = 0;
+		int not0Oc = 0;
+		// 各个科室产能成本率之和
+		Double deptAllYs = 0d;
+		Double deptAllHs = 0d;
+		Double deptAllJs = 0d;
+		Double deptAllOp = 0d;
+		Double deptAllHouse = 0d;
+		Double deptAllSpe = 0d;
+		Double deptAllAsset = 0d;
+		Double deptAllOc = 0d;
+
+		for (String key : cncbls.keySet()) {
+			Cncbl cncbl = cncbls.get(key);
+			deptAllYs += cncbl.getYsCncbl();
+			deptAllHs += cncbl.getHsCncbl();
+			deptAllJs += cncbl.getJsCncbl();
+			deptAllOp += cncbl.getOpCncbl();
+			deptAllHouse += cncbl.getHouseCncbl();
+			deptAllSpe += cncbl.getSpeCncbl();
+			deptAllAsset += cncbl.getAssetCncbl();
+			deptAllOc += cncbl.getOcCncbl();
+
+			not0Ys += cncbl.getYsCncbl() == 0 ? 0 : 1;
+			not0Hs += cncbl.getHsCncbl() == 0 ? 0 : 1;
+			not0Js += cncbl.getJsCncbl() == 0 ? 0 : 1;
+			not0Op += cncbl.getOpCncbl() == 0 ? 0 : 1;
+			not0House += cncbl.getHouseCncbl() == 0 ? 0 : 1;
+			not0Spe += cncbl.getSpeCncbl() == 0 ? 0 : 1;
+			not0Asset += cncbl.getAssetCncbl() == 0 ? 0 : 1;
+			not0Oc += cncbl.getOcCncbl() == 0 ? 0 : 1;
+
+		}
+		ret.setYsCncbl(div(deptAllYs, not0Ys));
+		ret.setHsCncbl(div(deptAllHs, not0Hs));
+		ret.setJsCncbl(div(deptAllJs, not0Js));
+		ret.setOpCncbl(div(deptAllOp, not0Op));
+		ret.setHouseCncbl(div(deptAllHouse, not0House));
+		ret.setSpeCncbl(div(deptAllSpe, not0Spe));
+		ret.setAssetCncbl(div(deptAllAsset, not0Asset));
+		ret.setOcCncbl(div(deptAllOc, not0Oc));
+		return ret;
 	}
 
 	// 二级分摊：该临床科室对该医技科室的开单工作量
@@ -510,6 +975,114 @@ public class CADItemHandler {
 
 	public Map<String, TCostaccountFentan> getFentanMulLev() {
 		return fentanMulLev;
+	}
+
+	public Map<String, Integer> getDeptTypePeopleCount() {
+		return deptTypePeopleCount;
+	}
+
+	public void setDeptTypePeopleCount(Map<String, Integer> deptTypePeopleCount) {
+		this.deptTypePeopleCount = deptTypePeopleCount;
+	}
+
+	public Map<String, Cncbl> getDeptZjcbCncbl() {
+		return deptZjcbCncbl;
+	}
+
+	public void setDeptZjcbCncbl(Map<String, Cncbl> deptZjcbCncbl) {
+		this.deptZjcbCncbl = deptZjcbCncbl;
+	}
+
+	public Map<String, Cncbl> getDeptFtyfCncbl() {
+		return deptFtyfCncbl;
+	}
+
+	public void setDeptFtyfCncbl(Map<String, Cncbl> deptFtyfCncbl) {
+		this.deptFtyfCncbl = deptFtyfCncbl;
+	}
+
+	public Map<String, Cncbl> getDeptFtxzhqCncbl() {
+		return deptFtxzhqCncbl;
+	}
+
+	public void setDeptFtxzhqCncbl(Map<String, Cncbl> deptFtxzhqCncbl) {
+		this.deptFtxzhqCncbl = deptFtxzhqCncbl;
+	}
+
+	public Map<String, Cncbl> getDeptYwcbCncbl() {
+		return deptYwcbCncbl;
+	}
+
+	public void setDeptYwcbCncbl(Map<String, Cncbl> deptYwcbCncbl) {
+		this.deptYwcbCncbl = deptYwcbCncbl;
+	}
+
+	public Map<String, Cncbl> getDeptQcbCncbl() {
+		return deptQcbCncbl;
+	}
+
+	public void setDeptQcbCncbl(Map<String, Cncbl> deptQcbCncbl) {
+		this.deptQcbCncbl = deptQcbCncbl;
+	}
+
+	public Cncbl getHosZjcbCncbl() {
+		return hosZjcbCncbl;
+	}
+
+	public void setHosZjcbCncbl(Cncbl hosZjcbCncbl) {
+		this.hosZjcbCncbl = hosZjcbCncbl;
+	}
+
+	public Cncbl getHosFtyfCncbl() {
+		return hosFtyfCncbl;
+	}
+
+	public void setHosFtyfCncbl(Cncbl hosFtyfCncbl) {
+		this.hosFtyfCncbl = hosFtyfCncbl;
+	}
+
+	public Cncbl getHosFtxzhqCncbl() {
+		return hosFtxzhqCncbl;
+	}
+
+	public void setHosFtxzhqCncbl(Cncbl hosFtxzhqCncbl) {
+		this.hosFtxzhqCncbl = hosFtxzhqCncbl;
+	}
+
+	public Cncbl getHosYwcbCncbl() {
+		return hosYwcbCncbl;
+	}
+
+	public void setHosYwcbCncbl(Cncbl hosYwcbCncbl) {
+		this.hosYwcbCncbl = hosYwcbCncbl;
+	}
+
+	public Cncbl getHosQcbCncbl() {
+		return hosQcbCncbl;
+	}
+
+	public void setHosQcbCncbl(Cncbl hosQcbCncbl) {
+		this.hosQcbCncbl = hosQcbCncbl;
+	}
+
+	public List<ProCost> getDeptProCosts() {
+		return deptProCosts;
+	}
+
+	public void setDeptProCosts(List<ProCost> deptProCosts) {
+		this.deptProCosts = deptProCosts;
+	}
+
+	public List<ProCost> getHosCncblCosts() {
+		return hosCncblCosts;
+	}
+
+	public void setHosCncblCosts(List<ProCost> hosCncblCosts) {
+		this.hosCncblCosts = hosCncblCosts;
+	}
+
+	public void setDeptCodeNameMap(Map<String, String> deptCodeNameMap) {
+		this.deptCodeNameMap = deptCodeNameMap;
 	}
 
 }

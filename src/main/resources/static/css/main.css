@@ -296,13 +296,14 @@ textarea{
 }
 .mytable .title{
 	background-color: #64A3FF;
-	height: 35px;
 	line-height: 35px;
-	padding: 3px 20px;
+	padding: 3px 0px;;
 	color: #fff;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	border-radius:3px;
+	float: left;
+	width: 100%;
 }
 .mytable .title .highlight{
 	color: #F8D0AA;
@@ -316,14 +317,15 @@ textarea{
 	margin-right: 10px;
 	color: #fff;
 	cursor: pointer;
+	margin-left: 5px;
+}
+.mytable .title .item:hover{
+	color: #e9eaca;
 }
 .mytable .title .disabled{
 	float: left;
 	margin-right: 10px;
 	color: #E4DFDF;
-}
-.mytable .title .select{
-	border-bottom: 2px solid red;
 }
 .mytable .title .common{
 	font-weight: bold;
@@ -334,7 +336,6 @@ textarea{
 .mytable .title .select{
 	color: #DFEC26;
 	font-weight: bold;
-	border-bottom: 2px solid;
 }
 .mytable .title .spe{
 	color: #E9EACA;
@@ -403,7 +404,6 @@ textarea{
 .mytable table tbody tr td{
 	border-bottom: 1px solid #ececec;
 	border-right: 1px solid #ececec;
-	padding: 5px 10px;
 }
 .card{
 	display: inline-block;

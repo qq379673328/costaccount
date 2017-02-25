@@ -2,11 +2,11 @@
 	位置：
 	<a ui-sref="index">首页</a>
 	&gt;
-	基础数据
+	项目维护
 </div>
 <div class="content">
 	<div class="searchzone">
-		<div class="title"><i class="fa fa-users"></i>&nbsp;项目字典列表</div>
+		<div class="title"><i class="fa fa-users"></i>&nbsp;{{hos.hosName}}  项目列表</div>
 		<div class="line border-none">
 			<div class="desc">项目编码：</div>
 			<div class="vals">
@@ -19,6 +19,7 @@
 				<input ng-model="search.proName" />
 			</div>
 		</div>
+		<btn-back />
 	</div>
 	
 	<div core-formresult result="formresult"></div>
@@ -29,25 +30,27 @@
 				<span class="highlight">{{queryParams.total}}</span>
 			</span>
 			 
-			<a class="spe" href="#prodic/add/{{hosId}}">新增项目字典</a>
+			<a class="spe" href="#prodic/add/{{hosId}}">新增项目</a>
 			 
 		</div>
 		<table class="my-table" ng-table="tableParams">
 			<thead>
 				<tr>
-					<th></th>
-					<th>项目编码</th>
-					<th>项目名称</th>
-					<th>计价单位</th>
-					<th>现行价格</th>
-					<th>项目耗时</th>
-					<th>医生人数</th>
-					<th>护士人数</th>
-					<th>技师人数</th>
-					<th>低值易耗<br/>品成本</th>
-					<th>内涵一次性<br/>耗材成本</th>
+					<th rowspan="2"></th>
+					<th rowspan="2">项目编码</th>
+					<th rowspan="2">项目名称</th>
+					<th rowspan="2">卫生材料费</th>
+					<th rowspan="2">医疗风险基金</th>
+					<th colspan="4">基本人力消耗</th>
+					<th rowspan="2">项目耗时</th>
 					
-					<th>操作</th>
+					<th rowspan="2">操作</th>
+				</tr>
+				<tr>
+					<th>医生</th>
+					<th>护士</th>
+					<th>技师</th>
+					<th>其他</th>
 				</tr>
 			</thead>
 			<tr ng-show="!$data"><td colspan="4">加载中...</td></tr>
@@ -56,14 +59,13 @@
 				
 				<td>{{ item.pro_code }}</td>
 				<td>{{ item.pro_name }}</td>
-				<td>{{ item.unit }}</td>
-				<td>{{ item.price_current }}</td>
+				<td>{{ item.wsclf }}</td>
+				<td>{{ item.ylfxjj }}</td>
+				<td>{{ item.pc_ys }}</td>
+				<td>{{ item.pc_hs }}</td>
+				<td>{{ item.pc_js }}</td>
+				<td>{{ item.pc_o }}</td>
 				<td>{{ item.cost_time }}</td>
-				<td>{{ item.people_count_doctor }}</td>
-				<td>{{ item.people_count_nurse }}</td>
-				<td>{{ item.people_count_tech }}</td>
-				<td>{{ item.cost_low_level }}</td>
-				<td>{{ item.cost_once }}</td>
 				
 				<td class="handle">
 					<a class="btn btn-small btn-lblue" 

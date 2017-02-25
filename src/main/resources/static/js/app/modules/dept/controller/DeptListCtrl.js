@@ -7,6 +7,13 @@ app.controller('DeptListCtrl',function($scope,
 	var hosId = $stateParams.hosId;
 	$scope.hosId = hosId;
 	
+	// 根据医院id获取医院详情
+	//加载医院信息
+	$http.post("hos/getById/" + hosId)
+	.success(function(data){
+		$scope.hos = data.data;
+	});
+	
 	//分页查询
 	var initpage = 1,
 		initrows = 10;

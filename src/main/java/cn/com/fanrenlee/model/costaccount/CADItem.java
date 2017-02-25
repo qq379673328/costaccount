@@ -470,6 +470,60 @@ public class CADItem {
 	 * 科室人员数
 	 */
 	private Integer peopleCount;
+	private Integer peopleCountZzys;
+	private Integer peopleCountFzrys;
+	private Integer peopleCountZrys;
+	private Integer peopleCountJs;
+	private Integer peopleCountHs;
+	private Integer peopleCountQt;
+	
+	public Integer getPeopleCountZzys() {
+		return peopleCountZzys == null ? 0 : peopleCountZzys;
+	}
+
+	public void setPeopleCountZzys(Integer peopleCountZzys) {
+		this.peopleCountZzys = peopleCountZzys;
+	}
+
+	public Integer getPeopleCountFzrys() {
+		return peopleCountFzrys == null ? 0 : peopleCountFzrys;
+	}
+
+	public void setPeopleCountFzrys(Integer peopleCountFzrys) {
+		this.peopleCountFzrys = peopleCountFzrys;
+	}
+
+	public Integer getPeopleCountZrys() {
+		return peopleCountZrys == null ? 0 : peopleCountZrys;
+	}
+
+	public void setPeopleCountZrys(Integer peopleCountZrys) {
+		this.peopleCountZrys = peopleCountZrys;
+	}
+
+	public Integer getPeopleCountJs() {
+		return peopleCountJs == null ? 0 : peopleCountJs;
+	}
+
+	public void setPeopleCountJs(Integer peopleCountJs) {
+		this.peopleCountJs = peopleCountJs;
+	}
+
+	public Integer getPeopleCountHs() {
+		return peopleCountHs == null ? 0 : peopleCountHs;
+	}
+
+	public void setPeopleCountHs(Integer peopleCountHs) {
+		this.peopleCountHs = peopleCountHs;
+	}
+
+	public Integer getPeopleCountQt() {
+		return peopleCountQt == null ? 0 : peopleCountQt;
+	}
+
+	public void setPeopleCountQt(Integer peopleCountQt) {
+		this.peopleCountQt = peopleCountQt;
+	}
 
 	/**
 	 * 工作量-住院执行收入

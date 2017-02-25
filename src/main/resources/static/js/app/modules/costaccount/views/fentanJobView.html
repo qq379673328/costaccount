@@ -8,7 +8,8 @@
 </div>
 <div class="content">
 
-	<div ng-if="job.state == '2'">
+	<!-- 
+	<div ng-show="job.state == '2'">
 		
 		科室名:<input ng-model="queryParams.deptName" />
 		<div class="btn btn-lblue" 
@@ -17,15 +18,26 @@
 		</div>
 		
 	</div>
+	-->
+	<btn-back></btn-back>
 
 	<div class="mytable" >
-		<div class="title" ng-init="show='baseinfo'">
-			<a class="item" ng-click="show='baseinfo'"
-				ng-class="{true: 'select', false: 'unselect'}[show=='baseinfo']" >基本信息</a>
-			<a class="item" ng-show="job.state == '2'" ng-click="show='srcData'"
-				ng-class="{true: 'select', false: 'unselect'}[show=='srcData']" >原始数据</a>
-			<a class="item" ng-show="job.state == '2'" ng-click="show='srcDataKdgzl'"
-				ng-class="{true: 'select', false: 'unselect'}[show=='srcDataKdgzl']" >原始数据【开单工作量】</a>
+		<div class="title" ng-init="showtype='baseinfo'">
+			<a class="item" ng-click="showtype='baseinfo';show=null"
+				ng-class="{true: 'select', false: 'unselect'}[showtype=='baseinfo']" >基本信息</a>
+			<a class="item" ng-show="job.state == '2'" ng-click="showtype='srcData';show=null"
+				ng-class="{true: 'select', false: 'unselect'}[showtype=='srcData']" >原始数据</a>
+			<a class="item" ng-show="job.state == '2'" ng-click="showtype='srcDataKdgzl';show=null"
+				ng-class="{true: 'select', false: 'unselect'}[showtype=='srcDataKdgzl']" >原始数据【开单工作量】</a>
+			<a class="item" ng-show="job.state == '2'" ng-click="showtype='fentan';show='fentanData1'"
+				ng-class="{true: 'select', false: 'unselect'}[showtype=='fentan']" >分摊算法结果</a>
+			<a class="item" ng-show="job.state == '2'" ng-click="showtype='lilun';show='lilun1'"
+				ng-class="{true: 'select', false: 'unselect'}[showtype=='lilun']" >理论成本算法结果</a>
+		</div>
+	</div>
+
+	<div class="mytable" ng-show="showtype=='fentan'" style="margin-top: 10px; margin-bottom: 10px;">
+		<div class="title" style="background-color: #2f96b4">
 			<a class="item" ng-show="job.state == '2'" ng-click="show='fentanData1'"
 				ng-class="{true: 'select', false: 'unselect'}[show=='fentanData1']" >展示报表1</a>
 			<a class="item" ng-show="job.state == '2'" ng-click="show='fentanData2'"
@@ -39,8 +51,41 @@
 		</div>
 	</div>
 	
+	<div class="mytable" ng-show="showtype=='lilun'" style="margin-top: 10px; margin-bottom: 10px;">
+		<div class="title" style="background-color: #2f96b4">
+			<a class="item" ng-show="job.state == '2'" ng-click="show='lilun1'"
+				ng-class="{true: 'select', false: 'unselect'}[show=='lilun1']" >科室级-项目理论成本</a>
+			<a class="item" ng-show="job.state == '2'" ng-click="show='lilun2'"
+				ng-class="{true: 'select', false: 'unselect'}[show=='lilun2']" >科室级-项目理论成本（直接成本明细表）</a>
+			<a class="item" ng-show="job.state == '2'" ng-click="show='lilun3'"
+				ng-class="{true: 'select', false: 'unselect'}[show=='lilun3']" >科室级-项目理论成本（业务成本明细表）</a>
+			<a class="item" ng-show="job.state == '2'" ng-click="show='lilun4'"
+				ng-class="{true: 'select', false: 'unselect'}[show=='lilun4']" >科室级-项目理论成本（全成本明细表）</a>
+			<br/>
+			
+			<a class="item" ng-show="job.state == '2'" ng-click="show='lilun5'"
+				ng-class="{true: 'select', false: 'unselect'}[show=='lilun5']" >科室级-产能成本率</a>
+			<br/>
+			
+			<a class="item" ng-show="job.state == '2'" ng-click="show='lilun6'"
+				ng-class="{true: 'select', false: 'unselect'}[show=='lilun6']" >院级-项目理论成本</a>
+			<a class="item" ng-show="job.state == '2'" ng-click="show='lilun7'"
+				ng-class="{true: 'select', false: 'unselect'}[show=='lilun7']" >院级-项目理论成本（直接成本明细表）</a>
+			<a class="item" ng-show="job.state == '2'" ng-click="show='lilun8'"
+				ng-class="{true: 'select', false: 'unselect'}[show=='lilun8']" >院级-项目理论成本（业务成本明细表）</a>
+			<a class="item" ng-show="job.state == '2'" ng-click="show='lilun9'"
+				ng-class="{true: 'select', false: 'unselect'}[show=='lilun9']" >院级-项目理论成本（全成本明细表）</a>
+			<br/>
+
+			<a class="item" ng-show="job.state == '2'" ng-click="show='lilun10'"
+				ng-class="{true: 'select', false: 'unselect'}[show=='lilun10']" >院级-产能成本率</a>
+			<br/>			
+			
+		</div>
+	</div>
+	
 	<!-- 基础数据 -->
-	<div class="mytable" ng-show="show=='baseinfo'">
+	<div class="mytable" ng-show="showtype=='baseinfo'">
 		<table>
 			<tbody>
 				<tr>
@@ -53,7 +98,7 @@
 					</td>
 				</tr>
 				
-				<tr ng-if="job.state == '2'">
+				<tr ng-show="job.state == '2'">
 					<td class="td-odd">总开单收入：</td>
 					<td class="td-even">
 						{{dataBase.total_cost_kdsr}}
@@ -63,7 +108,7 @@
 						{{dataBase.total_cost_mzzxsr}}
 					</td>
 				</tr>
-				<tr ng-if="job.state == '2'">
+				<tr ng-show="job.state == '2'">
 					<td class="td-odd">总消毒工作量：</td>
 					<td class="td-even">
 						{{dataBase.total_cost_xdgzl}}
@@ -73,7 +118,7 @@
 						{{dataBase.total_cost_zyzxsr}}
 					</td>
 				</tr>
-				<tr ng-if="job.state == '2'">
+				<tr ng-show="job.state == '2'">
 					<td class="td-odd">总住院人数：</td>
 					<td class="td-even">
 						{{dataBase.total_cost_inhos}}
@@ -83,7 +128,7 @@
 						{{dataBase.total_Cost_mz}}
 					</td>
 				</tr>
-				<tr ng-if="job.state == '2'">
+				<tr ng-show="job.state == '2'">
 					<td class="td-odd">总人数：</td>
 					<td class="td-even">
 						{{dataBase.total_people}}
@@ -109,7 +154,7 @@
 	</div>
 	
 	<!-- 原始数据 -->
-	<div class="mytable" ng-show="show=='srcData'" style="overflow-x: scroll;">
+	<div class="mytable" ng-show="showtype=='srcData'" style="overflow-x: scroll;">
 		<table class="my-table table-width"
 			style="width: 2000px;">
 			<thead>
@@ -189,7 +234,7 @@
 	</div>
 	
 	<!-- 原始数据-开单工作量 -->
-	<div class="mytable" ng-show="show=='srcDataKdgzl'">
+	<div class="mytable" ng-show="showtype=='srcDataKdgzl'">
 		<table class="my-table">
 			<thead>
 				<tr>
@@ -493,6 +538,519 @@
 			</tr>
 		</table>
 	</div>
+	
+	<!-- 展示报表1：科室级-项目理论成本 -->
+	<div class="mytable" ng-show="show=='lilun1'">
+		<table class="my-table">
+			<thead>
+				<tr>
+					<th>序号</th>
+					<th>科室编码</th>
+					<th>科室名称</th>
+					<th>项目名称</th>
+					<th>项目直接成本</th>
+					<th>项目业务成本</th>
+					<th>项目全成本</th>
+				</tr>
+			</thead>
+			<tr ng-repeat="item in procosts | filter: {level: 1}">
+				<td>{{ $index + 1 }}</td>
+				
+				<td>{{ item.dept_code }}</td>
+				<td>{{ item.dept_name }}</td>
+				
+				<td>{{ item.pro_name }}</td>
+				
+				<td>{{ item.cost_people_direct + item.cost_house_direct + item.cost_spe_direct 
+					+ item.cost_asset_direct + item.cost_other_direct 
+					+ item.cost_wsclf + item.cost_ylfxjj 
+					| number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_people_direct + item.cost_house_direct + item.cost_spe_direct 
+					+ item.cost_asset_direct + item.cost_other_direct 
+					+ item.cost_wsclf + item.cost_ylfxjj 
+					+ item.cost_people_mid_yw + item.cost_house_mid_yw + item.cost_spe_mid_yw 
+					+ item.cost_asset_mid_yw + item.cost_other_mid_yw 
+					| number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_people_direct + item.cost_house_direct + item.cost_spe_direct 
+					+ item.cost_asset_direct + item.cost_other_direct 
+					+ item.cost_wsclf + item.cost_ylfxjj 
+					+ item.cost_people_mid_all + item.cost_house_mid_all + item.cost_spe_mid_all
+					+ item.cost_asset_mid_all + item.cost_other_mid_all
+					| number:6 | tableShowNull}}</td>
+				
+			</tr>
+		</table>
+	</div>
+	
+	<!-- 展示报表2：科室级-项目理论成本（直接成本明细表） -->
+	<div class="mytable" ng-show="show=='lilun2'">
+		<table class="my-table">
+			<thead>
+				<tr>
+					<th>序号</th>
+					<th>科室编码</th>
+					<th>科室名称</th>
+					<th>项目名称</th>
+					<th>人员经费</th>
+					<th>卫生材料费</th>
+					<th>房屋、通用设备<br/>折旧费</th>
+					<th>专用设备<br/>折旧费</th>
+					<th>无形资产<br/>摊销费</th>
+					<th>医疗风险<br/>基金</th>
+					<th>其他费用</th>
+					<th>合计</th>
+				</tr>
+			</thead>
+			<tr ng-repeat="item in procosts | filter: {level: 1}">
+				<td>{{ $index + 1 }}</td>
+				
+				<td>{{ item.dept_code }}</td>
+				<td>{{ item.dept_name }}</td>
+				
+				<td>{{ item.pro_name }}</td>
+				
+				<td>{{ item.cost_people_direct | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_wsclf | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_house_direct | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_spe_direct | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_asset_direct | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_ylfxjj | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_other_direct | number:6 | tableShowNull}}</td>
+				
+				<td>{{ item.cost_people_direct + item.cost_house_direct + item.cost_spe_direct 
+					+ item.cost_asset_direct + item.cost_other_direct 
+					+ item.cost_wsclf + item.cost_ylfxjj 
+					| number:6 | tableShowNull}}</td>
+				
+			</tr>
+		</table>
+	</div>
+	
+	<!-- 展示报表3：科室级-项目理论成本（业务成本明细表） -->
+	<div class="mytable" ng-show="show=='lilun3'" style="overflow-x: scroll;">
+		<table class="my-table table-width"
+		 style="width: 2000px;">
+			<thead>
+				<tr>
+					<th rowspan="2">序号</th>
+					<th rowspan="2">科室编码</th>
+					<th rowspan="2">科室名称</th>
+					<th rowspan="2">项目名称</th>
+					<th colspan="2">人员经费</th>
+					<th rowspan="2">卫生材料费</th>
+					<th colspan="2">房屋、通用设备<br/>折旧费</th>
+					<th colspan="2">专用设备<br/>折旧费</th>
+					<th colspan="2">无形资产<br/>摊销费</th>
+					<th rowspan="2">医疗风险基金</th>
+					<th colspan="2">其他费用</th>
+					<th rowspan="2">合计</th>
+				</tr>
+				<tr>
+					<th>直接成本</th>
+					<th>间接成本</th>
+					<th>直接成本</th>
+					<th>间接成本</th>
+					<th>直接成本</th>
+					<th>间接成本</th>
+					<th>直接成本</th>
+					<th>间接成本</th>
+					<th>直接成本</th>
+					<th>间接成本</th>
+				</tr>
+			</thead>
+			<tr ng-repeat="item in procosts | filter: {level: 1}">
+				<td>{{ $index + 1 }}</td>
+				
+				<td>{{ item.dept_code }}</td>
+				<td>{{ item.dept_name }}</td>
+				
+				<td>{{ item.pro_name }}</td>
+				
+				<td>{{ item.cost_people_direct | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_people_mid_yw | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_wsclf | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_house_direct | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_house_mid_yw | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_spe_direct | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_spe_mid_yw | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_asset_direct | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_asset_mid_yw | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_ylfxjj | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_other_direct | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_other_mid_yw | number:6 | tableShowNull}}</td>
+				
+				<td>{{ item.cost_people_direct + item.cost_house_direct + item.cost_spe_direct 
+					+ item.cost_asset_direct + item.cost_other_direct 
+					+ item.cost_wsclf + item.cost_ylfxjj 
+					+ item.cost_people_mid_yw + item.cost_house_mid_yw + item.cost_spe_mid_yw 
+					+ item.cost_asset_mid_yw + item.cost_other_mid_yw 
+					| number:6 | tableShowNull}}</td>
+				
+			</tr>
+		</table>
+	</div>
+	
+	<!-- 展示报表4：科室级-项目理论成本（全成本明细表） -->
+	<div class="mytable" ng-show="show=='lilun4'" style="overflow-x: scroll;">
+		<table class="my-table table-width"
+		 style="width: 2000px;">
+			<thead>
+				<tr>
+					<th rowspan="2">序号</th>
+					<th rowspan="2">科室编码</th>
+					<th rowspan="2">科室名称</th>
+					<th rowspan="2">项目名称</th>
+					<th colspan="2">人员经费</th>
+					<th rowspan="2">卫生材料费</th>
+					<th colspan="2">房屋、通用设备<br/>折旧费</th>
+					<th colspan="2">专用设备<br/>折旧费</th>
+					<th colspan="2">无形资产<br/>摊销费</th>
+					<th rowspan="2">医疗风险基金</th>
+					<th colspan="2">其他费用</th>
+					<th rowspan="2">合计</th>
+				</tr>
+				<tr>
+					<th>直接成本</th>
+					<th>间接成本</th>
+					<th>直接成本</th>
+					<th>间接成本</th>
+					<th>直接成本</th>
+					<th>间接成本</th>
+					<th>直接成本</th>
+					<th>间接成本</th>
+					<th>直接成本</th>
+					<th>间接成本</th>
+				</tr>
+			</thead>
+			<tr ng-repeat="item in procosts | filter: {level: 1}">
+				<td>{{ $index + 1 }}</td>
+				
+				<td>{{ item.dept_code }}</td>
+				<td>{{ item.dept_name }}</td>
+				
+				<td>{{ item.pro_name }}</td>
+				
+				<td>{{ item.cost_people_direct | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_people_mid_all | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_wsclf | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_house_direct | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_house_mid_all | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_spe_direct | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_spe_mid_all | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_asset_direct | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_asset_mid_all | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_ylfxjj | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_other_direct | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_other_mid_all | number:6 | tableShowNull}}</td>
+				
+				<td>{{ item.cost_people_direct + item.cost_house_direct + item.cost_spe_direct 
+					+ item.cost_asset_direct + item.cost_other_direct 
+					+ item.cost_wsclf + item.cost_ylfxjj 
+					+ item.cost_people_mid_all + item.cost_house_mid_all + item.cost_spe_mid_all
+					+ item.cost_asset_mid_all + item.cost_other_mid_all
+					| number:6 | tableShowNull}}</td>
+				
+			</tr>
+		</table>
+	</div>
+	
+	<!-- 展示报表5：科室级-产能成本率 -->
+	<div class="mytable" ng-show="show=='lilun5'" style="overflow-x: scroll;">
+		<table class="my-table table-width"
+		 style="width: 2000px;">
+			<thead>
+				<tr>
+					<th>序号</th>
+					<th>科室编码</th>
+					<th>科室名称</th>
+					<th>产能成本<br/>率类别</th>
+					<th>医生产能<br/>成本率</th>
+					<th>护士产能<br/>成本率</th>
+					<th>技师产能<br/>成本率</th>
+					<th>其他人员<br/>产能成本率</th>
+					<th>房屋、通用设备<br/>产能成本率</th>
+					<th>专用设备<br/>产能成本率</th>
+					<th>无形资产摊销<br/>产能成本率</th>
+					<th>其他费用<br/>产能成本率</th>
+				</tr>
+			</thead>
+			<tr ng-repeat="item in proresultCncbl | filter: {level: 1}">
+				<td>{{ $index + 1 }}</td>
+				
+				<td>{{ item.dept_code }}</td>
+				<td>{{ item.dept_name }}</td>
+				
+				<td>{{ item.type }}</td>
+				
+				<td>{{ item.ys_cncbl | number:6 | tableShowNull}}</td>
+				<td>{{ item.hs_cncbl | number:6 | tableShowNull}}</td>
+				<td>{{ item.js_cncbl | number:6 | tableShowNull}}</td>
+				<td>{{ item.op_cncbl | number:6 | tableShowNull}}</td>
+				<td>{{ item.house_cncbl | number:6 | tableShowNull}}</td>
+				<td>{{ item.spe_cncbl | number:6 | tableShowNull}}</td>
+				<td>{{ item.asset_cncbl | number:6 | tableShowNull}}</td>
+				<td>{{ item.oc_cncbl | number:6 | tableShowNull}}</td>
+				
+			</tr>
+		</table>
+	</div>
+	
+	
+	<!-- 展示报表6：院级-项目理论成本 -->
+	<div class="mytable" ng-show="show=='lilun6'">
+		<table class="my-table">
+			<thead>
+				<tr>
+					<th>序号</th>
+					<th>机构代码</th>
+					<th>医院名称</th>
+					<th>项目名称</th>
+					<th>项目直接成本</th>
+					<th>项目业务成本</th>
+					<th>项目全成本</th>
+				</tr>
+			</thead>
+			<tr ng-repeat="item in procosts | filter: {level: 2}">
+				<td>{{ $index + 1 }}</td>
+				
+				<td>{{ hos.hosCode }}</td>
+				<td>{{ hos.hosName }}</td>
+				<td>{{ item.pro_name }}</td>
+				
+				<td>{{ item.cost_people_direct + item.cost_house_direct + item.cost_spe_direct 
+					+ item.cost_asset_direct + item.cost_other_direct 
+					+ item.cost_wsclf + item.cost_ylfxjj 
+					| number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_people_direct + item.cost_house_direct + item.cost_spe_direct 
+					+ item.cost_asset_direct + item.cost_other_direct 
+					+ item.cost_wsclf + item.cost_ylfxjj 
+					+ item.cost_people_mid_yw + item.cost_house_mid_yw + item.cost_spe_mid_yw 
+					+ item.cost_asset_mid_yw + item.cost_other_mid_yw 
+					| number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_people_direct + item.cost_house_direct + item.cost_spe_direct 
+					+ item.cost_asset_direct + item.cost_other_direct 
+					+ item.cost_wsclf + item.cost_ylfxjj 
+					+ item.cost_people_mid_all + item.cost_house_mid_all + item.cost_spe_mid_all
+					+ item.cost_asset_mid_all + item.cost_other_mid_all
+					| number:6 | tableShowNull}}</td>
+				
+			</tr>
+		</table>
+	</div>
+	
+	<!-- 展示报表7：院级-项目理论成本（直接成本明细表） -->
+	<div class="mytable" ng-show="show=='lilun7'">
+		<table class="my-table">
+			<thead>
+				<tr>
+					<th>序号</th>
+					<th>机构代码</th>
+					<th>医院名称</th>
+					<th>项目名称</th>
+					<th>人员经费</th>
+					<th>卫生材料费</th>
+					<th>房屋、通用设备<br/>折旧费</th>
+					<th>专用设备<br/>折旧费</th>
+					<th>无形资产<br/>摊销费</th>
+					<th>医疗风险<br/>基金</th>
+					<th>其他费用</th>
+					<th>合计</th>
+				</tr>
+			</thead>
+			<tr ng-repeat="item in procosts | filter: {level: 2}">
+				<td>{{ $index + 1 }}</td>
+				
+				<td>{{ hos.hosCode }}</td>
+				<td>{{ hos.hosName }}</td>
+				
+				<td>{{ item.pro_name }}</td>
+				
+				<td>{{ item.cost_people_direct | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_wsclf | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_house_direct | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_spe_direct | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_asset_direct | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_ylfxjj | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_other_direct | number:6 | tableShowNull}}</td>
+				
+				<td>{{ item.cost_people_direct + item.cost_house_direct + item.cost_spe_direct 
+					+ item.cost_asset_direct + item.cost_other_direct 
+					+ item.cost_wsclf + item.cost_ylfxjj 
+					| number:6 | tableShowNull}}</td>
+				
+			</tr>
+		</table>
+	</div>
+	
+	<!-- 展示报表8：院级-项目理论成本（业务成本明细表） -->
+	<div class="mytable" ng-show="show=='lilun8'" style="overflow-x: scroll;">
+		<table class="my-table table-width"
+		 style="width: 2000px;">
+			<thead>
+				<tr>
+					<th rowspan="2">序号</th>
+					<th rowspan="2">机构代码</th>
+					<th rowspan="2">医院名称</th>
+					<th rowspan="2">项目名称</th>
+					<th colspan="2">人员经费</th>
+					<th rowspan="2">卫生材料费</th>
+					<th colspan="2">房屋、通用设备<br/>折旧费</th>
+					<th colspan="2">专用设备<br/>折旧费</th>
+					<th colspan="2">无形资产<br/>摊销费</th>
+					<th rowspan="2">医疗风险基金</th>
+					<th colspan="2">其他费用</th>
+					<th rowspan="2">合计</th>
+				</tr>
+				<tr>
+					<th>直接成本</th>
+					<th>间接成本</th>
+					<th>直接成本</th>
+					<th>间接成本</th>
+					<th>直接成本</th>
+					<th>间接成本</th>
+					<th>直接成本</th>
+					<th>间接成本</th>
+					<th>直接成本</th>
+					<th>间接成本</th>
+				</tr>
+			</thead>
+			<tr ng-repeat="item in procosts | filter: {level: 2}">
+				<td>{{ $index + 1 }}</td>
+				
+				<td>{{ hos.hosCode }}</td>
+				<td>{{ hos.hosName }}</td>
+				
+				<td>{{ item.pro_name }}</td>
+				
+				<td>{{ item.cost_people_direct | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_people_mid_yw | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_wsclf | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_house_direct | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_house_mid_yw | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_spe_direct | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_spe_mid_yw | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_asset_direct | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_asset_mid_yw | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_ylfxjj | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_other_direct | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_other_mid_yw | number:6 | tableShowNull}}</td>
+				
+				<td>{{ item.cost_people_direct + item.cost_house_direct + item.cost_spe_direct 
+					+ item.cost_asset_direct + item.cost_other_direct 
+					+ item.cost_wsclf + item.cost_ylfxjj 
+					+ item.cost_people_mid_yw + item.cost_house_mid_yw + item.cost_spe_mid_yw 
+					+ item.cost_asset_mid_yw + item.cost_other_mid_yw 
+					| number:6 | tableShowNull}}</td>
+				
+			</tr>
+		</table>
+	</div>
+	
+	<!-- 展示报表9：院级-项目理论成本（全成本明细表） -->
+	<div class="mytable" ng-show="show=='lilun9'" style="overflow-x: scroll;">
+		<table class="my-table table-width"
+		 style="width: 2000px;">
+			<thead>
+				<tr>
+					<th rowspan="2">序号</th>
+					<th rowspan="2">机构代码</th>
+					<th rowspan="2">医院名称</th>
+					<th rowspan="2">项目名称</th>
+					<th colspan="2">人员经费</th>
+					<th rowspan="2">卫生材料费</th>
+					<th colspan="2">房屋、通用设备<br/>折旧费</th>
+					<th colspan="2">专用设备<br/>折旧费</th>
+					<th colspan="2">无形资产<br/>摊销费</th>
+					<th rowspan="2">医疗风险基金</th>
+					<th colspan="2">其他费用</th>
+					<th rowspan="2">合计</th>
+				</tr>
+				<tr>
+					<th>直接成本</th>
+					<th>间接成本</th>
+					<th>直接成本</th>
+					<th>间接成本</th>
+					<th>直接成本</th>
+					<th>间接成本</th>
+					<th>直接成本</th>
+					<th>间接成本</th>
+					<th>直接成本</th>
+					<th>间接成本</th>
+				</tr>
+			</thead>
+			<tr ng-repeat="item in procosts | filter: {level: 2}">
+				<td>{{ $index + 1 }}</td>
+				
+				<td>{{ hos.hosCode }}</td>
+				<td>{{ hos.hosName }}</td>
+				
+				<td>{{ item.pro_name }}</td>
+				
+				<td>{{ item.cost_people_direct | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_people_mid_all | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_wsclf | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_house_direct | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_house_mid_all | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_spe_direct | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_spe_mid_all | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_asset_direct | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_asset_mid_all | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_ylfxjj | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_other_direct | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_other_mid_all | number:6 | tableShowNull}}</td>
+				
+				<td>{{ item.cost_people_direct + item.cost_house_direct + item.cost_spe_direct 
+					+ item.cost_asset_direct + item.cost_other_direct 
+					+ item.cost_wsclf + item.cost_ylfxjj 
+					+ item.cost_people_mid_all + item.cost_house_mid_all + item.cost_spe_mid_all
+					+ item.cost_asset_mid_all + item.cost_other_mid_all
+					| number:6 | tableShowNull}}</td>
+				
+			</tr>
+		</table>
+	</div>
+	
+	<!-- 展示报表10：院级-产能成本率 -->
+	<div class="mytable" ng-show="show=='lilun10'" style="overflow-x: scroll;">
+		<table class="my-table table-width"
+		 style="width: 2000px;">
+			<thead>
+				<tr>
+					<th>序号</th>
+					<th>机构代码</th>
+					<th>医院名称</th>
+					<th>产能成本<br/>率类别</th>
+					<th>医生产能<br/>成本率</th>
+					<th>护士产能<br/>成本率</th>
+					<th>技师产能<br/>成本率</th>
+					<th>其他人员<br/>产能成本率</th>
+					<th>房屋、通用设备<br/>产能成本率</th>
+					<th>专用设备<br/>产能成本率</th>
+					<th>无形资产摊销<br/>产能成本率</th>
+					<th>其他费用<br/>产能成本率</th>
+				</tr>
+			</thead>
+			<tr ng-repeat="item in proresultCncbl | filter: {level: 2}">
+				<td>{{ $index + 1 }}</td>
+				
+				<td>{{ hos.hosCode }}</td>
+				<td>{{ hos.hosName }}</td>
+				
+				<td>{{ item.type | tableShowNull }}</td>
+				
+				<td>{{ item.ys_cncbl | number:6 | tableShowNull}}</td>
+				<td>{{ item.hs_cncbl | number:6 | tableShowNull}}</td>
+				<td>{{ item.js_cncbl | number:6 | tableShowNull}}</td>
+				<td>{{ item.op_cncbl | number:6 | tableShowNull}}</td>
+				<td>{{ item.house_cncbl | number:6 | tableShowNull}}</td>
+				<td>{{ item.spe_cncbl | number:6 | tableShowNull}}</td>
+				<td>{{ item.asset_cncbl | number:6 | tableShowNull}}</td>
+				<td>{{ item.oc_cncbl | number:6 | tableShowNull}}</td>
+				
+			</tr>
+		</table>
+	</div>
+	
 	
 	
 

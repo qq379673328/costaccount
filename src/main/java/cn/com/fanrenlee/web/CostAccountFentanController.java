@@ -6,6 +6,8 @@ package cn.com.fanrenlee.web;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +23,10 @@ import cn.com.fanrenlee.model.common.PagingResult;
 import cn.com.fanrenlee.model.common.ResultCode;
 import cn.com.fanrenlee.model.tables.TCostaccountJob;
 import cn.com.fanrenlee.model.tables.TCostaccountJobBaseinfo;
+import cn.com.fanrenlee.model.tables.THospital;
 import cn.com.fanrenlee.service.CostAccountFentanService;
+import cn.com.fanrenlee.service.HosService;
+import cn.com.fanrenlee.service.ProService;
 
 /**
  * 成本核算分摊
@@ -35,6 +40,12 @@ public class CostAccountFentanController {
 
 	@Autowired
 	CostAccountFentanService costAccountFentanService;
+	@Resource
+	ProService proService;
+	@Resource
+	HosService hosService;
+	
+	
 
 	/**
 	 * 新增任务-将原始数据中的业务数据存入数据库，并创建对应的任务
@@ -133,11 +144,18 @@ public class CostAccountFentanController {
 		Map<String, Object> ret = new HashMap<String, Object>();
 		params.put("jobId", String.valueOf(jobId));
 
-		ret.put("job", costAccountFentanService.getJobByJobid(jobId));
+		TCostaccountJob job = costAccountFentanService.getJobByJobid(jobId);
+		THospital hos = hosService.getById(job.gettHosId());
+		ret.put("job", job);
+		ret.put("hos", hos);
 		ret.put("base", costAccountFentanService.fentanBase(String.valueOf(jobId)));
 		ret.put("src", costAccountFentanService.getSrcDataList(params));
 		ret.put("srcKdgzl", costAccountFentanService.getSrcDataKdgzlList(params));
 		ret.put("fentan", costAccountFentanService.getFentanList(params, 0));
+		
+		ret.put("proresult", proService.getProResult(jobId));
+		ret.put("proresultCncbl", proService.getProResultCncbl(jobId));
+		
 		return ret;
 	}
 

@@ -53,16 +53,14 @@ public class ProDicService extends SimpleServiceImpl {
 	public void add(TProDic dic) {
 		jdbcTemplate
 			.update("insert into t_pro_dic ("
-				+ " pro_code, pro_name, unit, "
-				+ " price_current, cost_time, "
-				+ " people_count_doctor, people_count_nurse,"
-				+ " people_count_tech, cost_low_level, "
-				+ " cost_once, t_hospital_id) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ",
-				new Object[] { dic.getProCode(), dic.getProName(), dic.getUnit(),
-						dic.getPriceCurrent(), dic.getCostTime(),
-						dic.getPeopleCountDoctor(), dic.getPeopleCountNurse(),
-						dic.getPeopleCountTech(), dic.getCostLowLevel(),
-						dic.getCostOnce(), dic.gettHospitalId() });
+				+ " pro_code, pro_name, cost_time, "
+				+ " pc_ys, pc_hs, pc_js, pc_o, "
+				+ " t_hospital_id, wsclf, ylfxjj) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ",
+				new Object[] { dic.getProCode(), dic.getProName(), dic.getCostTime(),
+						dic.getPcYs(), dic.getPcHs(),
+						dic.getPcJs(), dic.getPcO(),
+						dic.gettHospitalId(), dic.getWsclf(),
+						dic.getYlfxjj() });
 	}
 
 	/**
@@ -74,18 +72,23 @@ public class ProDicService extends SimpleServiceImpl {
 	public void edit(TProDic dic) {
 		jdbcTemplate
 			.update("update t_pro_dic set "
-					+ " pro_code = ? ,pro_name = ?, unit = ?, "
-					+ " price_current = ?, cost_time = ?, people_count_doctor = ?, "
-					+ " people_count_nurse = ?, people_count_tech = ?, cost_low_level= ?, "
-					+ " cost_once = ? where id = ? ",
-				new Object[] { dic.getProCode(), dic.getProName(), dic.getUnit(),
-					dic.getPriceCurrent(), dic.getCostTime(), dic.getPeopleCountDoctor(),
-					dic.getPeopleCountNurse(), dic.getPeopleCountTech(), dic.getCostLowLevel(),
-					dic.getCostOnce(), dic.getId() });
+					+ " pro_code = ? ,pro_name = ?, cost_time = ?, "
+					+ " pc_ys = ?, pc_hs = ?, pc_js = ?, "
+					+ " pc_o = ?, wsclf= ?, "
+					+ " ylfxjj = ? where id = ? ",
+				new Object[] { dic.getProCode(), dic.getProName(), dic.getCostTime(),
+					dic.getPcYs(), dic.getPcHs(), dic.getPcJs(),
+					dic.getWsclf(), dic.getWsclf(),
+					 dic.getYlfxjj(), dic.getId() });
 	}
 
+	public List<TProDic> getProDics(Integer hosId){
+		return jdbcTemplate.query(" SELECT * from t_pro_dic where t_hospital_id = ? ", new Object[] { hosId },
+				new BeanPropertyRowMapper<TProDic>(TProDic.class));
+	}
+	
 	/**
-	 * 科室分页查询
+	 * 字典分页查询
 	 * 
 	 * @param params
 	 * @param pageParams
