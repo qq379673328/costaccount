@@ -25,10 +25,10 @@
 		<div class="title" ng-init="showtype='baseinfo'">
 			<a class="item" ng-click="showtype='baseinfo';show=null"
 				ng-class="{true: 'select', false: 'unselect'}[showtype=='baseinfo']" >基本信息</a>
-			<a class="item" ng-show="job.state == '2'" ng-click="showtype='srcData';show=null"
+			<a class="item" ng-click="showtype='srcData';show=null"
 				ng-class="{true: 'select', false: 'unselect'}[showtype=='srcData']" >原始数据</a>
-			<a class="item" ng-show="job.state == '2'" ng-click="showtype='srcDataKdgzl';show=null"
-				ng-class="{true: 'select', false: 'unselect'}[showtype=='srcDataKdgzl']" >原始数据【开单工作量】</a>
+			<a class="item" ng-click="showtype='srcDataKdgzl';show=null"
+				ng-class="{true: 'select', false: 'unselect'}[showtype=='srcDataKdgzl']" >原始数据【开单工作量-年例数】</a>
 			<a class="item" ng-show="job.state == '2'" ng-click="showtype='fentan';show='fentanData1'"
 				ng-class="{true: 'select', false: 'unselect'}[showtype=='fentan']" >分摊算法结果</a>
 			<a class="item" ng-show="job.state == '2'" ng-click="showtype='lilun';show='lilun1'"
@@ -39,9 +39,9 @@
 	<div class="mytable" ng-show="showtype=='fentan'" style="margin-top: 10px; margin-bottom: 10px;">
 		<div class="title" style="background-color: #2f96b4">
 			<a class="item" ng-show="job.state == '2'" ng-click="show='fentanData1'"
-				ng-class="{true: 'select', false: 'unselect'}[show=='fentanData1']" >展示报表1</a>
+				ng-class="{true: 'select', false: 'unselect'}[show=='fentanData1']" >科室全成本1</a>
 			<a class="item" ng-show="job.state == '2'" ng-click="show='fentanData2'"
-				ng-class="{true: 'select', false: 'unselect'}[show=='fentanData2']" >展示报表2</a>
+				ng-class="{true: 'select', false: 'unselect'}[show=='fentanData2']" >科室全成本2</a>
 			<a class="item" ng-show="job.state == '2'" ng-click="show='level1Data'"
 				ng-class="{true: 'select', false: 'unselect'}[show=='level1Data']" >分摊行政后勤科室费用表</a>
 			<a class="item" ng-show="job.state == '2'" ng-click="show='level2Data'"
@@ -176,15 +176,15 @@
 					<th>主治<br/>医师</th>
 					<th>副主任<br/>医师</th>
 					<th>主任<br/>医师</th>
-					<th>技师</th>
 					<th>护士</th>
+					<th>技师/药师</th>
 					<th>其他</th>
 					
 					<th>主治<br/>医师</th>
 					<th>副主任<br/>医师</th>
 					<th>主任<br/>医师</th>
-					<th>技师</th>
 					<th>护士</th>
+					<th>技师/药师</th>
 					<th>其他</th>
 					
 					<th>开单<br/>收入</th>
@@ -204,8 +204,8 @@
 				<td>{{ item.cost_people_zzys | tableShowNull}}</td>
 				<td>{{ item.cost_people_fzzys | tableShowNull}}</td>
 				<td>{{ item.cost_people_zrys | tableShowNull}}</td>
-				<td>{{ item.cost_people_js | tableShowNull}}</td>
 				<td>{{ item.cost_people_hs | tableShowNull}}</td>
+				<td>{{ item.cost_people_js | tableShowNull}}</td>
 				<td>{{ item.cost_people_qt | tableShowNull}}</td>
 				
 				<td>{{ item.cost_wscl | tableShowNull}}</td>
@@ -218,8 +218,8 @@
 				<td>{{ item.people_count_zzys | tableShowNull}}</td>
 				<td>{{ item.people_count_fzrys | tableShowNull}}</td>
 				<td>{{ item.people_count_zrys | tableShowNull}}</td>
-				<td>{{ item.people_count_js | tableShowNull}}</td>
 				<td>{{ item.people_count_hs | tableShowNull}}</td>
+				<td>{{ item.people_count_js | tableShowNull}}</td>
 				<td>{{ item.people_count_qt | tableShowNull}}</td>
 				
 				<td>{{ item.work_count_kdsr | tableShowNull}}</td>
@@ -227,7 +227,7 @@
 				<td>{{ item.work_count_zyzxsr | tableShowNull}}</td>
 				<td>{{ item.work_count_xdgzl | tableShowNull}}</td>
 				<td>{{ item.work_count_mz | tableShowNull}}</td>
-				<td>{{ item.work_count_zy | tableShowNull}}</td>
+				<td>{{ item.work_count_inhos | tableShowNull}}</td>
 				
 			</tr>
 		</table>
@@ -283,8 +283,8 @@
 					<th>主治医师</th>
 					<th>副主任医师</th>
 					<th>主任医师</th>
-					<th>技师</th>
 					<th>护士</th>
+					<th>技师/药师</th>
 					<th>其他</th>
 					
 					<th>一级分摊</th>
@@ -301,8 +301,8 @@
 				<td>{{ item.cost_people_zzys | number:2| tableShowNull}}</td>
 				<td>{{ item.cost_people_fzzys | number:2| tableShowNull}}</td>
 				<td>{{ item.cost_people_zrys | number:2| tableShowNull}}</td>
-				<td>{{ item.cost_people_js | number:2| tableShowNull}}</td>
 				<td>{{ item.cost_people_hs | number:2| tableShowNull}}</td>
+				<td>{{ item.cost_people_js | number:2| tableShowNull}}</td>
 				<td>{{ item.cost_people_qt | number:2| tableShowNull}}</td>
 				
 				<td>{{ item.cost_wscl | number:2| tableShowNull}}</td>
@@ -413,8 +413,8 @@
 					<th>主治医师</th>
 					<th>副主任医师</th>
 					<th>主任医师</th>
-					<th>技师</th>
 					<th>护士</th>
+					<th>技师/药师</th>
 					<th>其他</th>
 				</tr>
 			</thead>
@@ -426,8 +426,8 @@
 				<td>{{ item.fx_l1_people_zzys | number:2 | tableShowNull}}</td>
 				<td>{{ item.fx_l1_people_fzrys | number:2 | tableShowNull}}</td>
 				<td>{{ item.fx_l1_people_zrys | number:2 | tableShowNull}}</td>
-				<td>{{ item.fx_l1_people_js | number:2 | tableShowNull}}</td>
 				<td>{{ item.fx_l1_people_hs | number:2 | tableShowNull}}</td>
+				<td>{{ item.fx_l1_people_js | number:2 | tableShowNull}}</td>
 				<td>{{ item.fx_l1_people_qt | number:2 | tableShowNull}}</td>
 				
 				<td>{{ item.fx_l1_wscl | number:2 | tableShowNull}}</td>
@@ -462,8 +462,8 @@
 					<th>主治医师</th>
 					<th>副主任医师</th>
 					<th>主任医师</th>
-					<th>技师</th>
 					<th>护士</th>
+					<th>技师/药师</th>
 					<th>其他</th>
 				</tr>
 			</thead>
@@ -475,8 +475,8 @@
 				<td>{{ item.fx_l2_people_zzys | number:2 | tableShowNull}}</td>
 				<td>{{ item.fx_l2_people_fzrys | number:2 | tableShowNull}}</td>
 				<td>{{ item.fx_l2_people_zrys | number:2 | tableShowNull}}</td>
-				<td>{{ item.fx_l2_people_js | number:2 | tableShowNull}}</td>
 				<td>{{ item.fx_l2_people_hs | number:2 | tableShowNull}}</td>
+				<td>{{ item.fx_l2_people_js | number:2 | tableShowNull}}</td>
 				<td>{{ item.fx_l2_people_qt | number:2 | tableShowNull}}</td>
 				
 				<td>{{ item.fx_l2_wscl | number:2 | tableShowNull}}</td>
@@ -511,8 +511,8 @@
 					<th>主治医师</th>
 					<th>副主任医师</th>
 					<th>主任医师</th>
-					<th>技师</th>
 					<th>护士</th>
+					<th>技师/药师</th>
 					<th>其他</th>
 				</tr>
 			</thead>
@@ -524,8 +524,8 @@
 				<td>{{ item.fx_l3_people_zzys | number:2 | tableShowNull}}</td>
 				<td>{{ item.fx_l3_people_fzrys | number:2 | tableShowNull}}</td>
 				<td>{{ item.fx_l3_people_zrys | number:2 | tableShowNull}}</td>
-				<td>{{ item.fx_l3_people_js | number:2 | tableShowNull}}</td>
 				<td>{{ item.fx_l3_people_hs | number:2 | tableShowNull}}</td>
+				<td>{{ item.fx_l3_people_js | number:2 | tableShowNull}}</td>
 				<td>{{ item.fx_l3_people_qt | number:2 | tableShowNull}}</td>
 				
 				<td>{{ item.fx_l3_wscl | number:2 | tableShowNull}}</td>
@@ -766,7 +766,7 @@
 					<th>产能成本<br/>率类别</th>
 					<th>医生产能<br/>成本率</th>
 					<th>护士产能<br/>成本率</th>
-					<th>技师产能<br/>成本率</th>
+					<th>技师/药师产能<br/>成本率</th>
 					<th>其他人员<br/>产能成本率</th>
 					<th>房屋、通用设备<br/>产能成本率</th>
 					<th>专用设备<br/>产能成本率</th>
@@ -1022,7 +1022,7 @@
 					<th>产能成本<br/>率类别</th>
 					<th>医生产能<br/>成本率</th>
 					<th>护士产能<br/>成本率</th>
-					<th>技师产能<br/>成本率</th>
+					<th>技师/药师产能<br/>成本率</th>
 					<th>其他人员<br/>产能成本率</th>
 					<th>房屋、通用设备<br/>产能成本率</th>
 					<th>专用设备<br/>产能成本率</th>
@@ -1050,8 +1050,5 @@
 			</tr>
 		</table>
 	</div>
-	
-	
-	
 
 </div>

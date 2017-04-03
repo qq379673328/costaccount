@@ -78,7 +78,7 @@ public class ProDicService extends SimpleServiceImpl {
 					+ " ylfxjj = ? where id = ? ",
 				new Object[] { dic.getProCode(), dic.getProName(), dic.getCostTime(),
 					dic.getPcYs(), dic.getPcHs(), dic.getPcJs(),
-					dic.getWsclf(), dic.getWsclf(),
+					dic.getPcO(), dic.getWsclf(),
 					 dic.getYlfxjj(), dic.getId() });
 	}
 

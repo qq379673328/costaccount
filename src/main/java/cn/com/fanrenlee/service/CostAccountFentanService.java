@@ -10,7 +10,6 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -263,9 +262,9 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 					srcItem.setCostPeopleFzzys(getDouble(cellData));
 				} else if (j == 4) {// 第5列-人员经费-主任医师
 					srcItem.setCostPeopleZrys(getDouble(cellData));
-				} else if (j == 5) {// 第6列-人员经费-技师
+				} else if (j == 6) {// 第6列-人员经费-技师
 					srcItem.setCostPeopleJs(getDouble(cellData));
-				} else if (j == 6) {// 第7列-人员经费-护士
+				} else if (j == 5) {// 第7列-人员经费-护士
 					srcItem.setCostPeopleHs(getDouble(cellData));
 				} else if (j == 7) {// 第8列-人员经费-其他
 					srcItem.setCostPeopleQt(getDouble(cellData));
@@ -287,9 +286,9 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 					srcItem.setPeopleCountFzrys(getInteger(cellData));
 				} else if (j == 16) {// 第17列-人员数-主任医师
 					srcItem.setPeopleCountZrys(getInteger(cellData));
-				} else if (j == 17) {// 第18列-人员数-技师
+				} else if (j == 18) {// 第18列-人员数-技师
 					srcItem.setPeopleCountJs(getInteger(cellData));
-				} else if (j == 18) {// 第19列-人员数-护士
+				} else if (j == 17) {// 第19列-人员数-护士
 					srcItem.setPeopleCountHs(getInteger(cellData));
 				} else if (j == 19) {// 第20列-人员数-其他
 					srcItem.setPeopleCountQt(getInteger(cellData));
@@ -326,50 +325,25 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 		}
 		List<TCostaccountSrcKdgzl> srcItems = new ArrayList<TCostaccountSrcKdgzl>();
 		List<List<String>> sheetDataItem = srcData.get(1);
-		if (sheetDataItem.size() <= 4) {
-			throw new ServiceException("第二页数据【对医技科室开单工作量】不符合规范，至少应有4行数据（三行表头，至少一行业务数据）");
+		if (sheetDataItem.size() <= 2) {
+			throw new ServiceException("第二页数据【对医技科室开单工作量】不符合规范，至少应有2行数据（一行表头，至少一行业务数据）");
 		}
 
-		// 从标题行获取开单工作量列对应的科室编码以及名
-		List<String> rowDataDeptName = sheetDataItem.get(1);// 科室名行
-		List<String> rowDataDeptCode = sheetDataItem.get(2);// 科室编码行
-		if (rowDataDeptName.size() <= 0 || rowDataDeptCode.size() <= 0) {
-			throw new ServiceException("第二页数据【对医技科室开单工作量】不符合规范，列数不够，未发现医技科室开单工作量列");
-		}
-		Map<Integer, String[]> codeNameMap = new HashMap<Integer, String[]>();
-		for (int i = 0; i < rowDataDeptName.size(); i++) {
-			if (i <= 1)
-				continue;
-			codeNameMap.put(i, new String[] { rowDataDeptCode.get(i), rowDataDeptName.get(i) });
-		}
-
-		// 处理业务数据
-		for (int i = 0; i < sheetDataItem.size(); i++) {
-			// 忽略标题行
-			if (i <= 2) {
-				continue;
-			}
+		// 处理业务数据-从第二行开始
+		for (int i = 1; i < sheetDataItem.size(); i++) {
 			List<String> rowDataItem = sheetDataItem.get(i);
 			int rowDataitemSize = rowDataItem.size();
-			if (rowDataitemSize < 3) {
-				throw new ServiceException("基础数据【开单工作量】行至少应有三列数据(行" + (i + 1) + ")");
+			if (rowDataitemSize < 5) {
+				throw new ServiceException("第二页数据行至少应有五列数据(行" + (i + 1) + ")");
 			}
-			for (int j = 0; j < rowDataitemSize; j++) {
-				if (j <= 1) {
-					continue;
-				}
-				TCostaccountSrcKdgzl srcItem = new TCostaccountSrcKdgzl();
-				String[] codeName = codeNameMap.get(j);
-				if (codeName == null)
-					continue;
-				srcItem.setDeptCodeBase(rowDataItem.get(0));
-				srcItem.setDeptNameBase(rowDataItem.get(1));
-				srcItem.setDeptCodeYj(codeName[0]);
-				srcItem.setDeptNameYj(codeName[1]);
-				srcItem.setKdgzl(getDouble(rowDataItem.get(j)));
+			TCostaccountSrcKdgzl srcItem = new TCostaccountSrcKdgzl();
+			srcItem.setDeptCodeBase(rowDataItem.get(0));
+			srcItem.setDeptNameBase(rowDataItem.get(1));
+			srcItem.setDeptCodeYj(rowDataItem.get(2));
+			srcItem.setDeptNameYj(rowDataItem.get(3));
+			srcItem.setKdgzl(getDouble(rowDataItem.get(4)));
 
-				srcItems.add(srcItem);
-			}
+			srcItems.add(srcItem);
 		}
 		return srcItems;
 	}
@@ -618,7 +592,7 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 
 				ps.setObject(13, item.getFxL2People());
 				ps.setObject(14, item.getFxL2DeviceCommon());
-				ps.setObject(15, item.getFxL1Wscl());
+				ps.setObject(15, item.getFxL2Wscl());
 				ps.setObject(16, item.getFxL2DeviceSpe());
 				ps.setObject(17, item.getFxL2Asset());
 				ps.setObject(18, item.getFxL2Vc());
@@ -627,7 +601,7 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 
 				ps.setObject(21, item.getFxL3People());
 				ps.setObject(22, item.getFxL3DeviceCommon());
-				ps.setObject(23, item.getFxL1Wscl());
+				ps.setObject(23, item.getFxL3Wscl());
 				ps.setObject(24, item.getFxL3DeviceSpe());
 				ps.setObject(25, item.getFxL3Asset());
 				ps.setObject(26, item.getFxL3Vc());

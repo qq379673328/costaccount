@@ -357,7 +357,9 @@ public class CADItemHandler {
 				// 其他费用
 				cncbl.setOcCncbl(div(cadItem.getCostOther(), (cadItem.getPeopleCount() * VALID_TIME)));
 
-				deptZjcbCncbl.put(deptCode, cncbl);
+				if(isComputeCncbl(cadItem)){
+					deptZjcbCncbl.put(deptCode, cncbl);
+				}
 			}
 		}
 
@@ -418,13 +420,22 @@ public class CADItemHandler {
 				ft.setFxL1Vc(mul(base, xzhqTemp.getCostVcFunds()));
 				ft.setFxL1Other(mul(base, xzhqTemp.getCostOther()));
 
+				ft.setFxL1PeopleZzys(mul(base, xzhqTemp.getCostPeopleQt()) * div(cadItem.getPeopleCountZzys() + 0.00, deptPeopleCount));
+				ft.setFxL1PeopleFzrys(mul(base, xzhqTemp.getCostPeopleQt()) * div(cadItem.getPeopleCountFzrys() + 0.00, deptPeopleCount));
+				ft.setFxL1PeopleZrys(mul(base, xzhqTemp.getCostPeopleQt()) * div(cadItem.getPeopleCountZrys() + 0.00, deptPeopleCount));
+				ft.setFxL1PeopleHs(mul(base, xzhqTemp.getCostPeopleQt()) * div(cadItem.getPeopleCountHs() + 0.00, deptPeopleCount));
+				ft.setFxL1PeopleJs(mul(base, xzhqTemp.getCostPeopleQt()) * div(cadItem.getPeopleCountJs() + 0.00, deptPeopleCount));
+				ft.setFxL1PeopleQt(mul(base, xzhqTemp.getCostPeopleQt()) * div(cadItem.getPeopleCountQt() + 0.00, deptPeopleCount));
+				
+				/*
 				ft.setFxL1PeopleZzys(mul(base, xzhqTemp.getCostPeopleZzys()));
 				ft.setFxL1PeopleFzrys(mul(base, xzhqTemp.getCostPeopleFzzys()));
 				ft.setFxL1PeopleZrys(mul(base, xzhqTemp.getCostPeopleZrys()));
 				ft.setFxL1PeopleHs(mul(base, xzhqTemp.getCostPeopleHs()));
 				ft.setFxL1PeopleJs(mul(base, xzhqTemp.getCostPeopleJs()));
 				ft.setFxL1PeopleQt(mul(base, xzhqTemp.getCostPeopleQt()));
-
+				*/
+				
 			}
 
 			// 分摊对象
@@ -453,7 +464,9 @@ public class CADItemHandler {
 			// 其他费用
 			cncbl.setOcCncbl(div(ttf.getFxL1Other(), (cadItem.getPeopleCount() * VALID_TIME)));
 
-			deptFtxzhqCncbl.put(deptCode, cncbl);
+			if(isComputeCncbl(cadItem)){
+				deptFtxzhqCncbl.put(deptCode, cncbl);
+			}
 		}
 
 		// 计算二级分摊-临床科室、医技科室分摊的医辅科室成本
@@ -484,6 +497,12 @@ public class CADItemHandler {
 					// 全院消毒工作总量 *（供应室直接成本 + 供应室分摊的行政后勤科室成本）
 					// 7、某医技科室分摊的挂号收费处成本 = 该医技科室门诊执行收入 /
 					// 全院门诊总收入 *（挂号收费处直接成本 + 挂号收费处分摊的行政后勤科室成本）
+					// 8、某门诊科室护士分摊的供应室和挂号收费处人员经费成本 = 
+					// （公式1 + 公式2）*（该科室护士人数 / 该科室人员数） 
+					// 9、某住院科室护士分摊的供应室、住院收费处和病案室人员经费成本 = 
+					// （公式3 + 公式4 + 公式5）*（该科室护士人数 / 该科室人员数） 
+					// 10、某医技科室护士分摊的供应室和挂号收费处人员经费成本 = 
+					// （公式6 + 公式7）*（该科室护士人数 / 该科室人员数）
 
 					// 分摊对象
 					TCostaccountFentan ttf = getFentanMulLev().get(deptCode);
@@ -512,18 +531,25 @@ public class CADItemHandler {
 
 					ttf.setFxL2People(safeDouble(ttf.getFxL2People())
 							+ base * (cadItemIn.getCostPeople() + fentan.getFxL1People()));
+					
 					ttf.setFxL2PeopleFzrys(safeDouble(ttf.getFxL2PeopleFzrys())
-							+ base * (cadItemIn.getCostPeopleFzzys() + fentan.getFxL1PeopleFzrys()));
+							+ base * (cadItemIn.getCostPeopleQt() + fentan.getFxL1PeopleQt())
+							* (div(cadItem.getPeopleCountFzrys() + 0.00, cadItem.getPeopleCount())));
 					ttf.setFxL2PeopleHs(safeDouble(ttf.getFxL2PeopleHs())
-							+ base * (cadItemIn.getCostPeopleHs() + fentan.getFxL1PeopleHs()));
+							+ base * (cadItemIn.getCostPeopleQt() + fentan.getFxL1PeopleQt())
+							* (div(cadItem.getPeopleCountHs() + 0.00, cadItem.getPeopleCount())));
 					ttf.setFxL2PeopleJs(safeDouble(ttf.getFxL2PeopleJs())
-							+ base * (cadItemIn.getCostPeopleJs() + fentan.getFxL1PeopleJs()));
+							+ base * (cadItemIn.getCostPeopleQt() + fentan.getFxL1PeopleQt())
+							* (div(cadItem.getPeopleCountJs() + 0.00, cadItem.getPeopleCount())));
 					ttf.setFxL2PeopleQt(safeDouble(ttf.getFxL2PeopleQt())
-							+ base * (cadItemIn.getCostPeopleQt() + fentan.getFxL1PeopleQt()));
+							+ base * (cadItemIn.getCostPeopleQt() + fentan.getFxL1PeopleQt())
+							* (div(cadItem.getPeopleCountQt() + 0.00, cadItem.getPeopleCount())));
 					ttf.setFxL2PeopleZrys(safeDouble(ttf.getFxL2PeopleZrys())
-							+ base * (cadItemIn.getCostPeopleZrys() + fentan.getFxL1PeopleZrys()));
+							+ base * (cadItemIn.getCostPeopleQt() + fentan.getFxL1PeopleQt())
+							* (div(cadItem.getPeopleCountZrys() + 0.00, cadItem.getPeopleCount())));
 					ttf.setFxL2PeopleZzys(safeDouble(ttf.getFxL2PeopleZzys())
-							+ base * (cadItemIn.getCostPeopleZzys() + fentan.getFxL1PeopleZzys()));
+							+ base * (cadItemIn.getCostPeopleQt() + fentan.getFxL1PeopleQt())
+							* (div(cadItem.getPeopleCountZzys() + 0.00, cadItem.getPeopleCount())));
 
 				}
 
@@ -555,7 +581,9 @@ public class CADItemHandler {
 			// 其他费用
 			cncbl.setOcCncbl(div(ttf.getFxL2Other(), (cadItem.getPeopleCount() * VALID_TIME)));
 
-			deptFtyfCncbl.put(deptCode, cncbl);
+			if(isComputeCncbl(cadItem)){
+				deptFtyfCncbl.put(deptCode, cncbl);
+			}
 
 		}
 
@@ -660,7 +688,9 @@ public class CADItemHandler {
 				// 其他费用
 				ywcbCncblY.setOcCncbl(zcbjCncblDept.getOcCncbl() + ftyfCncblDept.getOcCncbl());
 
-				deptYwcbCncbl.put(deptCode, ywcbCncblY);
+				if(isComputeCncbl(cadItem)){
+					deptYwcbCncbl.put(deptCode, ywcbCncblY);
+				}
 
 				// 全成本
 				Cncbl qcbCncblY = new Cncbl();
@@ -694,7 +724,9 @@ public class CADItemHandler {
 				qcbCncblY.setOcCncbl(
 						zcbjCncblDept.getOcCncbl() + ftyfCncblDept.getOcCncbl() + ftxzhqCncblDept.getOcCncbl());
 
-				deptQcbCncbl.put(deptCode, qcbCncblY);
+				if(isComputeCncbl(cadItem)){
+					deptQcbCncbl.put(deptCode, qcbCncblY);
+				}
 
 			}
 
@@ -940,6 +972,21 @@ public class CADItemHandler {
 			ret = baseInfo.getTotalCostMzzxsr() == 0 ? 0 : cadItem.getWorkCountMzzxsr() / baseInfo.getTotalCostMzzxsr();
 		}
 		return ret;
+	}
+	
+	/**
+	 * 是否计算产能成本率
+	 * @param item
+	 * @return
+	 */
+	private Boolean isComputeCncbl(CADItem item){
+		if(item == null) return false;
+		if(item.isDeptTypeYJ() 
+				|| item.isDeptSpecialOutpatient()
+				|| item.isDeptSpecialInhos()){
+			return true;
+		}
+		return false;
 	}
 
 	/**
