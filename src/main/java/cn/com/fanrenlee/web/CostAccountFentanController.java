@@ -151,6 +151,7 @@ public class CostAccountFentanController {
 		ret.put("base", costAccountFentanService.fentanBase(String.valueOf(jobId)));
 		ret.put("src", costAccountFentanService.getSrcDataList(params));
 		ret.put("srcKdgzl", costAccountFentanService.getSrcDataKdgzlList(params));
+		ret.put("srcNls", costAccountFentanService.getSrcDataNlsList(params));
 		ret.put("fentan", costAccountFentanService.getFentanList(params, 0));
 		
 		ret.put("proresult", proService.getProResult(jobId));

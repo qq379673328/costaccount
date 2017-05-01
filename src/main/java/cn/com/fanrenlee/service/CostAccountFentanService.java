@@ -41,6 +41,7 @@ import cn.com.fanrenlee.model.tables.TCostaccountLevel2;
 import cn.com.fanrenlee.model.tables.TCostaccountLevel3;
 import cn.com.fanrenlee.model.tables.TCostaccountSrc;
 import cn.com.fanrenlee.model.tables.TCostaccountSrcKdgzl;
+import cn.com.fanrenlee.model.tables.TCostaccountSrcNls;
 import cn.com.fanrenlee.model.tables.TProDic;
 import cn.com.fanrenlee.util.SqlUtil;
 import cn.com.fanrenlee.util.StrUtils;
@@ -83,6 +84,8 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 		final List<TCostaccountSrc> srcItems = getCadItemsFromSrcData(srcData, job);
 		// 原始业务数据-开单工作量
 		final List<TCostaccountSrcKdgzl> srcItemsKdgzl = getCadItemsKdgzlFromSrcData(srcData, job);
+		// 原始业务数据-项目年例数
+		final List<TCostaccountSrcNls> srcItemsNls = getCadItemsNlsFromSrcData(srcData, job);
 
 		// 保存任务数据
 		final String sqlJob = "insert into t_costaccount_job " + "(job_desc, t_hos_id, hos_code, hos_name) "
@@ -218,6 +221,42 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 			}
 
 		});
+		
+		// 保存业务数据-项目年例数
+		String sqlServiceNls = "insert into t_costaccount_src_nls (" + " t_job_id, dept_code, dept_name, "
+				+ " pro_code, pro_name, nls)" + " values (?,?,?,?,?,?) ";
+		jdbcTemplate.batchUpdate(sqlServiceNls, new BatchPreparedStatementSetter() {
+
+			@Override
+			public void setValues(PreparedStatement ps, int i) throws SQLException {
+				TCostaccountSrcNls item = srcItemsNls.get(i);
+
+				// + " t_job_id, dept_code, dept_name, "
+				ps.setObject(1, jobId);
+				ps.setString(2, handleDeptCode(item.getDeptCode()));
+				ps.setObject(3, item.getDeptName());
+
+				// + " pro_code, pro_name, nls
+				ps.setString(4, handleDeptCode(item.getProCode()));
+				ps.setObject(5, item.getProName());
+				ps.setObject(6, item.getNls());
+
+			}
+
+			// 处理科室编码，防止出现.0
+			private String handleDeptCode(String deptCode) {
+				if (deptCode != null && deptCode.endsWith(".0")) {
+					return deptCode.substring(0, deptCode.length() - 2);
+				}
+				return deptCode;
+			}
+
+			@Override
+			public int getBatchSize() {
+				return srcItemsNls.size();
+			}
+
+		});
 
 		return jobId;
 	}
@@ -347,6 +386,43 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 		}
 		return srcItems;
 	}
+	
+	/**
+	 * 从原始excel数据中获取业务数据-项目年例数-第三页
+	 *
+	 * @param srcData
+	 * @return
+	 * @throws ServiceException
+	 */
+	private List<TCostaccountSrcNls> getCadItemsNlsFromSrcData(List<List<List<String>>> srcData,
+			TCostaccountJob job) throws ServiceException {
+		if (srcData == null || srcData.size() <= 2) {
+			return null;
+		}
+		List<TCostaccountSrcNls> srcItems = new ArrayList<TCostaccountSrcNls>();
+		List<List<String>> sheetDataItem = srcData.get(2);
+		if (sheetDataItem.size() <= 2) {
+			throw new ServiceException("第三页数据【科室项目年例数】不符合规范，至少应有2行数据（一行表头，至少一行业务数据）");
+		}
+
+		// 处理业务数据-从第二行开始
+		for (int i = 1; i < sheetDataItem.size(); i++) {
+			List<String> rowDataItem = sheetDataItem.get(i);
+			int rowDataitemSize = rowDataItem.size();
+			if (rowDataitemSize < 5) {
+				throw new ServiceException("第三页【科室项目年例数】数据行至少应有五列数据(行" + (i + 1) + ")");
+			}
+			TCostaccountSrcNls srcItem = new TCostaccountSrcNls();
+			srcItem.setDeptCode(rowDataItem.get(0));
+			srcItem.setDeptName(rowDataItem.get(1));
+			srcItem.setProCode(rowDataItem.get(2));
+			srcItem.setProName(rowDataItem.get(3));
+			srcItem.setNls(getInteger(rowDataItem.get(4)));
+
+			srcItems.add(srcItem);
+		}
+		return srcItems;
+	}
 
 	private Double getDouble(String text) {
 		return text == null || text.equals("") ? null : Double.valueOf(text);
@@ -381,11 +457,13 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 		List<CADItem> srcData = getSrcData(jobId);
 		// 基本数据-开单工作量
 		List<TCostaccountSrcKdgzl> srcDataKdgzl = getSrcDataKdgzl(jobId);
+		// 项目年例数
+		List<TCostaccountSrcNls> srcDataNls = getSrcDataNls(jobId);
 		// 项目数据
 		List<TProDic> proDics = proDicService.getProDics(job.gettHosId());
 		
 		// 分摊计算
-		CADItemHandler cadItemHandler = new CADItemHandler(srcData, srcDataKdgzl, proDics, job);
+		CADItemHandler cadItemHandler = new CADItemHandler(srcData, srcDataKdgzl, proDics, job, srcDataNls);
 		cadItemHandler.handle();
 
 		// 保存-基本信息-总数量
@@ -405,7 +483,7 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 		List<ProCost> proCosts = cadItemHandler.getDeptProCosts();
 		// 医院级别数据
 		proCosts.addAll(cadItemHandler.getHosCncblCosts());
-		saveProCosts(proCosts);
+		saveProCosts(proCosts, 1);
 		
 		// 保存理论成本产能成本率
 		List<Cncbl> cncbls = new ArrayList<Cncbl>();
@@ -416,6 +494,13 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 		cncbls.add(cadItemHandler.getHosYwcbCncbl());
 		cncbls.add(cadItemHandler.getHosQcbCncbl());
 		saveCncbls(cncbls);
+		
+		// 保存实际成本算法结果
+		// 科室级别数据
+		List<ProCost> proCostsFact = cadItemHandler.getDeptProCostsFact();
+		// 医院级别数据
+		proCostsFact.addAll(cadItemHandler.getHosCostsFact());
+		saveProCosts(proCostsFact, 2);
 		
 		long timeEnd = System.currentTimeMillis();
 
@@ -435,8 +520,9 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 	/**
 	 * 保存理论成本费用结果
 	 * @param items
+	 * @param type 1-理论、2-实际
 	 */
-	private void saveProCosts(final List<ProCost> items){
+	private void saveProCosts(final List<ProCost> items, final Integer type){
 		if(items == null || items.size() == 0) return;
 		
 		String sql = "insert into t_pro_result " + " (dept_code, dept_name, pro_code, "
@@ -446,9 +532,9 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 				+ " cost_spe_direct, cost_spe_mid_yw, cost_spe_mid_all,"
 				+ " cost_asset_direct, cost_asset_mid_yw, cost_asset_mid_all,"
 				+ " cost_other_direct, cost_other_mid_yw, cost_other_mid_all,"
-				+ " cost_wsclf, cost_ylfxjj, level"
+				+ " cost_wsclf, cost_ylfxjj, level, type"
 				+ ") "
-				+ "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
+				+ "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
 		jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
 
 			@Override
@@ -483,7 +569,7 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 				ps.setDouble(21, item.getCostWsclf());
 				ps.setDouble(22, item.getCostYlfxjj());
 				ps.setInt(23, item.getLevel());
-				
+				ps.setInt(24, type);
 			}
 
 			@Override
@@ -683,10 +769,14 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 	public void deleteJobById(Integer jobId) {
 		// 统计数据
 		deleteJobDataById(jobId);
+		
 		// 原始数据
 		jdbcTemplate.update("delete from t_costaccount_src where t_job_id = ? ", jobId);
-		// 原始数据
+		// 原始数据-开单工作量
 		jdbcTemplate.update("delete from t_costaccount_src_kdgzl where t_job_id = ? ", jobId);
+		// 原始数据-项目年例数
+		jdbcTemplate.update("delete from t_costaccount_src_nls where t_job_id = ? ", jobId);
+				
 		// 任务自身
 		jdbcTemplate.update("delete from t_costaccount_job where id = ? ", jobId);
 	}
@@ -964,6 +1054,17 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 		return jdbcTemplate.query(" SELECT * from t_costaccount_src_kdgzl where t_job_id = ? ", new Object[] { jobId },
 				new BeanPropertyRowMapper<TCostaccountSrcKdgzl>(TCostaccountSrcKdgzl.class));
 	}
+	
+	/**
+	 * 获取某次任务的原始数据-项目年例数
+	 *
+	 * @param jobId
+	 * @return
+	 */
+	public List<TCostaccountSrcNls> getSrcDataNls(Integer jobId) {
+		return jdbcTemplate.query(" SELECT * from t_costaccount_src_nls where t_job_id = ? ", new Object[] { jobId },
+				new BeanPropertyRowMapper<TCostaccountSrcNls>(TCostaccountSrcNls.class));
+	}
 
 	/**
 	 * 获取任务列表
@@ -1036,6 +1137,23 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 
 		List<Object> values = new ArrayList<Object>();
 		StringBuffer sb = new StringBuffer(" SELECT * FROM `t_costaccount_src_kdgzl` t where t.t_job_id = ? ");
+
+		values.add(params.get("jobId"));
+
+		return jdbcTemplate.queryForList(sb.toString(), values.toArray());
+	}
+	
+	/**
+	 * 获取原始数据列表-年例数
+	 * 
+	 * @param params
+	 * @param pageParams
+	 * @return
+	 */
+	public List<Map<String, Object>> getSrcDataNlsList(Map<String, String> params) {
+
+		List<Object> values = new ArrayList<Object>();
+		StringBuffer sb = new StringBuffer(" SELECT * FROM `t_costaccount_src_nls` t where t.t_job_id = ? ");
 
 		values.add(params.get("jobId"));
 

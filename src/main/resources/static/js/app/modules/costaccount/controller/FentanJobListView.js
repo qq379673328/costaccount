@@ -18,6 +18,7 @@ app.controller('FentanJobViewCtrl',function($scope,
 				$scope.dataBase = data.base;
 				$scope.dataSrc = data.src;
 				$scope.dataSrcKdgzl = data.srcKdgzl;
+				$scope.dataSrcNls = data.srcNls;
 				$scope.dataFentan = data.fentan;
 				$scope.procosts = data.proresult;
 				

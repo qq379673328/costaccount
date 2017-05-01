@@ -54,11 +54,11 @@ public class ProDicService extends SimpleServiceImpl {
 		jdbcTemplate
 			.update("insert into t_pro_dic ("
 				+ " pro_code, pro_name, cost_time, "
-				+ " pc_ys, pc_hs, pc_js, pc_o, "
-				+ " t_hospital_id, wsclf, ylfxjj) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ",
+				+ " pc_ys, pc_hs, pc_js, pc_yaoshi, pc_o, "
+				+ " t_hospital_id, wsclf, ylfxjj) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,?) ",
 				new Object[] { dic.getProCode(), dic.getProName(), dic.getCostTime(),
 						dic.getPcYs(), dic.getPcHs(),
-						dic.getPcJs(), dic.getPcO(),
+						dic.getPcJs(), dic.getPcYaoshi(), dic.getPcO(),
 						dic.gettHospitalId(), dic.getWsclf(),
 						dic.getYlfxjj() });
 	}

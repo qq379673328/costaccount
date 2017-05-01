@@ -12,6 +12,7 @@ public class TProDic {
 	private Double pcYs;
 	private Double pcHs;
 	private Double pcJs;
+	private Double pcYaoshi;
 	private Double pcO;
 	private Integer tHospitalId;
 	private Double wsclf;
@@ -103,6 +104,14 @@ public class TProDic {
 
 	public void setCostTime(Integer costTime) {
 		this.costTime = costTime;
+	}
+
+	public Double getPcYaoshi() {
+		return pcYaoshi == null ? 0 : pcYaoshi;
+	}
+
+	public void setPcYaoshi(Double pcYaoshi) {
+		this.pcYaoshi = pcYaoshi;
 	}
 
 }

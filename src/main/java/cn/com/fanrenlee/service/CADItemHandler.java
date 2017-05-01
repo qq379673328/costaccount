@@ -13,10 +13,13 @@ import cn.com.fanrenlee.model.costaccount.CADItem;
 import cn.com.fanrenlee.model.costaccount.CostAccountBaseInfo;
 import cn.com.fanrenlee.model.costaccount.CostItem;
 import cn.com.fanrenlee.model.pro.Cncbl;
+import cn.com.fanrenlee.model.pro.FactCb;
 import cn.com.fanrenlee.model.pro.ProCost;
+import cn.com.fanrenlee.model.pro.ProZgs;
 import cn.com.fanrenlee.model.tables.TCostaccountFentan;
 import cn.com.fanrenlee.model.tables.TCostaccountJob;
 import cn.com.fanrenlee.model.tables.TCostaccountSrcKdgzl;
+import cn.com.fanrenlee.model.tables.TCostaccountSrcNls;
 import cn.com.fanrenlee.model.tables.TProDic;
 
 /**
@@ -97,7 +100,28 @@ public class CADItemHandler {
 	 * 项目字典信息-list
 	 */
 	private List<TProDic> proDicsList = new ArrayList<TProDic>();
-
+	
+	/**
+	 * 科室总工时
+	 */
+	private Map<String, ProZgs> proZgsMap = new HashMap<String, ProZgs>();
+	
+	/**
+	 * 科室项目总工时
+	 */
+	private Map<String, ProZgs> deptProZgsMap = new HashMap<String, ProZgs>();
+	
+	
+	/**
+	 * 科室项目年例数-map
+	 */
+	private Map<String, Integer> deptProNlsMap = new HashMap<String, Integer>();
+	
+	/**
+	 * 项目年例数-map
+	 */
+	private Map<String, Integer> proNlsMap = new HashMap<String, Integer>();
+	
 	private TCostaccountJob job;
 
 	/**
@@ -106,8 +130,12 @@ public class CADItemHandler {
 	 * @param srcDataKdgzl
 	 * @param proDics
 	 */
-	public CADItemHandler(List<CADItem> cadItems, List<TCostaccountSrcKdgzl> srcDataKdgzl, List<TProDic> proDics,
-			TCostaccountJob job) {
+	public CADItemHandler(List<CADItem> cadItems, 
+			List<TCostaccountSrcKdgzl> srcDataKdgzl, 
+			List<TProDic> proDics,
+			TCostaccountJob job,
+			List<TCostaccountSrcNls> srcDataNls
+			) {
 
 		this.cadItems = cadItems;
 		this.job = job;
@@ -119,6 +147,23 @@ public class CADItemHandler {
 				proDicsMap.put(proDic.getProCode(), proDic);
 			}
 		}
+		
+		// 处理项目年例数
+		if(srcDataNls != null){
+			for(TCostaccountSrcNls nls : srcDataNls){
+				String deptCode = nls.getDeptCode();
+				String proCode = nls.getProCode();
+				deptProNlsMap.put(deptCode + proCode, nls.getNls());
+				
+				if(proNlsMap.get(proCode) == null){
+					proNlsMap.put(proCode, nls.getNls());
+				}else{
+					proNlsMap.put(proCode, nls.getNls() + proNlsMap.get(proCode));
+				}
+				
+			}
+		}
+		
 
 		// 开单工作量
 		if (srcDataKdgzl != null) {
@@ -202,6 +247,33 @@ public class CADItemHandler {
 			fentan.setDeptName(deptName);
 
 			getFentanMulLev().put(deptCode, fentan);
+			
+			// 处理项目总工时
+			for(TProDic proDic : proDics){
+				String proCode = proDic.getProCode();
+				
+				// 科室总工时
+				ProZgs zgsDept = proZgsMap.get(deptCode);
+				if(zgsDept == null){
+					zgsDept = new ProZgs();
+				}
+				Integer base = getNlsFormDeptProNlsMap(item.getDeptCode() + proDic.getProCode()) * proDic.getCostTime();
+				zgsDept.setYs(zgsDept.getYs() + proDic.getPcYs() * base);
+				zgsDept.setHs(zgsDept.getHs() + proDic.getPcHs() * base);
+				zgsDept.setJys(zgsDept.getJys() + (proDic.getPcJs() + proDic.getPcYaoshi()) * base);
+				zgsDept.setQt(0.0);
+				
+				proZgsMap.put(deptCode, zgsDept);
+				
+				// 科室项目总工时
+				ProZgs zgsDeptPro = new ProZgs();
+				zgsDeptPro.setYs(proDic.getPcYs() * base);
+				zgsDeptPro.setHs(proDic.getPcHs() * base);
+				zgsDeptPro.setJys((proDic.getPcJs() + proDic.getPcYaoshi()) * base);
+				zgsDeptPro.setQt(0.0);
+				deptProZgsMap.put(deptCode + proCode, zgsDeptPro);
+			}
+			
 		}
 
 		// 计算总人数
@@ -293,7 +365,7 @@ public class CADItemHandler {
 	private Cncbl hosYwcbCncbl = new Cncbl();
 	// 10、院级-全成本产能成本率
 	private Cncbl hosQcbCncbl = new Cncbl();
-
+	
 	// 理论成本-结果验证
 	// 1、科室级-项目理论成本（直接成本）
 	// 2、科室级-项目理论成本（业务成本）
@@ -304,6 +376,25 @@ public class CADItemHandler {
 	// 5、院级-项目理论成本（业务成本）
 	// 6、院级-项目理论成本（全成本）
 	private List<ProCost> hosCncblCosts = new ArrayList<ProCost>();
+	
+	// 实际成本相关处理结果
+	// 1、科室级-直接成本
+	private Map<String, FactCb> deptZjcbCostFact = new HashMap<String, FactCb>();
+	// 2、科室级-分摊的医辅科室直接成本
+	private Map<String, FactCb> deptFtyfCostFact = new HashMap<String, FactCb>();
+	// 3、科室级-分摊的行政后勤科室直接成本
+	private Map<String, FactCb> deptFtxzhqCostFact = new HashMap<String, FactCb>();
+	
+	// 理论成本-结果验证
+	// 1、科室级-项目实际成本（直接成本）
+	// 2、科室级-项目实际成本（业务成本）
+	// 3、科室级-项目实际成本（全成本）
+	private List<ProCost> deptProCostsFact = new ArrayList<ProCost>();
+
+	// 4、院级-项目实际成本（直接成本）
+	// 5、院级-项目实际成本（业务成本）
+	// 6、院级-项目成本实际（全成本）
+	private List<ProCost> hosCostsFact = new ArrayList<ProCost>();
 
 	/**
 	 * 处理数据
@@ -360,8 +451,39 @@ public class CADItemHandler {
 				if(isComputeCncbl(cadItem)){
 					deptZjcbCncbl.put(deptCode, cncbl);
 				}
+				
+				// 实际成本计算：2、科室级-将直接成本分配后的各项经费成本
+				for (TProDic proDic : proDicsList) {
+					FactCb fc = new FactCb();
+					fc.setDeptCode(deptCode);
+					fc.setDeptName(cadItem.getDeptName());
+					fc.setProCode(proDic.getProCode());
+					fc.setProName(proDic.getProName());
+					
+					String deptProCode = deptCode + proDic.getProCode();
+					fc.setPcYs((cadItem.getCostPeopleZzys() + cadItem.getCostPeopleZrys() + cadItem.getCostPeopleFzzys())
+							* (div(deptProZgsMap.get(deptProCode).getYs(),  proZgsMap.get(deptCode).getYs())));
+					fc.setPcHs((cadItem.getCostPeopleHs())
+							* (div(deptProZgsMap.get(deptProCode).getHs(), proZgsMap.get(deptCode).getHs())));
+					fc.setPcJys((cadItem.getCostPeopleJs())
+							* (div(deptProZgsMap.get(deptProCode).getJys(), proZgsMap.get(deptCode).getJys())));
+					fc.setPcOther(0.0);
+					
+					Double baseDiv = div(deptProZgsMap.get(deptProCode).getAll(), proZgsMap.get(deptCode).getAll());
+					fc.setcHouse(cadItem.getCostOldHouseDeviceCommon() * baseDiv);
+					fc.setcSpe(cadItem.getCostOldDeviceSpecial() * baseDiv);
+					fc.setcAsset(cadItem.getCostAssetAmortize() * baseDiv);
+					fc.setcOther(cadItem.getCostOther() * baseDiv);
+					
+					deptZjcbCostFact.put(deptCode + proDic.getProCode(), fc);
+					
+				}
+				
 			}
 		}
+		
+		
+		
 
 		// 计算一级分摊以及医辅全成本-分摊行政后勤
 		// 3、科室级-分摊的行政后勤科室成本产能成本率
@@ -467,6 +589,35 @@ public class CADItemHandler {
 			if(isComputeCncbl(cadItem)){
 				deptFtxzhqCncbl.put(deptCode, cncbl);
 			}
+			
+			
+			// 实际成本计算：4、科室级-将分摊的行政后勤科室成本分配后的各项经费成本
+			for (TProDic proDic : proDicsList) {
+				FactCb fc = new FactCb();
+				fc.setDeptCode(deptCode);
+				fc.setDeptName(cadItem.getDeptName());
+				fc.setProCode(proDic.getProCode());
+				fc.setProName(proDic.getProName());
+				
+				String deptProCode = deptCode + proDic.getProCode();
+				fc.setPcYs((ttf.getFxL1PeopleFzrys() + ttf.getFxL1PeopleZrys() + ttf.getFxL1PeopleZzys())
+						* (div(deptProZgsMap.get(deptProCode).getYs(), proZgsMap.get(deptCode).getYs())));
+				fc.setPcHs((ttf.getFxL1PeopleHs())
+						* (div(deptProZgsMap.get(deptProCode).getHs(), proZgsMap.get(deptCode).getHs())));
+				fc.setPcJys((ttf.getFxL1PeopleJs())
+						* (div(deptProZgsMap.get(deptProCode).getJys(), proZgsMap.get(deptCode).getJys())));
+				fc.setPcOther(0.0);
+				
+				Double baseDiv = div(deptProZgsMap.get(deptProCode).getAll(), proZgsMap.get(deptCode).getAll());
+				fc.setcHouse(ttf.getFxL1DeviceCommon() * baseDiv);
+				fc.setcSpe(ttf.getFxL1DeviceSpe() * baseDiv);
+				fc.setcAsset(ttf.getFxL1Asset() * baseDiv);
+				fc.setcOther(ttf.getFxL1Other() * baseDiv);
+				
+				deptFtxzhqCostFact.put(deptCode + proDic.getProCode(), fc);
+				
+			}
+			
 		}
 
 		// 计算二级分摊-临床科室、医技科室分摊的医辅科室成本
@@ -583,6 +734,33 @@ public class CADItemHandler {
 
 			if(isComputeCncbl(cadItem)){
 				deptFtyfCncbl.put(deptCode, cncbl);
+			}
+			
+			// 实际成本计算：3、科室级-将分摊的医辅科室成本分配后的各项经费成本
+			for (TProDic proDic : proDicsList) {
+				FactCb fc = new FactCb();
+				fc.setDeptCode(deptCode);
+				fc.setDeptName(cadItem.getDeptName());
+				fc.setProCode(proDic.getProCode());
+				fc.setProName(proDic.getProName());
+				
+				String deptProCode = deptCode + proDic.getProCode();
+				fc.setPcYs((ttf.getFxL2PeopleFzrys() + ttf.getFxL2PeopleZrys() + ttf.getFxL2PeopleZzys())
+						* (div(deptProZgsMap.get(deptProCode).getYs(), proZgsMap.get(deptCode).getYs())));
+				fc.setPcHs((ttf.getFxL2PeopleHs())
+						* (div(deptProZgsMap.get(deptProCode).getHs(), proZgsMap.get(deptCode).getHs())));
+				fc.setPcJys((ttf.getFxL2PeopleJs())
+						* (div(deptProZgsMap.get(deptProCode).getJys(), proZgsMap.get(deptCode).getJys())));
+				fc.setPcOther(0.0);
+				
+				Double baseDiv = div(deptProZgsMap.get(deptProCode).getAll(), proZgsMap.get(deptCode).getAll());
+				fc.setcHouse(ttf.getFxL2DeviceCommon() * baseDiv);
+				fc.setcSpe(ttf.getFxL2DeviceSpe() * baseDiv);
+				fc.setcAsset(ttf.getFxL2Asset() * baseDiv);
+				fc.setcOther(ttf.getFxL2Other() * baseDiv);
+				
+				deptFtyfCostFact.put(deptCode + proDic.getProCode(), fc);
+				
 			}
 
 		}
@@ -790,11 +968,18 @@ public class CADItemHandler {
 		// 1、科室级-项目理论成本（直接成本）
 		// 2、科室级-项目理论成本（业务成本）
 		// 3、科室级-项目理论成本（全成本）
+		
+		// 直接成本院级-临时数据-key为项目code,value为费用
+		Map<String, FactCb> tempFactDirect = new HashMap<String, FactCb>();
+		Map<String, FactCb> tempFactMidYw = new HashMap<String, FactCb>();
+		Map<String, FactCb> tempFactMidAll = new HashMap<String, FactCb>();
 		for (CADItem cadItem : cadItems) {
 			String deptCode = cadItem.getDeptCode();
 			// 临床或者医技科室
 			if (cadItem.isDeptTypeLC() || cadItem.isDeptTypeYJ()) {
 				for (TProDic proDic : proDicsList) {
+					String proCode = proDic.getProCode();
+					// 理论成本
 					ProCost proCost = new ProCost();
 					proCost.settJobId(job.getId());
 					proCost.setLevel(1);
@@ -817,7 +1002,7 @@ public class CADItemHandler {
 					proCost.setCostSpeDirect(proCostTemp * zjcbCncbl.getSpeCncbl());
 					proCost.setCostAssetDirect(proCostTemp * zjcbCncbl.getAssetCncbl());
 					proCost.setCostOtherDirect(proCostTemp * zjcbCncbl.getOcCncbl());
-
+					
 					// 间接成本-业务成本
 					Cncbl ftyfCncbl = deptFtyfCncbl.get(deptCode);
 					proCost.setCostPeopleMidYw(proCostTemp * (ftyfCncbl.getYsCncbl() + ftyfCncbl.getHsCncbl()
@@ -838,7 +1023,89 @@ public class CADItemHandler {
 					proCost.setCostOtherMidAll(proCostTemp * (ftyfCncbl.getOcCncbl() + ftxzhqCncbl.getOcCncbl()));
 
 					deptProCosts.add(proCost);
-
+					
+					
+					// 实际成本
+					ProCost proCostFact = new ProCost();
+					proCostFact.settJobId(job.getId());
+					proCostFact.setLevel(1);
+					proCostFact.setDeptCode(deptCode);
+					proCostFact.setDeptName(cadItem.getDeptName());
+					proCostFact.setProCode(proDic.getProCode());
+					proCostFact.setProName(proDic.getProName());
+					proCostFact.setCostWsclf(proDic.getWsclf());
+					proCostFact.setCostYlfxjj(proDic.getYlfxjj());
+					
+					String deptProCode = deptCode + proDic.getProCode();
+					
+					// 直接成本
+					FactCb fc = deptZjcbCostFact.get(deptProCode);
+					Integer nlsDeptPro = getNlsFormDeptProNlsMap(deptProCode);
+					proCostFact.setCostPeopleDirect(div((fc.getPcYs() + fc.getPcHs() + fc.getPcJys() + fc.getPcOther()), nlsDeptPro));
+					proCostFact.setCostHouseDirect(div(fc.getcHouse(), nlsDeptPro));
+					proCostFact.setCostSpeDirect(div(fc.getcSpe(), nlsDeptPro));
+					proCostFact.setCostAssetDirect(div(fc.getcAsset(), nlsDeptPro));
+					proCostFact.setCostOtherDirect(div(fc.getcOther(), nlsDeptPro));
+					
+					// 院级-临时数据
+					FactCb fcDirect = tempFactDirect.get(proCode);
+					if(fcDirect == null){
+						fcDirect = new FactCb();
+					}
+					fcDirect.setPcPeople(fcDirect.getPcPeople() + (fc.getPcYs() + fc.getPcHs() + fc.getPcJys() + fc.getPcOther()));
+					fcDirect.setcHouse(fcDirect.getcHouse() + fc.getcHouse());
+					fcDirect.setcSpe(fcDirect.getcSpe() + fc.getcSpe());
+					fcDirect.setcAsset(fcDirect.getcAsset() + fc.getcAsset());
+					fcDirect.setcOther(fcDirect.getcOther() + fc.getcOther());
+					
+					tempFactDirect.put(proCode, fcDirect);
+					
+					// 间接成本-业务成本
+					FactCb fcYw = deptFtyfCostFact.get(deptProCode);
+					proCostFact.setCostPeopleMidYw(div((fcYw.getPcYs() + fcYw.getPcHs() + fcYw.getPcJys() + fcYw.getPcOther()), nlsDeptPro));
+					proCostFact.setCostHouseMidYw(div(fcYw.getcHouse(), nlsDeptPro));
+					proCostFact.setCostSpeMidYw(div(fcYw.getcSpe(), nlsDeptPro));
+					proCostFact.setCostAssetMidYw(div(fcYw.getcAsset(), nlsDeptPro));
+					proCostFact.setCostOtherMidYw(div(fcYw.getcOther(), nlsDeptPro));
+					
+					// 院级-临时数据
+					FactCb fcMidYw = tempFactMidYw.get(proCode);
+					if(fcMidYw == null){
+						fcMidYw = new FactCb();
+					}
+					fcMidYw.setPcPeople(fcMidYw.getPcPeople() + (fcYw.getPcYs() + fcYw.getPcHs() + fcYw.getPcJys() + fcYw.getPcOther()));
+					fcMidYw.setcHouse(fcMidYw.getcHouse() + fcYw.getcHouse());
+					fcMidYw.setcSpe(fcMidYw.getcSpe() + fcYw.getcSpe());
+					fcMidYw.setcAsset(fcMidYw.getcAsset() + fcYw.getcAsset());
+					fcMidYw.setcOther(fcMidYw.getcOther() + fcYw.getcOther());
+					tempFactMidYw.put(proCode, fcMidYw);
+					
+					// 间接成本-全
+					FactCb fcAll = deptFtxzhqCostFact.get(deptProCode);
+					proCostFact.setCostPeopleMidAll(div((
+							fcAll.getPcYs() + fcAll.getPcHs() + fcAll.getPcJys() + fcAll.getPcOther()
+							+ fcYw.getPcYs() + fcYw.getPcHs() + fcYw.getPcJys() + fcYw.getPcOther()
+							), nlsDeptPro));
+					proCostFact.setCostHouseMidAll(div(fcAll.getcHouse() + fcYw.getcHouse(), nlsDeptPro));
+					proCostFact.setCostSpeMidAll(div(fcAll.getcSpe() + fcYw.getcSpe(), nlsDeptPro));
+					proCostFact.setCostAssetMidAll(div(fcAll.getcAsset() + fcYw.getcAsset(), nlsDeptPro));
+					proCostFact.setCostOtherMidAll(div(fcAll.getcOther() + fcYw.getcOther(), nlsDeptPro));
+					
+					// 院级-临时数据
+					FactCb fcMidAll = tempFactMidAll.get(proCode);
+					if(fcMidAll == null){
+						fcMidAll = new FactCb();
+					}
+					fcMidAll.setPcPeople(fcMidAll.getPcPeople() + 
+							(fcAll.getPcYs() + fcAll.getPcHs() + fcAll.getPcJys() + fcAll.getPcOther()
+							+ fcYw.getPcYs() + fcYw.getPcHs() + fcYw.getPcJys() + fcYw.getPcOther()));
+					fcMidAll.setcHouse(fcMidAll.getcHouse() + fcYw.getcHouse() + fcAll.getcHouse());
+					fcMidAll.setcSpe(fcMidAll.getcSpe() + fcYw.getcSpe() + fcAll.getcSpe());
+					fcMidAll.setcAsset(fcMidAll.getcAsset() + fcYw.getcAsset() + fcAll.getcAsset());
+					fcMidAll.setcOther(fcMidAll.getcOther() + fcYw.getcOther() + fcAll.getcOther());
+					tempFactMidAll.put(proCode, fcMidAll);
+					
+					getDeptProCostsFact().add(proCostFact);
 				}
 
 			}
@@ -889,6 +1156,40 @@ public class CADItemHandler {
 			hosCncblCost.setCostOtherMidAll(proCostTemp * (hosFtyfCncbl.getOcCncbl() + hosFtxzhqCncbl.getOcCncbl()));
 
 			hosCncblCosts.add(hosCncblCost);
+			
+			// 院级、实际成本
+			// 项目年例数
+			Integer proNls = proNlsMap.get(proDic.getProCode());
+			
+			ProCost hosCostFact = new ProCost();
+			hosCostFact.settJobId(job.getId());
+			hosCostFact.setLevel(2);
+			hosCostFact.setProCode(proDic.getProCode());
+			hosCostFact.setProName(proDic.getProName());
+			hosCostFact.setCostWsclf(proDic.getWsclf());
+			hosCostFact.setCostYlfxjj(proDic.getYlfxjj());
+			
+			String proCode = proDic.getProCode();
+			
+			hosCostFact.setCostPeopleDirect(div(tempFactDirect.get(proCode).getPcPeople(), proNls));
+			hosCostFact.setCostHouseDirect(div(tempFactDirect.get(proCode).getcHouse(), proNls));
+			hosCostFact.setCostSpeDirect(div(tempFactDirect.get(proCode).getcSpe(), proNls));
+			hosCostFact.setCostAssetDirect(div(tempFactDirect.get(proCode).getcAsset(), proNls));
+			hosCostFact.setCostOtherDirect(div(tempFactDirect.get(proCode).getcOther(), proNls));
+			
+			hosCostFact.setCostPeopleMidYw(div(tempFactMidYw.get(proCode).getPcPeople(), proNls));
+			hosCostFact.setCostHouseMidYw(div(tempFactMidYw.get(proCode).getcHouse(), proNls));
+			hosCostFact.setCostSpeMidYw(div(tempFactMidYw.get(proCode).getcSpe(), proNls));
+			hosCostFact.setCostAssetMidYw(div(tempFactMidYw.get(proCode).getcAsset(), proNls));
+			hosCostFact.setCostOtherMidYw(div(tempFactMidYw.get(proCode).getcOther(), proNls));
+			
+			hosCostFact.setCostPeopleMidAll(div(tempFactMidAll.get(proCode).getPcPeople(), proNls));
+			hosCostFact.setCostHouseMidAll(div(tempFactMidAll.get(proCode).getcHouse(), proNls));
+			hosCostFact.setCostSpeMidAll(div(tempFactMidAll.get(proCode).getcSpe(), proNls));
+			hosCostFact.setCostAssetMidAll(div(tempFactMidAll.get(proCode).getcAsset(), proNls));
+			hosCostFact.setCostOtherMidAll(div(tempFactMidAll.get(proCode).getcOther(), proNls));
+			
+			getHosCostsFact().add(hosCostFact);
 		}
 
 	}
@@ -1130,6 +1431,33 @@ public class CADItemHandler {
 
 	public void setDeptCodeNameMap(Map<String, String> deptCodeNameMap) {
 		this.deptCodeNameMap = deptCodeNameMap;
+	}
+
+	public List<ProCost> getDeptProCostsFact() {
+		return deptProCostsFact;
+	}
+
+	public void setDeptProCostsFact(List<ProCost> deptProCostsFact) {
+		this.deptProCostsFact = deptProCostsFact;
+	}
+
+	public List<ProCost> getHosCostsFact() {
+		return hosCostsFact;
+	}
+
+	public void setHosCostsFact(List<ProCost> hosCostsFact) {
+		this.hosCostsFact = hosCostsFact;
+	}
+	
+	/**
+	 * 获取年例数
+	 * @param code
+	 * @return
+	 */
+	private Integer getNlsFormDeptProNlsMap(String code){
+		if(code == null) return 0;
+		Integer ret = deptProNlsMap.get(code);
+		return ret == null ? 0 : ret;
 	}
 
 }
