@@ -9,10 +9,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import cn.com.fanrenlee.model.common.ApiResult;
 import cn.com.fanrenlee.model.common.PageParam;
 import cn.com.fanrenlee.model.common.PagingResult;
+import cn.com.fanrenlee.model.common.ResultCode;
 import cn.com.fanrenlee.model.tables.TProDic;
 import cn.com.fanrenlee.service.ProDicService;
 
@@ -81,6 +83,30 @@ public class ProDicController {
 	public @ResponseBody Object edit(TProDic dic) {
 		prodicService.edit(dic);
 		return new ApiResult<String>();
+	}
+	
+	/**
+	 * 导入项目字典
+	 *
+	 * @param file
+	 *            附件
+	 * @param hosId
+	 *            医院id
+	 * @return
+	 */
+	@RequestMapping(value = "uploadSrcData", method = RequestMethod.POST)
+	public @ResponseBody ApiResult<Object> uploadData(
+			@RequestParam(value = "file", required = false) MultipartFile file,
+			Integer hosId) {
+		try {
+			prodicService.uploadData(file.getInputStream(), hosId);
+			return new ApiResult<Object>();
+		} catch (Exception e) {
+			e.printStackTrace();
+			String message = e.getMessage();
+			message = message == null || message.isEmpty() ? "操作失败，服务器异常" : message;
+			return new ApiResult<Object>(ResultCode.FAILURE.getCode(), message);
+		}
 	}
 
 }

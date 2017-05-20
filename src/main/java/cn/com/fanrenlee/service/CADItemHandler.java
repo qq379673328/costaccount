@@ -260,7 +260,7 @@ public class CADItemHandler {
 				Integer base = getNlsFormDeptProNlsMap(item.getDeptCode() + proDic.getProCode()) * proDic.getCostTime();
 				zgsDept.setYs(zgsDept.getYs() + proDic.getPcYs() * base);
 				zgsDept.setHs(zgsDept.getHs() + proDic.getPcHs() * base);
-				zgsDept.setJys(zgsDept.getJys() + (proDic.getPcJs() + proDic.getPcYaoshi()) * base);
+				zgsDept.setJys(zgsDept.getJys() + (proDic.getPcJs() + proDic.getPcO()) * base);
 				zgsDept.setQt(0.0);
 				
 				proZgsMap.put(deptCode, zgsDept);
@@ -269,7 +269,7 @@ public class CADItemHandler {
 				ProZgs zgsDeptPro = new ProZgs();
 				zgsDeptPro.setYs(proDic.getPcYs() * base);
 				zgsDeptPro.setHs(proDic.getPcHs() * base);
-				zgsDeptPro.setJys((proDic.getPcJs() + proDic.getPcYaoshi()) * base);
+				zgsDeptPro.setJys((proDic.getPcJs() + proDic.getPcO()) * base);
 				zgsDeptPro.setQt(0.0);
 				deptProZgsMap.put(deptCode + proCode, zgsDeptPro);
 			}

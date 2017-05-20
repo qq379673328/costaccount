@@ -1,6 +1,6 @@
 //项目字典列表
 app.controller('ProdicListCtrl',function($scope,
-		$http, ngTableParams, $rootScope, $stateParams) {
+		$http, ngTableParams, $rootScope, $stateParams, Upload) {
 	
 	$rootScope.menu = "hos";
 	
@@ -77,6 +77,29 @@ app.controller('ProdicListCtrl',function($scope,
 		}).error(function(){
 			item.ishanding = false;
 		});
+	};
+	
+	// 保存
+	$scope.save = function(){
+		$scope.validInfo = "";
+		if (!$scope.form.file.$valid || !$scope.file) {
+			$scope.validInfo = "请选择需要上传的文件";
+			return;
+		}
+		
+		if ($scope.form.file.$valid && $scope.file) {
+			Upload.upload({
+				url: 'prodic/uploadSrcData',
+				data: {
+					hosId: hosId,
+					file: $scope.file
+				}
+			}).then(function (resp) {
+				if(resp && resp.data && resp.data.success == "1"){
+					$scope.reload();
+				}
+			});
+		}
 	};
 
 });

@@ -12,17 +12,41 @@
 			<div class="vals">
 				<input ng-model="search.proCode" />
 			</div>
-		</div>
-		<div class="line border-none">
 			<div class="desc">项目名称：</div>
 			<div class="vals">
 				<input ng-model="search.proName" />
 			</div>
 		</div>
+		
 		<btn-back />
 	</div>
 	
 	<div core-formresult result="formresult"></div>
+	
+	<div ng-show="importDicsState" style="float: right; margin: 20px;">
+		<form name="form">
+			<span class="warn">{{validInfo}}</span>
+		
+			<input type="file"
+				ng-model="file"
+				ngf-select
+				name="file"
+				ngf-accept="'.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel'" 
+				ngf-max-size="50MB"
+				required
+				ngf-model-invalid="errorFile"
+				ngf-validate-force="false"
+				/>
+				请上传excel
+			
+			<div class="btn btn-lblue" 
+				ng-click="save()">
+				&nbsp;&nbsp;上传&nbsp;&nbsp;
+			</div>
+			<br/>
+			<span class="warn">注意：上传字典文件会删除本医院下所有历史字典项</span>
+		</form>
+	</div>
 	
 	<div class="mytable">
 		<div class="title">
@@ -31,7 +55,14 @@
 			</span>
 			 
 			<a class="spe" href="#prodic/add/{{hosId}}">新增项目</a>
-			 
+			<a class="btn btn-lblue" 
+				ng-show="!importDicsState"
+				ng-click="importDicsState = !importDicsState">导入项目字典</a>
+			<a class="spe" 
+				ng-show="importDicsState"
+				ng-click="importDicsState = !importDicsState">取消</a>
+			
+			
 		</div>
 		<table class="my-table" ng-table="tableParams">
 			<thead>
@@ -41,7 +72,7 @@
 					<th rowspan="2">项目名称</th>
 					<th rowspan="2">卫生材料费</th>
 					<th rowspan="2">医疗风险基金</th>
-					<th colspan="5">基本人力消耗</th>
+					<th colspan="4">基本人力消耗</th>
 					<th rowspan="2">项目耗时</th>
 					
 					<th rowspan="2">操作</th>
@@ -51,7 +82,6 @@
 					<th>护士</th>
 					<th>技师</th>
 					<th>药师</th>
-					<th>其他</th>
 				</tr>
 			</thead>
 			<tr ng-show="!$data"><td colspan="4">加载中...</td></tr>
@@ -65,7 +95,6 @@
 				<td>{{ item.pc_ys }}</td>
 				<td>{{ item.pc_hs }}</td>
 				<td>{{ item.pc_js }}</td>
-				<td>{{ item.pc_yaoshi }}</td>
 				<td>{{ item.pc_o }}</td>
 				<td>{{ item.cost_time }}</td>
 				

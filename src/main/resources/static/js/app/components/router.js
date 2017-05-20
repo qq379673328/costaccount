@@ -2,7 +2,7 @@ var fdRouterViewsBasepath = "js/app/modules/";
 
 // 路由
 app.config(function($stateProvider, $urlRouterProvider) {
-	$urlRouterProvider.otherwise("/index");
+	$urlRouterProvider.otherwise("/costaccount/jobList");
 	$stateProvider
 	// 首页
 	.state('index', {
