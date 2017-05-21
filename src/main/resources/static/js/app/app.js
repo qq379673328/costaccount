@@ -1,5 +1,5 @@
 "use strict";
-var app = angular.module('app',['ui.router', 'ngTable', 'datepicker', 'ngFileUpload'],
+var app = angular.module('app',['ui.router', 'ngTable', 'datepicker', 'ngFileUpload', 'tabexp'],
 		function($httpProvider) {
 			//处理默认angularjs的ajax请求
 			$httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';

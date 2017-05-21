@@ -185,6 +185,7 @@
 	<!-- 原始数据 -->
 	<div class="mytable" ng-show="showtype=='srcData'" style="overflow-x: scroll;">
 		<table class="my-table table-width"
+			tabexp
 			style="width: 2000px;">
 			<thead>
 				<tr>
@@ -264,7 +265,7 @@
 	
 	<!-- 原始数据-开单工作量 -->
 	<div class="mytable" ng-show="showtype=='srcDataKdgzl'">
-		<table class="my-table">
+		<table class="my-table" tabexp>
 			<thead>
 				<tr>
 					<th>序号</th>
@@ -286,7 +287,7 @@
 	
 	<!-- 原始数据-科室项目年例数 -->
 	<div class="mytable" ng-show="showtype=='srcDataNls'">
-		<table class="my-table">
+		<table class="my-table" tabexp>
 			<thead>
 				<tr>
 					<th>序号</th>
@@ -309,7 +310,8 @@
 	<!-- 分摊成本-展示1 -->
 	<div class="mytable" ng-show="show=='fentanData1'" style="overflow-x: scroll;">
 		<table class="my-table table-width"
-		 style="width: 2000px;">
+			tabexp
+			style="width: 2000px;">
 			<thead>
 				<tr>
 					<th rowspan="2">序号</th>
@@ -377,7 +379,8 @@
 	<!-- 分摊成本-展示2 -->
 	<div class="mytable" ng-show="show=='fentanData2'" style="overflow-x: scroll;">
 		<table class="my-table table-width"
-		 style="width: 2000px;">
+			tabexp
+			style="width: 2000px;">
 			<thead>
 				<tr>
 					<th rowspan="2">序号</th>
@@ -445,7 +448,7 @@
 	
 	<!-- 一级分摊 -->
 	<div class="mytable" ng-show="show=='level1Data'">
-		<table class="my-table">
+		<table class="my-table" tabexp>
 			<thead>
 				<tr>
 					<th rowspan="2">序号</th>
@@ -494,7 +497,7 @@
 	
 	<!-- 二级分摊 -->
 	<div class="mytable" ng-show="show=='level2Data'">
-		<table class="my-table">
+		<table class="my-table" tabexp>
 			<thead>
 				<tr>
 					<th rowspan="2">序号</th>
@@ -543,7 +546,7 @@
 	
 	<!-- 三级分摊 -->
 	<div class="mytable" ng-show="show=='level3Data'">
-		<table class="my-table">
+		<table class="my-table" tabexp>
 			<thead>
 				<tr>
 					<th rowspan="2">序号</th>
@@ -592,7 +595,7 @@
 	
 	<!-- 展示报表1：科室级-项目理论成本 -->
 	<div class="mytable" ng-show="show=='lilun1'">
-		<table class="my-table">
+		<table class="my-table" tabexp>
 			<thead>
 				<tr>
 					<th>序号</th>
@@ -635,7 +638,7 @@
 	
 	<!-- 展示报表2：科室级-项目理论成本（直接成本明细表） -->
 	<div class="mytable" ng-show="show=='lilun2'">
-		<table class="my-table">
+		<table class="my-table" tabexp>
 			<thead>
 				<tr>
 					<th>序号</th>
@@ -680,6 +683,7 @@
 	<!-- 展示报表3：科室级-项目理论成本（业务成本明细表） -->
 	<div class="mytable" ng-show="show=='lilun3'" style="overflow-x: scroll;">
 		<table class="my-table table-width"
+		 tabexp
 		 style="width: 2000px;">
 			<thead>
 				<tr>
@@ -744,6 +748,7 @@
 	<!-- 展示报表4：科室级-项目理论成本（全成本明细表） -->
 	<div class="mytable" ng-show="show=='lilun4'" style="overflow-x: scroll;">
 		<table class="my-table table-width"
+		 tabexp
 		 style="width: 2000px;">
 			<thead>
 				<tr>
@@ -808,6 +813,7 @@
 	<!-- 展示报表5：科室级-产能成本率 -->
 	<div class="mytable" ng-show="show=='lilun5'" style="overflow-x: scroll;">
 		<table class="my-table table-width"
+		 tabexp
 		 style="width: 2000px;">
 			<thead>
 				<tr>
@@ -849,7 +855,7 @@
 	
 	<!-- 展示报表6：院级-项目理论成本 -->
 	<div class="mytable" ng-show="show=='lilun6'">
-		<table class="my-table">
+		<table class="my-table" tabexp>
 			<thead>
 				<tr>
 					<th>序号</th>
@@ -891,7 +897,7 @@
 	
 	<!-- 展示报表7：院级-项目理论成本（直接成本明细表） -->
 	<div class="mytable" ng-show="show=='lilun7'">
-		<table class="my-table">
+		<table class="my-table" tabexp>
 			<thead>
 				<tr>
 					<th>序号</th>
@@ -936,6 +942,7 @@
 	<!-- 展示报表8：院级-项目理论成本（业务成本明细表） -->
 	<div class="mytable" ng-show="show=='lilun8'" style="overflow-x: scroll;">
 		<table class="my-table table-width"
+		 tabexp
 		 style="width: 2000px;">
 			<thead>
 				<tr>
@@ -1000,6 +1007,7 @@
 	<!-- 展示报表9：院级-项目理论成本（全成本明细表） -->
 	<div class="mytable" ng-show="show=='lilun9'" style="overflow-x: scroll;">
 		<table class="my-table table-width"
+		 tabexp
 		 style="width: 2000px;">
 			<thead>
 				<tr>
@@ -1064,6 +1072,7 @@
 	<!-- 展示报表10：院级-产能成本率 -->
 	<div class="mytable" ng-show="show=='lilun10'" style="overflow-x: scroll;">
 		<table class="my-table table-width"
+		 tabexp
 		 style="width: 2000px;">
 			<thead>
 				<tr>
@@ -1105,7 +1114,7 @@
 	<!-- ==========实际成本============ -->
 	<!-- 展示报表1：科室级-项目实际成本 -->
 	<div class="mytable" ng-show="show=='shiji1'">
-		<table class="my-table">
+		<table class="my-table" tabexp>
 			<thead>
 				<tr>
 					<th>序号</th>
@@ -1148,7 +1157,7 @@
 	
 	<!-- 展示报表2：科室级-项目实际成本（直接成本明细表） -->
 	<div class="mytable" ng-show="show=='shiji2'">
-		<table class="my-table">
+		<table class="my-table" tabexp>
 			<thead>
 				<tr>
 					<th>序号</th>
@@ -1193,6 +1202,7 @@
 	<!-- 展示报表3：科室级-项目实际成本（业务成本明细表） -->
 	<div class="mytable" ng-show="show=='shiji3'" style="overflow-x: scroll;">
 		<table class="my-table table-width"
+		 tabexp
 		 style="width: 2000px;">
 			<thead>
 				<tr>
@@ -1257,6 +1267,7 @@
 	<!-- 展示报表4：科室级-项目实际成本（全成本明细表） -->
 	<div class="mytable" ng-show="show=='shiji4'" style="overflow-x: scroll;">
 		<table class="my-table table-width"
+		 tabexp
 		 style="width: 2000px;">
 			<thead>
 				<tr>
@@ -1321,7 +1332,7 @@
 	
 	<!-- 展示报表5：院级-项目实际成本 -->
 	<div class="mytable" ng-show="show=='shiji5'">
-		<table class="my-table">
+		<table class="my-table" tabexp>
 			<thead>
 				<tr>
 					<th>序号</th>
@@ -1363,7 +1374,7 @@
 	
 	<!-- 展示报表6：院级-项目实际成本（直接成本明细表） -->
 	<div class="mytable" ng-show="show=='shiji6'">
-		<table class="my-table">
+		<table class="my-table" tabexp>
 			<thead>
 				<tr>
 					<th>序号</th>
@@ -1408,6 +1419,7 @@
 	<!-- 展示报表7：院级-项目实际成本（业务成本明细表） -->
 	<div class="mytable" ng-show="show=='shiji7'" style="overflow-x: scroll;">
 		<table class="my-table table-width"
+		 tabexp
 		 style="width: 2000px;">
 			<thead>
 				<tr>
@@ -1472,6 +1484,7 @@
 	<!-- 展示报表8：院级-项目实际成本（全成本明细表） -->
 	<div class="mytable" ng-show="show=='shiji8'" style="overflow-x: scroll;">
 		<table class="my-table table-width"
+		 tabexp
 		 style="width: 2000px;">
 			<thead>
 				<tr>
