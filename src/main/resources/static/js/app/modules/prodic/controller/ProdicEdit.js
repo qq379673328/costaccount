@@ -2,7 +2,7 @@
 app.controller('ProdicEditCtrl',function($scope,
 		$http, ngTableParams, $rootScope, $stateParams, $state) {
 	
-	$rootScope.menu = "hos";
+	$rootScope.menu = "pro";
 	$scope.isRuning = false;
 	var id = $stateParams.prodicId;
 	var hosId = $stateParams.hosId;

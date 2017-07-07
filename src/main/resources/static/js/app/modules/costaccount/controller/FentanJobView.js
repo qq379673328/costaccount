@@ -1,8 +1,8 @@
-//分摊算法-任务查看
+//分摊算法-任务详情
 app.controller('FentanJobViewCtrl',function($scope,
 		$http, ngTableParams, $rootScope, $stateParams) {
 	
-	$rootScope.menu = "fentan";
+	$rootScope.menu = "fentanView";
 	
 	var jobId = $stateParams.jobId;
 	$scope.queryParams = {deptName: null};

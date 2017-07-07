@@ -2,18 +2,18 @@
 	位置：
 	<a ui-sref="index">首页</a>
 	&gt;
-	医院列表
+	基础数据维护
+	&gt;
+	医院维护
 </div>
 <div class="content">
 	<div class="searchzone">
-		<div class="title"><i class="fa fa-users"></i>&nbsp;医院列表</div>
 		<div class="line border-none">
 			<div class="desc">医院编码：</div>
 			<div class="vals">
 				<input ng-model="search.hosCode" />
 			</div>
-		</div>
-		<div class="line border-none">
+			
 			<div class="desc">医院名称：</div>
 			<div class="vals">
 				<input ng-model="search.hosName" />
@@ -64,10 +64,10 @@
 						ng-show="!item.ishanding"
 						>科室维护</a>
 						
-					<a class="btn btn-small btn-lblue" 
+					<!-- <a class="btn btn-small btn-lblue" 
 						href="#prodic/list/{{item.id}}"
 						ng-show="!item.ishanding"
-						>项目维护</a>
+						>项目维护</a> -->
 						
 					<a class="btn btn-small btn-w4"
 						ng-show="item.ishanding"

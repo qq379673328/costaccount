@@ -29,7 +29,7 @@ public class ProService extends SimpleServiceImpl {
 	 * 获取字典数据
 	 */
 	public List<TProDic> getDics(Integer hospitalId) {
-		return jdbcTemplate.query(" SELECT * from t_pro_dic where t_hospital_id = ?", new Object[] { hospitalId },
+		return jdbcTemplate.query(" SELECT * from t_pro_dic", new Object[] {},
 				new BeanPropertyRowMapper<TProDic>(TProDic.class));
 	}
 
@@ -48,7 +48,7 @@ public class ProService extends SimpleServiceImpl {
 	public List<Map<String, Object>> getProResult(Integer jobId) {
 		return jdbcTemplate.queryForList(" SELECT * from t_pro_result where t_job_id = ?", new Object[] { jobId });
 	}
-	
+
 	/**
 	 * 获取理论成本处理结果-产能成本率
 	 */

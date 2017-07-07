@@ -46,13 +46,21 @@
 			<div 
 				ng-class="{true: 'select'}[$root.menu=='fentan']"
 				class="lv2" ui-sref="costaccountFentanJoblist">
-				<i class="fa fa-caret-right"></i>&nbsp;数据核算</div>
+				<i class="fa fa-caret-right"></i>&nbsp;任务创建</div>
+			<div 
+				ng-class="{true: 'select'}[$root.menu=='fentanView']"
+				class="lv2" ui-sref="costaccountFentanJoblistView">
+				<i class="fa fa-caret-right"></i>&nbsp;结果查看</div>
 				
 			<div class="lv1"><i class="fa fa-edit"></i>&nbsp;基础数据维护</div>
 			<div 
 				ng-class="{true: 'select'}[$root.menu=='hos']"
 				class="lv2" ui-sref="hosList">
 				<i class="fa fa-caret-right"></i>&nbsp;医院维护</div>
+			<div 
+				ng-class="{true: 'select'}[$root.menu=='pro']"
+				class="lv2" ui-sref="prodicList">
+				<i class="fa fa-caret-right"></i>&nbsp;项目维护</div>
 		</div>
 		
 		<script type="text/ng-template" id="custom/pager">

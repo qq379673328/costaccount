@@ -1,8 +1,13 @@
 //分摊算法-任务列表
 app.controller('FentanJobListCtrl',function($scope,
-		$http, ngTableParams, $rootScope) {
+		$http, ngTableParams, $rootScope, $stateParams) {
 	
-	$rootScope.menu = "fentan";
+	var paramsType = $stateParams.type;
+	if(paramsType == 'view'){
+		$rootScope.menu = "fentanView";
+	}else{
+		$rootScope.menu = "fentan";
+	}
 	
 	//分页查询
 	var initpage = 1,

@@ -22,7 +22,7 @@ import cn.com.fanrenlee.util.doc.ExcelUtil;
 
 /**
  * 项目字典业务类
- * 
+ *
  * @author lizhiyong
  *
  */
@@ -31,82 +31,72 @@ public class ProDicService extends SimpleServiceImpl {
 
 	/**
 	 * 获取信息-根据id
-	 * 
+	 *
 	 * @param hosId
 	 * @return
 	 */
 	public TProDic getById(Integer id) {
-		List<TProDic> items = jdbcTemplate.query("select * from t_pro_dic where id = ? ", new Object[] { id },
+		List<TProDic> items = jdbcTemplate.query("select * from t_pro_dic where id = ? ", new Object[]{id},
 				new BeanPropertyRowMapper<TProDic>(TProDic.class));
 		return items.size() > 0 ? items.get(0) : null;
 	}
 
 	/**
 	 * 删除信息-根据id
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
 	public void delById(Integer id) {
-		jdbcTemplate.update("delete from t_pro_dic where id = ? ", new Object[] { id });
+		jdbcTemplate.update("delete from t_pro_dic where id = ? ", new Object[]{id});
 	}
-	
+
 	/**
 	 * 删除信息-根据医院id
-	 * 
+	 *
 	 * @param hosId
 	 * @return
 	 */
 	public void delByHosId(Integer hosId) {
-		jdbcTemplate.update("delete from t_pro_dic where t_hospital_id = ? ", new Object[] { hosId });
+		jdbcTemplate.update("delete from t_pro_dic ", new Object[]{});
 	}
 
 	/**
 	 * 新增信息
-	 * 
+	 *
 	 * @param
 	 * @return
 	 */
 	public void add(TProDic dic) {
-		jdbcTemplate
-			.update("insert into t_pro_dic ("
-				+ " pro_code, pro_name, cost_time, "
-				+ " pc_ys, pc_hs, pc_js, pc_o, "
-				+ " t_hospital_id, wsclf, ylfxjj) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,?) ",
-				new Object[] { dic.getProCode(), dic.getProName(), dic.getCostTime(),
-						dic.getPcYs(), dic.getPcHs(),
-						dic.getPcJs(), dic.getPcO(),
-						dic.gettHospitalId(), dic.getWsclf(),
-						dic.getYlfxjj() });
+		jdbcTemplate.update(
+				"insert into t_pro_dic (" + " pro_code, pro_name, cost_time, " + " pc_ys, pc_hs, pc_js, pc_o, "
+						+ " t_hospital_id, wsclf, ylfxjj) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ",
+				new Object[]{dic.getProCode(), dic.getProName(), dic.getCostTime(), dic.getPcYs(), dic.getPcHs(),
+						dic.getPcJs(), dic.getPcO(), dic.gettHospitalId(), dic.getWsclf(), dic.getYlfxjj()});
 	}
 
 	/**
 	 * 修改信息
-	 * 
+	 *
 	 * @param
 	 * @return
 	 */
 	public void edit(TProDic dic) {
-		jdbcTemplate
-			.update("update t_pro_dic set "
-					+ " pro_code = ? ,pro_name = ?, cost_time = ?, "
-					+ " pc_ys = ?, pc_hs = ?, pc_js = ?, "
-					+ " pc_o = ?, wsclf= ?, "
-					+ " ylfxjj = ? where id = ? ",
-				new Object[] { dic.getProCode(), dic.getProName(), dic.getCostTime(),
-					dic.getPcYs(), dic.getPcHs(), dic.getPcJs(),
-					dic.getPcO(), dic.getWsclf(),
-					 dic.getYlfxjj(), dic.getId() });
+		jdbcTemplate.update(
+				"update t_pro_dic set " + " pro_code = ? ,pro_name = ?, cost_time = ?, "
+						+ " pc_ys = ?, pc_hs = ?, pc_js = ?, " + " pc_o = ?, wsclf= ?, " + " ylfxjj = ? where id = ? ",
+				new Object[]{dic.getProCode(), dic.getProName(), dic.getCostTime(), dic.getPcYs(), dic.getPcHs(),
+						dic.getPcJs(), dic.getPcO(), dic.getWsclf(), dic.getYlfxjj(), dic.getId()});
 	}
 
-	public List<TProDic> getProDics(Integer hosId){
-		return jdbcTemplate.query(" SELECT * from t_pro_dic where t_hospital_id = ? ", new Object[] { hosId },
+	public List<TProDic> getProDics(Integer hosId) {
+		return jdbcTemplate.query(" SELECT * from t_pro_dic ", new Object[]{},
 				new BeanPropertyRowMapper<TProDic>(TProDic.class));
 	}
-	
+
 	/**
 	 * 字典分页查询
-	 * 
+	 *
 	 * @param params
 	 * @param pageParams
 	 * @return
@@ -127,10 +117,10 @@ public class ProDicService extends SimpleServiceImpl {
 			values.add(params.get("proCode"));
 		}
 		// 医院id
-		if (!StrUtils.isNull(params.get("hosId"))) {
+		/*if (!StrUtils.isNull(params.get("hosId"))) {
 			sb.append(" and t_hospital_id = ? ");
 			values.add(params.get("hosId"));
-		}
+		}*/
 
 		srcSql.setSrcSql(sb.toString());
 		srcSql.setValues(values.toArray());
@@ -140,6 +130,7 @@ public class ProDicService extends SimpleServiceImpl {
 
 	/**
 	 * 导入项目字典
+	 *
 	 * @param inputStream
 	 * @param hosId
 	 */
@@ -154,23 +145,21 @@ public class ProDicService extends SimpleServiceImpl {
 		if (srcData == null) {
 			throw new ServiceException("excel解析失败");
 		}
-		
+
 		// 获取3个sheet页数据
 		final List<TProDic> proDics1 = getFirstSheetDataSrcData(srcData, hosId);
 		final List<TProDic> proDics2 = getSecondSheetDataSrcData(srcData, hosId);
 		final List<TProDic> proDics3 = getThirdSheetDataSrcData(srcData, hosId);
-		
+
 		// 融合3个列表数据
 		final List<TProDic> allProDics = createProDics(proDics1, proDics2, proDics3);
-		
+
 		// 删除旧数据
 		delByHosId(hosId);
-		
+
 		// 批量保存
-		String sqlSave = "insert into t_pro_dic ("
-				+ " t_hospital_id, pro_code, pro_name, cost_time, "
-				+ " pc_ys, pc_hs, pc_js, pc_o, "
-				+ " wsclf, ylfxjj) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String sqlSave = "insert into t_pro_dic (" + " t_hospital_id, pro_code, pro_name, cost_time, "
+				+ " pc_ys, pc_hs, pc_js, pc_o, " + " wsclf, ylfxjj) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		jdbcTemplate.batchUpdate(sqlSave, new BatchPreparedStatementSetter() {
 
 			@Override
@@ -188,7 +177,7 @@ public class ProDicService extends SimpleServiceImpl {
 				ps.setObject(6, item.getPcHs());
 				ps.setObject(7, item.getPcJs());
 				ps.setObject(8, item.getPcO());
-				
+
 				// + " wsclf, ylfxjj
 				ps.setObject(9, item.getWsclf());
 				ps.setObject(10, item.getYlfxjj());
@@ -209,11 +198,12 @@ public class ProDicService extends SimpleServiceImpl {
 			}
 
 		});
-		
+
 	}
-	
+
 	/**
 	 * 融合3个sheet页的内容
+	 *
 	 * @param proDics1
 	 * @param proDics2
 	 * @param proDics3
@@ -221,39 +211,39 @@ public class ProDicService extends SimpleServiceImpl {
 	 */
 	private List<TProDic> createProDics(List<TProDic> proDics1, List<TProDic> proDics2, List<TProDic> proDics3) {
 		Map<String, TProDic> temp = new HashMap<String, TProDic>();
-		if(proDics1 != null){
-			for(TProDic item : proDics1){
+		if (proDics1 != null) {
+			for (TProDic item : proDics1) {
 				String proCode = item.getProCode();
 				temp.put(proCode, item);
 			}
 		}
-		
-		if(proDics2 != null){
-			for(TProDic item : proDics2){
+
+		if (proDics2 != null) {
+			for (TProDic item : proDics2) {
 				String proCode = item.getProCode();
-				if(temp.get(proCode) == null){
+				if (temp.get(proCode) == null) {
 					temp.put(proCode, item);
-				}else{
+				} else {
 					TProDic oldItem = temp.get(proCode);
 					oldItem.setWsclf(item.getWsclf());
 				}
 			}
 		}
-		
-		if(proDics3 != null){
-			for(TProDic item : proDics3){
+
+		if (proDics3 != null) {
+			for (TProDic item : proDics3) {
 				String proCode = item.getProCode();
-				if(temp.get(proCode) == null){
+				if (temp.get(proCode) == null) {
 					temp.put(proCode, item);
-				}else{
+				} else {
 					TProDic oldItem = temp.get(proCode);
 					oldItem.setYlfxjj(item.getYlfxjj());
 				}
 			}
 		}
-		
+
 		List<TProDic> newList = new ArrayList<TProDic>();
-		for(String key : temp.keySet()){
+		for (String key : temp.keySet()) {
 			newList.add(temp.get(key));
 		}
 		return newList;
@@ -266,8 +256,8 @@ public class ProDicService extends SimpleServiceImpl {
 	 * @return
 	 * @throws ServiceException
 	 */
-	private List<TProDic> getFirstSheetDataSrcData(List<List<List<String>>> srcData,
-			Integer hosId) throws ServiceException {
+	private List<TProDic> getFirstSheetDataSrcData(List<List<List<String>>> srcData, Integer hosId)
+			throws ServiceException {
 		if (srcData == null || srcData.size() <= 0) {
 			return null;
 		}
@@ -293,12 +283,12 @@ public class ProDicService extends SimpleServiceImpl {
 			srcItem.setPcJs(getDouble(rowDataItem.get(4)));
 			srcItem.setPcO(getDouble(rowDataItem.get(5)));
 			srcItem.setCostTime(getInteger(rowDataItem.get(6)));
-			
+
 			srcItems.add(srcItem);
 		}
 		return srcItems;
 	}
-	
+
 	/**
 	 * 从原始excel数据中获取数据-第2页
 	 *
@@ -306,8 +296,8 @@ public class ProDicService extends SimpleServiceImpl {
 	 * @return
 	 * @throws ServiceException
 	 */
-	private List<TProDic> getSecondSheetDataSrcData(List<List<List<String>>> srcData,
-			Integer hosId) throws ServiceException {
+	private List<TProDic> getSecondSheetDataSrcData(List<List<List<String>>> srcData, Integer hosId)
+			throws ServiceException {
 		if (srcData == null || srcData.size() <= 1) {
 			return null;
 		}
@@ -329,12 +319,12 @@ public class ProDicService extends SimpleServiceImpl {
 			srcItem.setProCode(rowDataItem.get(0));
 			srcItem.setProName(rowDataItem.get(1));
 			srcItem.setWsclf(getDouble(rowDataItem.get(2)));
-			
+
 			srcItems.add(srcItem);
 		}
 		return srcItems;
 	}
-	
+
 	/**
 	 * 从原始excel数据中获取数据-第3页
 	 *
@@ -342,8 +332,8 @@ public class ProDicService extends SimpleServiceImpl {
 	 * @return
 	 * @throws ServiceException
 	 */
-	private List<TProDic> getThirdSheetDataSrcData(List<List<List<String>>> srcData,
-			Integer hosId) throws ServiceException {
+	private List<TProDic> getThirdSheetDataSrcData(List<List<List<String>>> srcData, Integer hosId)
+			throws ServiceException {
 		if (srcData == null || srcData.size() <= 2) {
 			return null;
 		}
@@ -365,16 +355,16 @@ public class ProDicService extends SimpleServiceImpl {
 			srcItem.setProCode(rowDataItem.get(0));
 			srcItem.setProName(rowDataItem.get(1));
 			srcItem.setYlfxjj(getDouble(rowDataItem.get(2)));
-			
+
 			srcItems.add(srcItem);
 		}
 		return srcItems;
 	}
-	
+
 	private Double getDouble(String text) {
 		return text == null || text.equals("") ? null : Double.valueOf(text);
 	}
-	
+
 	private Integer getInteger(String text) {
 		return text == null || text.equals("") ? null : Integer.valueOf(String.valueOf(Math.round(getDouble(text))));
 	}

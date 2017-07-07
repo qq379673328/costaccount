@@ -2,7 +2,7 @@
 app.controller('ProdicListCtrl',function($scope,
 		$http, ngTableParams, $rootScope, $stateParams, Upload) {
 	
-	$rootScope.menu = "hos";
+	$rootScope.menu = "pro";
 	
 	var hosId = $stateParams.hosId;
 	$scope.hosId = hosId;
@@ -14,11 +14,10 @@ app.controller('ProdicListCtrl',function($scope,
 	
 	// 根据医院id获取医院详情
 	//加载医院信息
-	$http.post("hos/getById/" + hosId)
+	/*$http.post("hos/getById/" + hosId)
 	.success(function(data){
 		$scope.hos = data.data;
-	});
-	
+	});*/
 	
 	$scope.queryParams = {rows: initrows, hosId: hosId};
 	$scope.initParams = function(pageNotChange){

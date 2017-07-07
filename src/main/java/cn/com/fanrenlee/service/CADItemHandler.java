@@ -140,14 +140,6 @@ public class CADItemHandler {
 		this.cadItems = cadItems;
 		this.job = job;
 
-		// 处理项目字典信息
-		if (proDics != null) {
-			proDicsList = proDics;
-			for (TProDic proDic : proDics) {
-				proDicsMap.put(proDic.getProCode(), proDic);
-			}
-		}
-
 		// 处理项目年例数
 		if(srcDataNls != null){
 			for(TCostaccountSrcNls nls : srcDataNls){
@@ -160,7 +152,14 @@ public class CADItemHandler {
 				}else{
 					proNlsMap.put(proCode, nls.getNls() + proNlsMap.get(proCode));
 				}
+			}
+		}
 
+		// 处理项目字典信息
+		if (proDics != null) {
+			proDicsList = proDics;
+			for (TProDic proDic : proDics) {
+				proDicsMap.put(proDic.getProCode(), proDic);
 			}
 		}
 
@@ -1046,6 +1045,12 @@ public class CADItemHandler {
 					// 直接成本
 					FactCb fc = deptZjcbCostFact.get(deptProCode);
 					Integer nlsDeptPro = getNlsFormDeptProNlsMap(deptProCode);
+
+					// 20170707
+					if(nlsDeptPro == 0 || nlsDeptPro == null){
+						continue;
+					}
+
 					proCostFact.setCostPeopleDirect(div((fc.getPcYs() + fc.getPcHs() + fc.getPcJys() + fc.getPcOther()), nlsDeptPro));
 					proCostFact.setCostHouseDirect(div(fc.getcHouse(), nlsDeptPro));
 					proCostFact.setCostSpeDirect(div(fc.getcSpe(), nlsDeptPro));

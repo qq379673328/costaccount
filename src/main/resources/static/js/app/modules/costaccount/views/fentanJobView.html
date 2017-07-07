@@ -4,7 +4,9 @@
 	&gt;
 	成本核算
 	&gt;
-	{{job.job_desc}}
+	结果查看
+	&gt;
+	{{job.jobDesc}}
 </div>
 <div class="content">
 
@@ -22,15 +24,15 @@
 	<btn-back></btn-back>
 
 	<div class="mytable" >
-		<div class="title" ng-init="showtype='baseinfo'">
-			<a class="item" ng-click="showtype='baseinfo';show=null"
+		<div class="title" ng-init="showtype='fentan';show='fentanData1'">
+			<!-- <a class="item" ng-click="showtype='baseinfo';show=null"
 				ng-class="{true: 'select', false: 'unselect'}[showtype=='baseinfo']" >基本信息</a>
 			<a class="item" ng-click="showtype='srcData';show=null"
 				ng-class="{true: 'select', false: 'unselect'}[showtype=='srcData']" >原始数据</a>
 			<a class="item" ng-click="showtype='srcDataKdgzl';show=null"
 				ng-class="{true: 'select', false: 'unselect'}[showtype=='srcDataKdgzl']" >原始数据【开单工作量-年例数】</a>
 			<a class="item" ng-click="showtype='srcDataNls';show=null"
-				ng-class="{true: 'select', false: 'unselect'}[showtype=='srcDataNls']" >原始数据【科室项目年例数】</a>
+				ng-class="{true: 'select', false: 'unselect'}[showtype=='srcDataNls']" >原始数据【科室项目年例数】</a> -->
 			<a class="item" ng-show="job.state == '2'" ng-click="showtype='fentan';show='fentanData1'"
 				ng-class="{true: 'select', false: 'unselect'}[showtype=='fentan']" >分摊算法结果</a>
 			<a class="item" ng-show="job.state == '2'" ng-click="showtype='lilun';show='lilun1'"
@@ -65,8 +67,6 @@
 				ng-class="{true: 'select', false: 'unselect'}[show=='lilun3']" >科室级-项目理论成本（业务成本明细表）</a>
 			<a class="item" ng-show="job.state == '2'" ng-click="show='lilun4'"
 				ng-class="{true: 'select', false: 'unselect'}[show=='lilun4']" >科室级-项目理论成本（全成本明细表）</a>
-			<br/>
-			
 			<a class="item" ng-show="job.state == '2'" ng-click="show='lilun5'"
 				ng-class="{true: 'select', false: 'unselect'}[show=='lilun5']" >科室级-产能成本率</a>
 			<br/>
@@ -79,8 +79,6 @@
 				ng-class="{true: 'select', false: 'unselect'}[show=='lilun8']" >院级-项目理论成本（业务成本明细表）</a>
 			<a class="item" ng-show="job.state == '2'" ng-click="show='lilun9'"
 				ng-class="{true: 'select', false: 'unselect'}[show=='lilun9']" >院级-项目理论成本（全成本明细表）</a>
-			<br/>
-
 			<a class="item" ng-show="job.state == '2'" ng-click="show='lilun10'"
 				ng-class="{true: 'select', false: 'unselect'}[show=='lilun10']" >院级-产能成本率</a>
 			<br/>			
@@ -618,19 +616,19 @@
 				<td>{{ item.cost_people_direct + item.cost_house_direct + item.cost_spe_direct 
 					+ item.cost_asset_direct + item.cost_other_direct 
 					+ item.cost_wsclf + item.cost_ylfxjj 
-					| number:6 | tableShowNull}}</td>
+					| number:2 | tableShowNull}}</td>
 				<td>{{ item.cost_people_direct + item.cost_house_direct + item.cost_spe_direct 
 					+ item.cost_asset_direct + item.cost_other_direct 
 					+ item.cost_wsclf + item.cost_ylfxjj 
 					+ item.cost_people_mid_yw + item.cost_house_mid_yw + item.cost_spe_mid_yw 
 					+ item.cost_asset_mid_yw + item.cost_other_mid_yw 
-					| number:6 | tableShowNull}}</td>
+					| number:2 | tableShowNull}}</td>
 				<td>{{ item.cost_people_direct + item.cost_house_direct + item.cost_spe_direct 
 					+ item.cost_asset_direct + item.cost_other_direct 
 					+ item.cost_wsclf + item.cost_ylfxjj 
 					+ item.cost_people_mid_all + item.cost_house_mid_all + item.cost_spe_mid_all
 					+ item.cost_asset_mid_all + item.cost_other_mid_all
-					| number:6 | tableShowNull}}</td>
+					| number:2 | tableShowNull}}</td>
 				
 			</tr>
 		</table>
@@ -663,18 +661,18 @@
 				
 				<td>{{ item.pro_name }}</td>
 				
-				<td>{{ item.cost_people_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_wsclf | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_house_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_spe_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_asset_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_ylfxjj | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_other_direct | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_people_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_wsclf | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_house_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_spe_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_asset_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_ylfxjj | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_other_direct | number:2 | tableShowNull}}</td>
 				
 				<td>{{ item.cost_people_direct + item.cost_house_direct + item.cost_spe_direct 
 					+ item.cost_asset_direct + item.cost_other_direct 
 					+ item.cost_wsclf + item.cost_ylfxjj 
-					| number:6 | tableShowNull}}</td>
+					| number:2 | tableShowNull}}</td>
 				
 			</tr>
 		</table>
@@ -721,25 +719,25 @@
 				
 				<td>{{ item.pro_name }}</td>
 				
-				<td>{{ item.cost_people_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_people_mid_yw | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_wsclf | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_house_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_house_mid_yw | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_spe_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_spe_mid_yw | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_asset_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_asset_mid_yw | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_ylfxjj | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_other_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_other_mid_yw | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_people_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_people_mid_yw | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_wsclf | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_house_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_house_mid_yw | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_spe_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_spe_mid_yw | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_asset_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_asset_mid_yw | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_ylfxjj | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_other_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_other_mid_yw | number:2 | tableShowNull}}</td>
 				
 				<td>{{ item.cost_people_direct + item.cost_house_direct + item.cost_spe_direct 
 					+ item.cost_asset_direct + item.cost_other_direct 
 					+ item.cost_wsclf + item.cost_ylfxjj 
 					+ item.cost_people_mid_yw + item.cost_house_mid_yw + item.cost_spe_mid_yw 
 					+ item.cost_asset_mid_yw + item.cost_other_mid_yw 
-					| number:6 | tableShowNull}}</td>
+					| number:2 | tableShowNull}}</td>
 				
 			</tr>
 		</table>
@@ -786,25 +784,25 @@
 				
 				<td>{{ item.pro_name }}</td>
 				
-				<td>{{ item.cost_people_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_people_mid_all | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_wsclf | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_house_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_house_mid_all | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_spe_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_spe_mid_all | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_asset_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_asset_mid_all | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_ylfxjj | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_other_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_other_mid_all | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_people_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_people_mid_all | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_wsclf | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_house_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_house_mid_all | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_spe_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_spe_mid_all | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_asset_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_asset_mid_all | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_ylfxjj | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_other_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_other_mid_all | number:2 | tableShowNull}}</td>
 				
 				<td>{{ item.cost_people_direct + item.cost_house_direct + item.cost_spe_direct 
 					+ item.cost_asset_direct + item.cost_other_direct 
 					+ item.cost_wsclf + item.cost_ylfxjj 
 					+ item.cost_people_mid_all + item.cost_house_mid_all + item.cost_spe_mid_all
 					+ item.cost_asset_mid_all + item.cost_other_mid_all
-					| number:6 | tableShowNull}}</td>
+					| number:2 | tableShowNull}}</td>
 				
 			</tr>
 		</table>
@@ -839,14 +837,14 @@
 				
 				<td>{{ item.type }}</td>
 				
-				<td>{{ item.ys_cncbl | number:6 | tableShowNull}}</td>
-				<td>{{ item.hs_cncbl | number:6 | tableShowNull}}</td>
-				<td>{{ item.js_cncbl | number:6 | tableShowNull}}</td>
-				<td>{{ item.op_cncbl | number:6 | tableShowNull}}</td>
-				<td>{{ item.house_cncbl | number:6 | tableShowNull}}</td>
-				<td>{{ item.spe_cncbl | number:6 | tableShowNull}}</td>
-				<td>{{ item.asset_cncbl | number:6 | tableShowNull}}</td>
-				<td>{{ item.oc_cncbl | number:6 | tableShowNull}}</td>
+				<td>{{ item.ys_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.hs_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.js_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.op_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.house_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.spe_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.asset_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.oc_cncbl | number:2 | tableShowNull}}</td>
 				
 			</tr>
 		</table>
@@ -877,19 +875,19 @@
 				<td>{{ item.cost_people_direct + item.cost_house_direct + item.cost_spe_direct 
 					+ item.cost_asset_direct + item.cost_other_direct 
 					+ item.cost_wsclf + item.cost_ylfxjj 
-					| number:6 | tableShowNull}}</td>
+					| number:2 | tableShowNull}}</td>
 				<td>{{ item.cost_people_direct + item.cost_house_direct + item.cost_spe_direct 
 					+ item.cost_asset_direct + item.cost_other_direct 
 					+ item.cost_wsclf + item.cost_ylfxjj 
 					+ item.cost_people_mid_yw + item.cost_house_mid_yw + item.cost_spe_mid_yw 
 					+ item.cost_asset_mid_yw + item.cost_other_mid_yw 
-					| number:6 | tableShowNull}}</td>
+					| number:2 | tableShowNull}}</td>
 				<td>{{ item.cost_people_direct + item.cost_house_direct + item.cost_spe_direct 
 					+ item.cost_asset_direct + item.cost_other_direct 
 					+ item.cost_wsclf + item.cost_ylfxjj 
 					+ item.cost_people_mid_all + item.cost_house_mid_all + item.cost_spe_mid_all
 					+ item.cost_asset_mid_all + item.cost_other_mid_all
-					| number:6 | tableShowNull}}</td>
+					| number:2 | tableShowNull}}</td>
 				
 			</tr>
 		</table>
@@ -922,18 +920,18 @@
 				
 				<td>{{ item.pro_name }}</td>
 				
-				<td>{{ item.cost_people_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_wsclf | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_house_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_spe_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_asset_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_ylfxjj | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_other_direct | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_people_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_wsclf | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_house_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_spe_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_asset_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_ylfxjj | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_other_direct | number:2 | tableShowNull}}</td>
 				
 				<td>{{ item.cost_people_direct + item.cost_house_direct + item.cost_spe_direct 
 					+ item.cost_asset_direct + item.cost_other_direct 
 					+ item.cost_wsclf + item.cost_ylfxjj 
-					| number:6 | tableShowNull}}</td>
+					| number:2 | tableShowNull}}</td>
 				
 			</tr>
 		</table>
@@ -980,25 +978,25 @@
 				
 				<td>{{ item.pro_name }}</td>
 				
-				<td>{{ item.cost_people_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_people_mid_yw | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_wsclf | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_house_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_house_mid_yw | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_spe_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_spe_mid_yw | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_asset_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_asset_mid_yw | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_ylfxjj | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_other_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_other_mid_yw | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_people_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_people_mid_yw | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_wsclf | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_house_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_house_mid_yw | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_spe_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_spe_mid_yw | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_asset_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_asset_mid_yw | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_ylfxjj | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_other_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_other_mid_yw | number:2 | tableShowNull}}</td>
 				
 				<td>{{ item.cost_people_direct + item.cost_house_direct + item.cost_spe_direct 
 					+ item.cost_asset_direct + item.cost_other_direct 
 					+ item.cost_wsclf + item.cost_ylfxjj 
 					+ item.cost_people_mid_yw + item.cost_house_mid_yw + item.cost_spe_mid_yw 
 					+ item.cost_asset_mid_yw + item.cost_other_mid_yw 
-					| number:6 | tableShowNull}}</td>
+					| number:2 | tableShowNull}}</td>
 				
 			</tr>
 		</table>
@@ -1045,25 +1043,25 @@
 				
 				<td>{{ item.pro_name }}</td>
 				
-				<td>{{ item.cost_people_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_people_mid_all | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_wsclf | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_house_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_house_mid_all | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_spe_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_spe_mid_all | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_asset_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_asset_mid_all | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_ylfxjj | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_other_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_other_mid_all | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_people_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_people_mid_all | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_wsclf | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_house_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_house_mid_all | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_spe_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_spe_mid_all | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_asset_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_asset_mid_all | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_ylfxjj | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_other_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_other_mid_all | number:2 | tableShowNull}}</td>
 				
 				<td>{{ item.cost_people_direct + item.cost_house_direct + item.cost_spe_direct 
 					+ item.cost_asset_direct + item.cost_other_direct 
 					+ item.cost_wsclf + item.cost_ylfxjj 
 					+ item.cost_people_mid_all + item.cost_house_mid_all + item.cost_spe_mid_all
 					+ item.cost_asset_mid_all + item.cost_other_mid_all
-					| number:6 | tableShowNull}}</td>
+					| number:2 | tableShowNull}}</td>
 				
 			</tr>
 		</table>
@@ -1098,14 +1096,14 @@
 				
 				<td>{{ item.type | tableShowNull }}</td>
 				
-				<td>{{ item.ys_cncbl | number:6 | tableShowNull}}</td>
-				<td>{{ item.hs_cncbl | number:6 | tableShowNull}}</td>
-				<td>{{ item.js_cncbl | number:6 | tableShowNull}}</td>
-				<td>{{ item.op_cncbl | number:6 | tableShowNull}}</td>
-				<td>{{ item.house_cncbl | number:6 | tableShowNull}}</td>
-				<td>{{ item.spe_cncbl | number:6 | tableShowNull}}</td>
-				<td>{{ item.asset_cncbl | number:6 | tableShowNull}}</td>
-				<td>{{ item.oc_cncbl | number:6 | tableShowNull}}</td>
+				<td>{{ item.ys_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.hs_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.js_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.op_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.house_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.spe_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.asset_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.oc_cncbl | number:2 | tableShowNull}}</td>
 				
 			</tr>
 		</table>
@@ -1137,19 +1135,19 @@
 				<td>{{ item.cost_people_direct + item.cost_house_direct + item.cost_spe_direct 
 					+ item.cost_asset_direct + item.cost_other_direct 
 					+ item.cost_wsclf + item.cost_ylfxjj 
-					| number:6 | tableShowNull}}</td>
+					| number:2 | tableShowNull}}</td>
 				<td>{{ item.cost_people_direct + item.cost_house_direct + item.cost_spe_direct 
 					+ item.cost_asset_direct + item.cost_other_direct 
 					+ item.cost_wsclf + item.cost_ylfxjj 
 					+ item.cost_people_mid_yw + item.cost_house_mid_yw + item.cost_spe_mid_yw 
 					+ item.cost_asset_mid_yw + item.cost_other_mid_yw 
-					| number:6 | tableShowNull}}</td>
+					| number:2 | tableShowNull}}</td>
 				<td>{{ item.cost_people_direct + item.cost_house_direct + item.cost_spe_direct 
 					+ item.cost_asset_direct + item.cost_other_direct 
 					+ item.cost_wsclf + item.cost_ylfxjj 
 					+ item.cost_people_mid_all + item.cost_house_mid_all + item.cost_spe_mid_all
 					+ item.cost_asset_mid_all + item.cost_other_mid_all
-					| number:6 | tableShowNull}}</td>
+					| number:2 | tableShowNull}}</td>
 				
 			</tr>
 		</table>
@@ -1182,18 +1180,18 @@
 				
 				<td>{{ item.pro_name }}</td>
 				
-				<td>{{ item.cost_people_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_wsclf | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_house_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_spe_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_asset_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_ylfxjj | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_other_direct | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_people_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_wsclf | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_house_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_spe_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_asset_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_ylfxjj | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_other_direct | number:2 | tableShowNull}}</td>
 				
 				<td>{{ item.cost_people_direct + item.cost_house_direct + item.cost_spe_direct 
 					+ item.cost_asset_direct + item.cost_other_direct 
 					+ item.cost_wsclf + item.cost_ylfxjj 
-					| number:6 | tableShowNull}}</td>
+					| number:2 | tableShowNull}}</td>
 				
 			</tr>
 		</table>
@@ -1240,25 +1238,25 @@
 				
 				<td>{{ item.pro_name }}</td>
 				
-				<td>{{ item.cost_people_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_people_mid_yw | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_wsclf | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_house_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_house_mid_yw | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_spe_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_spe_mid_yw | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_asset_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_asset_mid_yw | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_ylfxjj | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_other_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_other_mid_yw | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_people_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_people_mid_yw | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_wsclf | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_house_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_house_mid_yw | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_spe_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_spe_mid_yw | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_asset_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_asset_mid_yw | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_ylfxjj | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_other_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_other_mid_yw | number:2 | tableShowNull}}</td>
 				
 				<td>{{ item.cost_people_direct + item.cost_house_direct + item.cost_spe_direct 
 					+ item.cost_asset_direct + item.cost_other_direct 
 					+ item.cost_wsclf + item.cost_ylfxjj 
 					+ item.cost_people_mid_yw + item.cost_house_mid_yw + item.cost_spe_mid_yw 
 					+ item.cost_asset_mid_yw + item.cost_other_mid_yw 
-					| number:6 | tableShowNull}}</td>
+					| number:2 | tableShowNull}}</td>
 				
 			</tr>
 		</table>
@@ -1305,25 +1303,25 @@
 				
 				<td>{{ item.pro_name }}</td>
 				
-				<td>{{ item.cost_people_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_people_mid_all | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_wsclf | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_house_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_house_mid_all | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_spe_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_spe_mid_all | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_asset_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_asset_mid_all | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_ylfxjj | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_other_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_other_mid_all | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_people_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_people_mid_all | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_wsclf | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_house_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_house_mid_all | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_spe_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_spe_mid_all | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_asset_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_asset_mid_all | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_ylfxjj | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_other_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_other_mid_all | number:2 | tableShowNull}}</td>
 				
 				<td>{{ item.cost_people_direct + item.cost_house_direct + item.cost_spe_direct 
 					+ item.cost_asset_direct + item.cost_other_direct 
 					+ item.cost_wsclf + item.cost_ylfxjj 
 					+ item.cost_people_mid_all + item.cost_house_mid_all + item.cost_spe_mid_all
 					+ item.cost_asset_mid_all + item.cost_other_mid_all
-					| number:6 | tableShowNull}}</td>
+					| number:2 | tableShowNull}}</td>
 				
 			</tr>
 		</table>
@@ -1354,19 +1352,19 @@
 				<td>{{ item.cost_people_direct + item.cost_house_direct + item.cost_spe_direct 
 					+ item.cost_asset_direct + item.cost_other_direct 
 					+ item.cost_wsclf + item.cost_ylfxjj 
-					| number:6 | tableShowNull}}</td>
+					| number:2 | tableShowNull}}</td>
 				<td>{{ item.cost_people_direct + item.cost_house_direct + item.cost_spe_direct 
 					+ item.cost_asset_direct + item.cost_other_direct 
 					+ item.cost_wsclf + item.cost_ylfxjj 
 					+ item.cost_people_mid_yw + item.cost_house_mid_yw + item.cost_spe_mid_yw 
 					+ item.cost_asset_mid_yw + item.cost_other_mid_yw 
-					| number:6 | tableShowNull}}</td>
+					| number:2 | tableShowNull}}</td>
 				<td>{{ item.cost_people_direct + item.cost_house_direct + item.cost_spe_direct 
 					+ item.cost_asset_direct + item.cost_other_direct 
 					+ item.cost_wsclf + item.cost_ylfxjj 
 					+ item.cost_people_mid_all + item.cost_house_mid_all + item.cost_spe_mid_all
 					+ item.cost_asset_mid_all + item.cost_other_mid_all
-					| number:6 | tableShowNull}}</td>
+					| number:2 | tableShowNull}}</td>
 				
 			</tr>
 		</table>
@@ -1399,18 +1397,18 @@
 				
 				<td>{{ item.pro_name }}</td>
 				
-				<td>{{ item.cost_people_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_wsclf | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_house_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_spe_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_asset_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_ylfxjj | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_other_direct | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_people_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_wsclf | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_house_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_spe_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_asset_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_ylfxjj | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_other_direct | number:2 | tableShowNull}}</td>
 				
 				<td>{{ item.cost_people_direct + item.cost_house_direct + item.cost_spe_direct 
 					+ item.cost_asset_direct + item.cost_other_direct 
 					+ item.cost_wsclf + item.cost_ylfxjj 
-					| number:6 | tableShowNull}}</td>
+					| number:2 | tableShowNull}}</td>
 				
 			</tr>
 		</table>
@@ -1457,25 +1455,25 @@
 				
 				<td>{{ item.pro_name }}</td>
 				
-				<td>{{ item.cost_people_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_people_mid_yw | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_wsclf | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_house_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_house_mid_yw | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_spe_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_spe_mid_yw | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_asset_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_asset_mid_yw | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_ylfxjj | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_other_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_other_mid_yw | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_people_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_people_mid_yw | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_wsclf | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_house_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_house_mid_yw | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_spe_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_spe_mid_yw | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_asset_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_asset_mid_yw | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_ylfxjj | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_other_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_other_mid_yw | number:2 | tableShowNull}}</td>
 				
 				<td>{{ item.cost_people_direct + item.cost_house_direct + item.cost_spe_direct 
 					+ item.cost_asset_direct + item.cost_other_direct 
 					+ item.cost_wsclf + item.cost_ylfxjj 
 					+ item.cost_people_mid_yw + item.cost_house_mid_yw + item.cost_spe_mid_yw 
 					+ item.cost_asset_mid_yw + item.cost_other_mid_yw 
-					| number:6 | tableShowNull}}</td>
+					| number:2 | tableShowNull}}</td>
 				
 			</tr>
 		</table>
@@ -1522,25 +1520,25 @@
 				
 				<td>{{ item.pro_name }}</td>
 				
-				<td>{{ item.cost_people_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_people_mid_all | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_wsclf | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_house_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_house_mid_all | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_spe_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_spe_mid_all | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_asset_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_asset_mid_all | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_ylfxjj | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_other_direct | number:6 | tableShowNull}}</td>
-				<td>{{ item.cost_other_mid_all | number:6 | tableShowNull}}</td>
+				<td>{{ item.cost_people_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_people_mid_all | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_wsclf | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_house_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_house_mid_all | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_spe_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_spe_mid_all | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_asset_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_asset_mid_all | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_ylfxjj | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_other_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_other_mid_all | number:2 | tableShowNull}}</td>
 				
 				<td>{{ item.cost_people_direct + item.cost_house_direct + item.cost_spe_direct 
 					+ item.cost_asset_direct + item.cost_other_direct 
 					+ item.cost_wsclf + item.cost_ylfxjj 
 					+ item.cost_people_mid_all + item.cost_house_mid_all + item.cost_spe_mid_all
 					+ item.cost_asset_mid_all + item.cost_other_mid_all
-					| number:6 | tableShowNull}}</td>
+					| number:2 | tableShowNull}}</td>
 				
 			</tr>
 		</table>

@@ -4,7 +4,7 @@
 	&gt;
 	成本核算
 	&gt;
-	<a ui-sref="costaccount.fentan">任务创建</a>
+	<a ui-sref="costaccount.fentan">结果查看</a>
 </div>
 <div class="content">
 	<div class="searchzone">
@@ -48,8 +48,6 @@
 				<span class="highlight">{{queryParams.total}}</span>
 			</span>
 			 
-			<a class="spe" ui-sref="costaccountFentanJobEdit">创建新任务</a>
-			 
 		</div>
 		<table class="my-table" ng-table="tableParams">
 			<thead>
@@ -84,7 +82,11 @@
 					<a class="btn btn-small btn-success"
 						ng-click="runJob(item)"
 						ng-show="!item.ishanding"
-						>计算</a>
+						>重新计算</a>
+					<a class="btn btn-small btn-success"
+						href="#costaccount/jobView/{{item.id}}"
+						ng-show="!item.ishanding"
+						>查看结果</a>
 					<!-- 
 					<a class="btn btn-small btn-primary"
 						href="#proUpload/{{item.id}}"
@@ -99,11 +101,6 @@
 						ng-show="!item.ishanding"
 						>查看项目理论成本</a>
 					 -->
-					
-					<a class="btn btn-small btn-danger"
-						ng-click="item.prepareDel = !item.prepareDel"
-						ng-show="!item.ishanding"
-						>删除</a>
 					
 					<a class="btn btn-small btn-w4"
 						ng-show="item.ishanding"

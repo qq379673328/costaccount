@@ -9,11 +9,19 @@ app.config(function($stateProvider, $urlRouterProvider) {
 		url : "/index",
 		templateUrl : fdRouterViewsBasepath + 'index/views/index.html'
 	})
-	// 成本核算-分摊算法-任务列表
+	// 成本核算-分摊算法-任务创建
 	.state('costaccountFentanJoblist',{
 		url : "/costaccount/jobList",
 		templateUrl : fdRouterViewsBasepath
 				+ 'costaccount/views/fentanJobList.html',
+		controller : "FentanJobListCtrl"
+	})
+	// 成本核算-分摊算法-结果查看
+	.state('costaccountFentanJoblistView',{
+		url : "/costaccount/jobListview",
+		params: {type: 'view'},
+		templateUrl : fdRouterViewsBasepath
+				+ 'costaccount/views/fentanJobListView.html',
 		controller : "FentanJobListCtrl"
 	})
 	// 成本核算-分摊算法-任务编辑
