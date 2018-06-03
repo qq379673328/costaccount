@@ -39,6 +39,8 @@
 				ng-class="{true: 'select', false: 'unselect'}[showtype=='lilun']" >理论成本算法结果</a>
 			<a class="item" ng-show="job.state == '2'" ng-click="showtype='shiji';show='shiji1'"
 				ng-class="{true: 'select', false: 'unselect'}[showtype=='shiji']" >实际成本算法结果</a>
+			<a class="item" ng-show="job.state == '2'" ng-click="showtype='point';show='point0'"
+				ng-class="{true: 'select', false: 'unselect'}[showtype=='point']" >价值点数算法结果</a>
 		</div>
 	</div>
 
@@ -81,7 +83,12 @@
 				ng-class="{true: 'select', false: 'unselect'}[show=='lilun9']" >院级-项目理论成本（全成本明细表）</a>
 			<a class="item" ng-show="job.state == '2'" ng-click="show='lilun10'"
 				ng-class="{true: 'select', false: 'unselect'}[show=='lilun10']" >院级-产能成本率</a>
-			<br/>			
+			<br/>
+			
+			<a class="item" ng-show="job.state == '2'" ng-click="show='lilun11'"
+				ng-class="{true: 'select', false: 'unselect'}[show=='lilun11']" >区域级-项目理论成本（全成本明细表）</a>
+			<a class="item" ng-show="job.state == '2'" ng-click="show='lilun12'"
+				ng-class="{true: 'select', false: 'unselect'}[show=='lilun12']" >区域级-全成本产能成本率</a>
 			
 		</div>
 	</div>
@@ -108,6 +115,27 @@
 				ng-class="{true: 'select', false: 'unselect'}[show=='shiji8']" >院级-项目实际成本（全成本明细表）</a>
 			<br/>
 			
+			<a class="item" ng-show="job.state == '2'" ng-click="show='shiji9'"
+				ng-class="{true: 'select', false: 'unselect'}[show=='shiji9']" >区域级-项目实际成本（全成本明细表）</a>
+			
+		</div>
+	</div>
+	
+	<div class="mytable" ng-show="showtype=='point'" style="margin-top: 10px; margin-bottom: 10px;">
+		<div class="title" style="background-color: #2f96b4">
+			<a class="item" ng-show="job.state == '2'" ng-click="show='point0'"
+				ng-class="{true: 'select', false: 'unselect'}[show=='point0']" >科室级-项目价值点数</a>
+			<a class="item" ng-show="job.state == '2'" ng-click="show='point1'"
+				ng-class="{true: 'select', false: 'unselect'}[show=='point1']" >院级-项目价值点数</a>
+			<a class="item" ng-show="job.state == '2'" ng-click="show='point2'"
+				ng-class="{true: 'select', false: 'unselect'}[show=='point2']" >区域级-项目价值点数</a>
+			<br/>
+			<a class="item" ng-show="job.state == '2'" ng-click="show='point3'"
+				ng-class="{true: 'select', false: 'unselect'}[show=='point3']" >科室级-全成本产能成本率</a>
+			<a class="item" ng-show="job.state == '2'" ng-click="show='point4'"
+				ng-class="{true: 'select', false: 'unselect'}[show=='point4']" >院级-全成本产能成本率</a>
+			<a class="item" ng-show="job.state == '2'" ng-click="show='point5'"
+				ng-class="{true: 'select', false: 'unselect'}[show=='point5']" >区域级-全成本产能成本率</a>
 		</div>
 	</div>
 	
@@ -1109,6 +1137,93 @@
 		</table>
 	</div>
 	
+	<!-- 展示报表11：区域级-项目理论成本（全成本明细表） -->
+	<div class="mytable" ng-show="show=='lilun11'" style="overflow-x: scroll;">
+		<table class="my-table table-width"
+		 tabexp
+		 style="width: 2000px;">
+			<thead>
+				<tr>
+					<th>序号</th>
+					<th>任务代码</th>
+					<th>任务描述</th>
+					<th>项目名称</th>
+					<th>人员经费</th>
+					<th>卫生材料费</th>
+					<th>房屋、通用设备<br/>折旧费</th>
+					<th>专用设备<br/>折旧费</th>
+					<th>无形资产<br/>摊销费</th>
+					<th>医疗风险基金</th>
+					<th>其他费用</th>
+					<th>合计</th>
+				</tr>
+			</thead>
+			<tr ng-repeat="item in proresultZone | filter: {type: 1}">
+				<td>{{ $index + 1 }}</td>
+				
+				<td>{{ job.id }}</td>
+				<td>{{ job.jobDesc }}</td>
+				
+				<td>{{ item.pro_name }}</td>
+				
+				<td>{{ item.cost_people | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_wsclf | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_house | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_spe | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_asset | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_ylfxjj | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_other | number:2 | tableShowNull}}</td>
+				
+				<td>{{ item.cost_people + item.cost_house + item.cost_spe
+					+ item.cost_asset + item.cost_other
+					+ item.cost_wsclf + item.cost_ylfxjj 
+					| number:2 | tableShowNull}}</td>
+				
+			</tr>
+		</table>
+	</div>
+	
+	<!-- 展示报表12：区域级-全成本产能成本率 -->
+	<div class="mytable" ng-show="show=='lilun12'" style="overflow-x: scroll;">
+		<table class="my-table table-width"
+		 tabexp
+		 style="width: 2000px;">
+			<thead>
+				<tr>
+					<th>序号</th>
+					
+					<th>任务代码</th>
+					<th>任务描述</th>
+					
+					<th>医生产能<br/>成本率</th>
+					<th>护士产能<br/>成本率</th>
+					<th>技师/药师产能<br/>成本率</th>
+					<th>其他人员<br/>产能成本率</th>
+					<th>房屋、通用设备<br/>产能成本率</th>
+					<th>专用设备<br/>产能成本率</th>
+					<th>无形资产摊销<br/>产能成本率</th>
+					<th>其他费用<br/>产能成本率</th>
+				</tr>
+			</thead>
+			<tr ng-repeat="item in proresultCncblZone">
+				<td>{{ $index + 1 }}</td>
+				
+				<td>{{ job.id }}</td>
+				<td>{{ job.jobDesc }}</td>
+				
+				<td>{{ item.ys_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.hs_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.js_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.op_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.house_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.spe_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.asset_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.oc_cncbl | number:2 | tableShowNull}}</td>
+				
+			</tr>
+		</table>
+	</div>
+	
 	<!-- ==========实际成本============ -->
 	<!-- 展示报表1：科室级-项目实际成本 -->
 	<div class="mytable" ng-show="show=='shiji1'">
@@ -1539,6 +1654,304 @@
 					+ item.cost_people_mid_all + item.cost_house_mid_all + item.cost_spe_mid_all
 					+ item.cost_asset_mid_all + item.cost_other_mid_all
 					| number:2 | tableShowNull}}</td>
+				
+			</tr>
+		</table>
+	</div>
+	
+	<!-- 展示报表9：区域级-项目实际成本（全成本明细表） -->
+	<div class="mytable" ng-show="show=='shiji9'" style="overflow-x: scroll;">
+		<table class="my-table table-width"
+		 tabexp
+		 style="width: 2000px;">
+			<thead>
+				<tr>
+					<th>序号</th>
+					<th>任务代码</th>
+					<th>任务描述</th>
+					<th>项目名称</th>
+					<th>人员经费</th>
+					<th>卫生材料费</th>
+					<th>房屋、通用设备<br/>折旧费</th>
+					<th>专用设备<br/>折旧费</th>
+					<th>无形资产<br/>摊销费</th>
+					<th>医疗风险基金</th>
+					<th>其他费用</th>
+					<th>合计</th>
+				</tr>
+			</thead>
+			<tr ng-repeat="item in proresultZone | filter: {type: 2}">
+				<td>{{ $index + 1 }}</td>
+				
+				<td>{{ job.id }}</td>
+				<td>{{ job.jobDesc }}</td>
+				
+				<td>{{ item.pro_name }}</td>
+				
+				<td>{{ item.cost_people | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_wsclf | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_house | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_spe | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_asset | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_ylfxjj | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_other | number:2 | tableShowNull}}</td>
+				
+				<td>{{ item.cost_people + item.cost_house + item.cost_spe
+					+ item.cost_asset + item.cost_other
+					+ item.cost_wsclf + item.cost_ylfxjj 
+					| number:2 | tableShowNull}}</td>
+				
+			</tr>
+		</table>
+	</div>
+	
+	<!-- 价值点数算法 -->
+	
+	<!-- 展示报表0：科室级-项目价值点数 -->
+	<div class="mytable" ng-show="show=='point0'">
+		<table class="my-table" tabexp>
+			<thead>
+				<tr>
+					<th>序号</th>
+					<th>科室编码</th>
+					<th>科室名称</th>
+					<th>项目名称</th>
+					
+					<th>人员经费</th>
+					<th>卫生材料费</th>
+					<th>房屋、通用设备<br/>折旧费</th>
+					<th>专用设备<br/>折旧费</th>
+					<th>无形资产<br/>摊销费</th>
+					<th>医疗风险基金</th>
+					<th>其他费用</th>
+					<th>合计</th>
+				</tr>
+			</thead>
+			<tr ng-repeat="item in procosts | filter: {level: 1, type: 3}">
+				<td>{{ $index + 1 }}</td>
+				
+				<td>{{ item.dept_code }}</td>
+				<td>{{ item.dept_name }}</td>
+				<td>{{ item.pro_name }}</td>
+				
+				<td>{{ item.cost_people_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_wsclf | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_house_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_spe_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_asset_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_ylfxjj | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_other_direct | number:2 | tableShowNull}}</td>
+				
+				<td>{{ item.cost_people_direct + item.cost_house_direct + item.cost_spe_direct 
+					+ item.cost_asset_direct + item.cost_other_direct 
+					+ item.cost_wsclf + item.cost_ylfxjj 
+					| number:2 | tableShowNull}}</td>
+				
+			</tr>
+		</table>
+	</div>
+	
+	<!-- 展示报表1：院级-项目价值点数 -->
+	<div class="mytable" ng-show="show=='point1'">
+		<table class="my-table" tabexp>
+			<thead>
+				<tr>
+					<th>序号</th>
+					<th>机构代码</th>
+					<th>医院名称</th>
+					<th>项目名称</th>
+					<th>人员经费</th>
+					<th>卫生材料费</th>
+					<th>房屋、通用设备<br/>折旧费</th>
+					<th>专用设备<br/>折旧费</th>
+					<th>无形资产<br/>摊销费</th>
+					<th>医疗风险基金</th>
+					<th>其他费用</th>
+					<th>合计</th>
+				</tr>
+			</thead>
+			<tr ng-repeat="item in procosts | filter: {level: 2, type: 3}">
+				<td>{{ $index + 1 }}</td>
+				
+				<td>{{ hos.hosCode }}</td>
+				<td>{{ hos.hosName }}</td>
+				<td>{{ item.pro_name }}</td>
+				
+				<td>{{ item.cost_people_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_wsclf | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_house_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_spe_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_asset_direct | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_ylfxjj | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_other_direct | number:2 | tableShowNull}}</td>
+				
+				<td>{{ item.cost_people_direct + item.cost_house_direct + item.cost_spe_direct 
+					+ item.cost_asset_direct + item.cost_other_direct 
+					+ item.cost_wsclf + item.cost_ylfxjj 
+					| number:2 | tableShowNull}}</td>
+				
+			</tr>
+		</table>
+	</div>
+	
+	<!-- 展示报表2：区域级-项目价值点数 -->
+	<div class="mytable" ng-show="show=='point2'" style="overflow-x: scroll;">
+		<table class="my-table table-width"
+		 tabexp
+		 style="width: 2000px;">
+			<thead>
+				<tr>
+					<th>序号</th>
+					<th>任务代码</th>
+					<th>任务描述</th>
+					<th>项目名称</th>
+					<th>人员经费</th>
+					<th>卫生材料费</th>
+					<th>房屋、通用设备<br/>折旧费</th>
+					<th>专用设备<br/>折旧费</th>
+					<th>无形资产<br/>摊销费</th>
+					<th>医疗风险基金</th>
+					<th>其他费用</th>
+					<th>合计</th>
+				</tr>
+			</thead>
+			<tr ng-repeat="item in proresultZone | filter: {type: 3}">
+				<td>{{ $index + 1 }}</td>
+				
+				<td>{{ job.id }}</td>
+				<td>{{ job.jobDesc }}</td>
+				
+				<td>{{ item.pro_name }}</td>
+				
+				<td>{{ item.cost_people | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_wsclf | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_house | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_spe | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_asset | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_ylfxjj | number:2 | tableShowNull}}</td>
+				<td>{{ item.cost_other | number:2 | tableShowNull}}</td>
+				
+				<td>{{ item.cost_people + item.cost_house + item.cost_spe
+					+ item.cost_asset + item.cost_other
+					+ item.cost_wsclf + item.cost_ylfxjj 
+					| number:2 | tableShowNull}}</td>
+				
+			</tr>
+		</table>
+	</div>
+	
+	<!-- 展示报表3：科室级-全成本产能成本率 -->
+	<div class="mytable" ng-show="show=='point3'" style="overflow-x: scroll;">
+		<table class="my-table table-width"
+		 tabexp
+		 style="width: 2000px;">
+			<thead>
+				<tr>
+					<th>序号</th>
+					<th>科室编码</th>
+					<th>科室名称</th>
+					<th>主治医师产能<br/>成本率</th>
+					<th>护士产能<br/>成本率</th>
+					<th>技师/药师产能<br/>成本率</th>
+					<th>其他人员<br/>产能成本率</th>
+					<th>房屋、通用设备<br/>产能成本率</th>
+					<th>专用设备<br/>产能成本率</th>
+					<th>无形资产摊销<br/>产能成本率</th>
+					<th>其他费用<br/>产能成本率</th>
+				</tr>
+			</thead>
+			<tr ng-repeat="item in proresultCncbl | filter: {level: 1, type: '全成本'}">
+				<td>{{ $index + 1 }}</td>
+				
+				<td>{{ item.dept_code }}</td>
+				<td>{{ item.dept_name }}</td>
+				
+				<td>{{ item.zzys_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.hs_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.js_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.op_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.house_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.spe_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.asset_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.oc_cncbl | number:2 | tableShowNull}}</td>
+				
+			</tr>
+		</table>
+	</div>
+	
+	<!-- 展示报表4：院级-全成本产能成本率 -->
+	<div class="mytable" ng-show="show=='point4'" style="overflow-x: scroll;">
+		<table class="my-table table-width"
+		 tabexp
+		 style="width: 2000px;">
+			<thead>
+				<tr>
+					<th>序号</th>
+					<th>机构代码</th>
+					<th>医院名称</th>
+					<th>主治医师产能<br/>成本率</th>
+					<th>护士产能<br/>成本率</th>
+					<th>技师/药师产能<br/>成本率</th>
+					<th>其他人员<br/>产能成本率</th>
+					<th>房屋、通用设备<br/>产能成本率</th>
+					<th>专用设备<br/>产能成本率</th>
+					<th>无形资产摊销<br/>产能成本率</th>
+					<th>其他费用<br/>产能成本率</th>
+				</tr>
+			</thead>
+			<tr ng-repeat="item in proresultCncbl | filter: {level: 2, type: '全成本'}">
+				<td>{{ $index + 1 }}</td>
+				
+				<td>{{ hos.hosCode }}</td>
+				<td>{{ hos.hosName }}</td>
+				
+				<td>{{ item.zzys_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.hs_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.js_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.op_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.house_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.spe_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.asset_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.oc_cncbl | number:2 | tableShowNull}}</td>
+				
+			</tr>
+		</table>
+	</div>
+	
+	<!-- 展示报表4：区域级-全成本产能成本率 -->
+	<div class="mytable" ng-show="show=='point5'" style="overflow-x: scroll;">
+		<table class="my-table table-width"
+		 tabexp
+		 style="width: 2000px;">
+			<thead>
+				<tr>
+					<th>序号</th>
+					<th>任务代码</th>
+					<th>任务描述</th>
+					<th>主治医师产能<br/>成本率</th>
+					<th>护士产能<br/>成本率</th>
+					<th>技师/药师产能<br/>成本率</th>
+					<th>其他人员<br/>产能成本率</th>
+					<th>房屋、通用设备<br/>产能成本率</th>
+					<th>专用设备<br/>产能成本率</th>
+					<th>无形资产摊销<br/>产能成本率</th>
+					<th>其他费用<br/>产能成本率</th>
+				</tr>
+			</thead>
+			<tr ng-repeat="item in proresultCncblZone">
+				<td>{{ $index + 1 }}</td>
+				
+				<td>{{ job.id }}</td>
+				<td>{{ job.jobDesc }}</td>
+				
+				<td>{{ item.zzys_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.hs_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.js_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.op_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.house_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.spe_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.asset_cncbl | number:2 | tableShowNull}}</td>
+				<td>{{ item.oc_cncbl | number:2 | tableShowNull}}</td>
 				
 			</tr>
 		</table>

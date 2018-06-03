@@ -3,6 +3,7 @@
  */
 package cn.com.fanrenlee.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Service;
 import cn.com.fanrenlee.model.tables.TProDic;
 
 /**
- * 项目理论成本算法
+ * 项目处理结果
  *
  * @author <a href="mainto:nytclizy@gmail.com">lizhiyong</a>
  * @since 2016年7月25日
@@ -43,18 +44,72 @@ public class ProService extends SimpleServiceImpl {
 	}
 
 	/**
-	 * 获取理论成本处理结果
+	 * 获取处理结果
 	 */
 	public List<Map<String, Object>> getProResult(Integer jobId) {
 		return jdbcTemplate.queryForList(" SELECT * from t_pro_result where t_job_id = ?", new Object[] { jobId });
 	}
 
 	/**
-	 * 获取理论成本处理结果-产能成本率
+	 * 获取处理结果-产能成本率
 	 */
 	public List<Map<String, Object>> getProResultCncbl(Integer jobId) {
-		return jdbcTemplate.queryForList(" SELECT * from t_pro_result_cncbl where t_job_id = ? order by dept_code,type", new Object[] { jobId });
+		return jdbcTemplate.queryForList(" SELECT * from t_pro_result_cncbl where t_job_id = ? order by dept_code,type",
+				new Object[] { jobId });
 	}
 
+	/**
+	 * 获取处理结果-区域级
+	 * 
+	 * @return
+	 */
+	public List<Map<String, Object>> getProResultZone(Integer hosCount) {
+		if (hosCount == null || hosCount == 0) {
+			return new ArrayList<Map<String, Object>>();
+		}
+		String sql = " select t.pro_code,t.pro_name,t.type, "
+				+ " sum(t.cost_people_direct + t.cost_people_mid_all)/? cost_people,"
+				+ " sum(t.cost_house_direct + t.cost_house_mid_all)/? cost_house,"
+				+ " sum(t.cost_spe_direct + t.cost_spe_mid_all)/? cost_spe,"
+				+ " sum(t.cost_asset_direct + t.cost_asset_mid_all)/? cost_asset,"
+				+ " sum(t.cost_other_direct + t.cost_other_mid_all)/? cost_other,"
+				+ " sum(t.cost_ylfxjj)/? cost_ylfxjj,"
+				+ " sum(t.cost_wsclf)/? cost_wsclf"
+				+ " from t_pro_result t where t.level = 2 " + " group by t.pro_code,t.pro_name,t.type";
+		return jdbcTemplate.queryForList(sql,
+				new Object[] { hosCount, hosCount, hosCount, hosCount, hosCount, hosCount, hosCount });
+	}
+	
+	/**
+	 * 获取处理结果-产能成本率-区域级
+	 * 
+	 * @return
+	 */
+	public List<Map<String, Object>> getProResultCncblZone(Integer hosCount) {
+		if (hosCount == null || hosCount == 0) {
+			return new ArrayList<Map<String, Object>>();
+		}
+		String sql = " select "
+				+ " sum(t.zzys_cncbl)/? zzys_cncbl,"
+				+ " sum(t.ys_cncbl)/? ys_cncbl,"
+				+ " sum(t.hs_cncbl)/? hs_cncbl,"
+				+ " sum(t.js_cncbl)/? js_cncbl,"
+				+ " sum(t.op_cncbl)/? op_cncbl,"
+				+ " sum(t.house_cncbl)/? house_cncbl,"
+				+ " sum(t.spe_cncbl)/? spe_cncbl,"
+				+ " sum(t.asset_cncbl)/? asset_cncbl,"
+				+ " sum(t.oc_cncbl)/? oc_cncbl"
+				+ " from t_pro_result_cncbl t where t.level = 2 and type = 3";
+		return jdbcTemplate.queryForList(sql,
+				new Object[] { hosCount, hosCount, hosCount, hosCount, hosCount, hosCount, hosCount , hosCount, hosCount});
+	}
+
+	/**
+	 * 医院数
+	 * @return
+	 */
+	public int getHosCount() {
+		return jdbcTemplate.queryForObject(" SELECT count(1) from t_hospital", Integer.class);
+	}
 
 }

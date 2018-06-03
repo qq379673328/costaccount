@@ -55,7 +55,7 @@ import cn.com.fanrenlee.util.doc.ExcelUtil;
  */
 @Service
 public class CostAccountFentanService extends SimpleServiceImpl {
-	
+
 	@Resource
 	ProDicService proDicService;
 
@@ -221,7 +221,7 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 			}
 
 		});
-		
+
 		// 保存业务数据-项目年例数
 		String sqlServiceNls = "insert into t_costaccount_src_nls (" + " t_job_id, dept_code, dept_name, "
 				+ " pro_code, pro_name, nls)" + " values (?,?,?,?,?,?) ";
@@ -386,7 +386,7 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 		}
 		return srcItems;
 	}
-	
+
 	/**
 	 * 从原始excel数据中获取业务数据-项目年例数-第三页
 	 *
@@ -394,8 +394,8 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 	 * @return
 	 * @throws ServiceException
 	 */
-	private List<TCostaccountSrcNls> getCadItemsNlsFromSrcData(List<List<List<String>>> srcData,
-			TCostaccountJob job) throws ServiceException {
+	private List<TCostaccountSrcNls> getCadItemsNlsFromSrcData(List<List<List<String>>> srcData, TCostaccountJob job)
+			throws ServiceException {
 		if (srcData == null || srcData.size() <= 2) {
 			return null;
 		}
@@ -461,7 +461,7 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 		List<TCostaccountSrcNls> srcDataNls = getSrcDataNls(jobId);
 		// 项目数据
 		List<TProDic> proDics = proDicService.getProDics(job.gettHosId());
-		
+
 		// 分摊计算
 		CADItemHandler cadItemHandler = new CADItemHandler(srcData, srcDataKdgzl, proDics, job, srcDataNls);
 		cadItemHandler.handle();
@@ -477,14 +477,14 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 		saveCostLevel2(cadItemHandler.getCostLevel2(), job, cadItemHandler.getDeptCodeNameMap());
 		// 保存-三级分摊
 		saveCostLevel3(cadItemHandler.getCostLevel3(), job, cadItemHandler.getDeptCodeNameMap());
-		
+
 		// 保存理论成本算法结果
 		// 科室级别数据
 		List<ProCost> proCosts = cadItemHandler.getDeptProCosts();
 		// 医院级别数据
 		proCosts.addAll(cadItemHandler.getHosCncblCosts());
 		saveProCosts(proCosts, 1);
-		
+
 		// 保存理论成本产能成本率
 		List<Cncbl> cncbls = new ArrayList<Cncbl>();
 		cncbls.addAll(transCncblMap2List(cadItemHandler.getDeptZjcbCncbl()));
@@ -494,47 +494,55 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 		cncbls.add(cadItemHandler.getHosYwcbCncbl());
 		cncbls.add(cadItemHandler.getHosQcbCncbl());
 		saveCncbls(cncbls);
-		
+
 		// 保存实际成本算法结果
 		// 科室级别数据
 		List<ProCost> proCostsFact = cadItemHandler.getDeptProCostsFact();
 		// 医院级别数据
 		proCostsFact.addAll(cadItemHandler.getHosCostsFact());
 		saveProCosts(proCostsFact, 2);
-		
+
+		// 保存价值点数算法结果
+		// 科室级别数据
+		List<ProCost> proCostsPoint = cadItemHandler.getDeptProCostsPoint();
+		// 医院级别数据
+		proCostsPoint.addAll(cadItemHandler.getHosCostsPoint());
+		saveProCosts(proCostsPoint, 3);
+
 		long timeEnd = System.currentTimeMillis();
 
 		// 更新job状态
 		updateJobState(jobId, "2", timeEnd - timeStart);
 	}
-	
-	private List<Cncbl> transCncblMap2List(Map<String, Cncbl> items){
+
+	private List<Cncbl> transCncblMap2List(Map<String, Cncbl> items) {
 		List<Cncbl> ret = new ArrayList<Cncbl>();
-		if(items == null) return ret;
-		for(String key : items.keySet()){
+		if (items == null)
+			return ret;
+		for (String key : items.keySet()) {
 			ret.add(items.get(key));
 		}
 		return ret;
 	}
 
 	/**
-	 * 保存理论成本费用结果
+	 * 保存成本费用结果
+	 * 
 	 * @param items
-	 * @param type 1-理论、2-实际
+	 * @param type
+	 *            1-理论、2-实际、3-价值点数
 	 */
-	private void saveProCosts(final List<ProCost> items, final Integer type){
-		if(items == null || items.size() == 0) return;
-		
-		String sql = "insert into t_pro_result " + " (dept_code, dept_name, pro_code, "
-				+ " pro_name, t_job_id,"
+	private void saveProCosts(final List<ProCost> items, final Integer type) {
+		if (items == null || items.size() == 0)
+			return;
+
+		String sql = "insert into t_pro_result " + " (dept_code, dept_name, pro_code, " + " pro_name, t_job_id,"
 				+ " cost_people_direct, cost_people_mid_yw, cost_people_mid_all,"
 				+ " cost_house_direct, cost_house_mid_yw, cost_house_mid_all,"
 				+ " cost_spe_direct, cost_spe_mid_yw, cost_spe_mid_all,"
 				+ " cost_asset_direct, cost_asset_mid_yw, cost_asset_mid_all,"
-				+ " cost_other_direct, cost_other_mid_yw, cost_other_mid_all,"
-				+ " cost_wsclf, cost_ylfxjj, level, type"
-				+ ") "
-				+ "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
+				+ " cost_other_direct, cost_other_mid_yw, cost_other_mid_all," + " cost_wsclf, cost_ylfxjj, level, type"
+				+ ") " + "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
 		jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
 
 			@Override
@@ -545,27 +553,27 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 				ps.setString(3, item.getProCode());
 				ps.setString(4, item.getProName());
 				ps.setObject(5, item.gettJobId());
-				
+
 				ps.setDouble(6, item.getCostPeopleDirect());
 				ps.setDouble(7, item.getCostPeopleMidYw());
 				ps.setDouble(8, item.getCostPeopleMidAll());
-				
+
 				ps.setDouble(9, item.getCostHouseDirect());
 				ps.setDouble(10, item.getCostHouseMidYw());
 				ps.setDouble(11, item.getCostHouseMidAll());
-				
+
 				ps.setDouble(12, item.getCostSpeDirect());
 				ps.setDouble(13, item.getCostSpeMidYw());
 				ps.setDouble(14, item.getCostSpeMidAll());
-				
+
 				ps.setDouble(15, item.getCostAssetDirect());
 				ps.setDouble(16, item.getCostAssetMidYw());
 				ps.setDouble(17, item.getCostAssetMidAll());
-				
+
 				ps.setDouble(18, item.getCostOtherDirect());
 				ps.setDouble(19, item.getCostOtherMidYw());
 				ps.setDouble(20, item.getCostOtherMidAll());
-				
+
 				ps.setDouble(21, item.getCostWsclf());
 				ps.setDouble(22, item.getCostYlfxjj());
 				ps.setInt(23, item.getLevel());
@@ -578,24 +586,21 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 			}
 
 		});
-		
+
 	}
-	
+
 	/**
 	 * 保存理论成本-产能成本率
+	 * 
 	 * @param items
 	 */
-	private void saveCncbls(final List<Cncbl> items){
-		if(items == null || items.size() == 0) return;
-		
-		String sql = "insert into t_pro_result_cncbl " + " (dept_code, dept_name, "
-				+ " t_job_id,"
-				+ " ys_cncbl, hs_cncbl, js_cncbl,"
-				+ " op_cncbl, house_cncbl, spe_cncbl,"
-				+ " asset_cncbl, oc_cncbl,"
-				+ " type, level "
-				+ ") "
-				+ "values (?,?,?,?,?,?,?,?,?,?,?,?,?) ";
+	private void saveCncbls(final List<Cncbl> items) {
+		if (items == null || items.size() == 0)
+			return;
+
+		String sql = "insert into t_pro_result_cncbl " + " (dept_code, dept_name, t_job_id,"
+				+ " ys_cncbl, hs_cncbl, js_cncbl, op_cncbl, house_cncbl, spe_cncbl, asset_cncbl, oc_cncbl,"
+				+ " type, level, zzys_cncbl ) " + "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
 		jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
 
 			@Override
@@ -604,21 +609,23 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 				ps.setString(1, item.getDeptCode());
 				ps.setString(2, item.getDeptName());
 				ps.setInt(3, item.gettJobId());
-				
+
 				ps.setDouble(4, item.getYsCncbl());
 				ps.setDouble(5, item.getHsCncbl());
 				ps.setDouble(6, item.getJsCncbl());
-				
+
 				ps.setDouble(7, item.getOpCncbl());
 				ps.setDouble(8, item.getHouseCncbl());
 				ps.setDouble(9, item.getSpeCncbl());
-				
+
 				ps.setDouble(10, item.getAssetCncbl());
 				ps.setDouble(11, item.getOcCncbl());
-				
+
 				ps.setInt(12, item.getType());
 				ps.setInt(13, item.getLevel());
 				
+				ps.setDouble(14, item.getZzysCncbl());
+
 			}
 
 			@Override
@@ -627,10 +634,9 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 			}
 
 		});
-		
+
 	}
 
-	
 	/**
 	 * 保存分摊数据-
 	 * 
@@ -769,14 +775,14 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 	public void deleteJobById(Integer jobId) {
 		// 统计数据
 		deleteJobDataById(jobId);
-		
+
 		// 原始数据
 		jdbcTemplate.update("delete from t_costaccount_src where t_job_id = ? ", jobId);
 		// 原始数据-开单工作量
 		jdbcTemplate.update("delete from t_costaccount_src_kdgzl where t_job_id = ? ", jobId);
 		// 原始数据-项目年例数
 		jdbcTemplate.update("delete from t_costaccount_src_nls where t_job_id = ? ", jobId);
-				
+
 		// 任务自身
 		jdbcTemplate.update("delete from t_costaccount_job where id = ? ", jobId);
 	}
@@ -1033,14 +1039,13 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 	 * @return
 	 */
 	public List<CADItem> getSrcData(Integer jobId) {
-		return jdbcTemplate.query(
-				" SELECT dd.dept_special_code, dd.dept_type_code, " + " src.*, "
-						+ " (IFNULL(src.people_count_zzys, 0) + IFNULL(src.people_count_fzrys, 0) + IFNULL(src.people_count_zrys, 0) + IFNULL(src.people_count_js, 0) + IFNULL(src.people_count_hs, 0) + IFNULL(src.people_count_qt, 0) ) AS people_count, "
-						+ " (IFNULL(src.cost_people_zzys, 0) + IFNULL(src.cost_people_fzzys, 0) + IFNULL(src.cost_people_zrys, 0) + IFNULL(src.cost_people_js, 0) + IFNULL(src.cost_people_hs, 0) + IFNULL(src.cost_people_qt, 0) ) AS cost_people "
-						+ " FROM t_costaccount_src src LEFT JOIN "
-						+ " (SELECT dept.*,job.id jobid FROM t_dept dept LEFT JOIN t_costaccount_job job "
-						+ " ON job.t_hos_id = dept.t_hospital_id WHERE job.id = ?) dd "
-						+ " ON src.t_job_id = dd.jobid AND src.dept_code = dd.dept_code WHERE src.t_job_id = ? ",
+		return jdbcTemplate.query(" SELECT dd.dept_special_code, dd.dept_type_code, " + " src.*, "
+				+ " (IFNULL(src.people_count_zzys, 0) + IFNULL(src.people_count_fzrys, 0) + IFNULL(src.people_count_zrys, 0) + IFNULL(src.people_count_js, 0) + IFNULL(src.people_count_hs, 0) + IFNULL(src.people_count_qt, 0) ) AS people_count, "
+				+ " (IFNULL(src.cost_people_zzys, 0) + IFNULL(src.cost_people_fzzys, 0) + IFNULL(src.cost_people_zrys, 0) + IFNULL(src.cost_people_js, 0) + IFNULL(src.cost_people_hs, 0) + IFNULL(src.cost_people_qt, 0) ) AS cost_people "
+				+ " FROM t_costaccount_src src LEFT JOIN "
+				+ " (SELECT dept.*,job.id jobid FROM t_dept dept LEFT JOIN t_costaccount_job job "
+				+ " ON job.t_hos_id = dept.t_hospital_id WHERE job.id = ?) dd "
+				+ " ON src.t_job_id = dd.jobid AND src.dept_code = dd.dept_code WHERE src.t_job_id = ? ",
 				new Object[] { jobId, jobId }, new BeanPropertyRowMapper<CADItem>(CADItem.class));
 	}
 
@@ -1054,7 +1059,7 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 		return jdbcTemplate.query(" SELECT * from t_costaccount_src_kdgzl where t_job_id = ? ", new Object[] { jobId },
 				new BeanPropertyRowMapper<TCostaccountSrcKdgzl>(TCostaccountSrcKdgzl.class));
 	}
-	
+
 	/**
 	 * 获取某次任务的原始数据-项目年例数
 	 *
@@ -1080,8 +1085,8 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 		StringBuffer sb = new StringBuffer(" SELECT j.* FROM `t_costaccount_job` j where 1=1 ");
 		// 任务名
 		if (!StrUtils.isNull(params.get("jobDesc"))) {
-			sb.append(" and j.job_desc = ? ");
-			values.add(params.get("jobDesc"));
+			sb.append(" and j.job_desc like ? ");
+			values.add("%" + params.get("jobDesc") + "%");
 		}
 		// 任务状态
 		if (!StrUtils.isNull(params.get("state"))) {
@@ -1142,7 +1147,7 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 
 		return jdbcTemplate.queryForList(sb.toString(), values.toArray());
 	}
-	
+
 	/**
 	 * 获取原始数据列表-年例数
 	 * 

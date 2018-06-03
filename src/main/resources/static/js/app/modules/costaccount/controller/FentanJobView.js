@@ -20,10 +20,13 @@ app.controller('FentanJobViewCtrl',function($scope,
 				$scope.dataSrcKdgzl = data.srcKdgzl;
 				$scope.dataSrcNls = data.srcNls;
 				$scope.dataFentan = data.fentan;
-				$scope.procosts = data.proresult;
 				
+				$scope.procosts = data.proresult;
 				handleCncbl(data.proresultCncbl)
 				$scope.proresultCncbl = data.proresultCncbl;
+				
+				$scope.proresultZone = data.proresultZone;
+				$scope.proresultCncblZone = data.proresultCncblZone;
 				
 				// 将原始数据中部分数据放入分摊数据中
 				if(data.fentan && data.src){

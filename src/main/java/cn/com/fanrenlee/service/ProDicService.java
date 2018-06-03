@@ -69,10 +69,10 @@ public class ProDicService extends SimpleServiceImpl {
 	 */
 	public void add(TProDic dic) {
 		jdbcTemplate.update(
-				"insert into t_pro_dic (" + " pro_code, pro_name, cost_time, " + " pc_ys, pc_hs, pc_js, pc_o, "
-						+ " t_hospital_id, wsclf, ylfxjj) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ",
+				"insert into t_pro_dic (" + " pro_code, pro_name, cost_time, pc_ys, pc_hs, pc_js, pc_o, "
+						+ " t_hospital_id, wsclf, ylfxjj, nd) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ",
 				new Object[]{dic.getProCode(), dic.getProName(), dic.getCostTime(), dic.getPcYs(), dic.getPcHs(),
-						dic.getPcJs(), dic.getPcO(), dic.gettHospitalId(), dic.getWsclf(), dic.getYlfxjj()});
+						dic.getPcJs(), dic.getPcO(), dic.gettHospitalId(), dic.getWsclf(), dic.getYlfxjj(), dic.getNd()});
 	}
 
 	/**
@@ -84,9 +84,9 @@ public class ProDicService extends SimpleServiceImpl {
 	public void edit(TProDic dic) {
 		jdbcTemplate.update(
 				"update t_pro_dic set " + " pro_code = ? ,pro_name = ?, cost_time = ?, "
-						+ " pc_ys = ?, pc_hs = ?, pc_js = ?, " + " pc_o = ?, wsclf= ?, " + " ylfxjj = ? where id = ? ",
+						+ " pc_ys = ?, pc_hs = ?, pc_js = ?, " + " pc_o = ?, wsclf= ?, ylfxjj = ? , nd = ? where id = ? ",
 				new Object[]{dic.getProCode(), dic.getProName(), dic.getCostTime(), dic.getPcYs(), dic.getPcHs(),
-						dic.getPcJs(), dic.getPcO(), dic.getWsclf(), dic.getYlfxjj(), dic.getId()});
+						dic.getPcJs(), dic.getPcO(), dic.getWsclf(), dic.getYlfxjj(), dic.getNd(), dic.getId()});
 	}
 
 	public List<TProDic> getProDics(Integer hosId) {
@@ -113,8 +113,8 @@ public class ProDicService extends SimpleServiceImpl {
 		}
 		// 项目编码
 		if (!StrUtils.isNull(params.get("proCode"))) {
-			sb.append(" and pro_code = ? ");
-			values.add(params.get("proCode"));
+			sb.append(" and pro_code like ? ");
+			values.add("%" +params.get("proCode") + "%");
 		}
 		// 医院id
 		/*if (!StrUtils.isNull(params.get("hosId"))) {
@@ -146,20 +146,21 @@ public class ProDicService extends SimpleServiceImpl {
 			throw new ServiceException("excel解析失败");
 		}
 
-		// 获取3个sheet页数据
+		// 获取sheet页数据
 		final List<TProDic> proDics1 = getFirstSheetDataSrcData(srcData, hosId);
 		final List<TProDic> proDics2 = getSecondSheetDataSrcData(srcData, hosId);
 		final List<TProDic> proDics3 = getThirdSheetDataSrcData(srcData, hosId);
+		final List<TProDic> proDics4 = getForthSheetDataSrcData(srcData, hosId);
 
-		// 融合3个列表数据
-		final List<TProDic> allProDics = createProDics(proDics1, proDics2, proDics3);
+		// 融合列表数据
+		final List<TProDic> allProDics = createProDics(proDics1, proDics2, proDics3, proDics4);
 
 		// 删除旧数据
 		delByHosId(hosId);
 
 		// 批量保存
 		String sqlSave = "insert into t_pro_dic (" + " t_hospital_id, pro_code, pro_name, cost_time, "
-				+ " pc_ys, pc_hs, pc_js, pc_o, " + " wsclf, ylfxjj) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				+ " pc_ys, pc_hs, pc_js, pc_o, " + " wsclf, ylfxjj, nd) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		jdbcTemplate.batchUpdate(sqlSave, new BatchPreparedStatementSetter() {
 
 			@Override
@@ -181,6 +182,9 @@ public class ProDicService extends SimpleServiceImpl {
 				// + " wsclf, ylfxjj
 				ps.setObject(9, item.getWsclf());
 				ps.setObject(10, item.getYlfxjj());
+				
+				// + " nd
+				ps.setObject(11, item.getNd());
 
 			}
 
@@ -202,14 +206,14 @@ public class ProDicService extends SimpleServiceImpl {
 	}
 
 	/**
-	 * 融合3个sheet页的内容
+	 * 融合sheet页的内容
 	 *
 	 * @param proDics1
 	 * @param proDics2
 	 * @param proDics3
 	 * @return
 	 */
-	private List<TProDic> createProDics(List<TProDic> proDics1, List<TProDic> proDics2, List<TProDic> proDics3) {
+	private List<TProDic> createProDics(List<TProDic> proDics1, List<TProDic> proDics2, List<TProDic> proDics3, List<TProDic> proDics4) {
 		Map<String, TProDic> temp = new HashMap<String, TProDic>();
 		if (proDics1 != null) {
 			for (TProDic item : proDics1) {
@@ -238,6 +242,19 @@ public class ProDicService extends SimpleServiceImpl {
 				} else {
 					TProDic oldItem = temp.get(proCode);
 					oldItem.setYlfxjj(item.getYlfxjj());
+				}
+			}
+		}
+		
+
+		if (proDics4 != null) {
+			for (TProDic item : proDics4) {
+				String proCode = item.getProCode();
+				if (temp.get(proCode) == null) {
+					temp.put(proCode, item);
+				} else {
+					TProDic oldItem = temp.get(proCode);
+					oldItem.setNd(item.getNd());
 				}
 			}
 		}
@@ -355,6 +372,42 @@ public class ProDicService extends SimpleServiceImpl {
 			srcItem.setProCode(rowDataItem.get(0));
 			srcItem.setProName(rowDataItem.get(1));
 			srcItem.setYlfxjj(getDouble(rowDataItem.get(2)));
+
+			srcItems.add(srcItem);
+		}
+		return srcItems;
+	}
+	
+	/**
+	 * 从原始excel数据中获取数据-第4页
+	 *
+	 * @param srcData
+	 * @return
+	 * @throws ServiceException
+	 */
+	private List<TProDic> getForthSheetDataSrcData(List<List<List<String>>> srcData, Integer hosId)
+			throws ServiceException {
+		if (srcData == null || srcData.size() <= 3) {
+			return null;
+		}
+		List<TProDic> srcItems = new ArrayList<TProDic>();
+		List<List<String>> sheetDataItem = srcData.get(3);
+		if (sheetDataItem.size() <= 0) {
+			throw new ServiceException("第四页数据【技术难度指数】不符合规范，至少应有1行表头数据");
+		}
+
+		// 处理业务数据-从第二行开始
+		for (int i = 1; i < sheetDataItem.size(); i++) {
+			List<String> rowDataItem = sheetDataItem.get(i);
+			int rowDataitemSize = rowDataItem.size();
+			if (rowDataitemSize < 3) {
+				throw new ServiceException("第四页数据行至少应有3列数据(行" + (i + 1) + ")");
+			}
+			TProDic srcItem = new TProDic();
+			srcItem.settHospitalId(hosId);
+			srcItem.setProCode(rowDataItem.get(0));
+			srcItem.setProName(rowDataItem.get(1));
+			srcItem.setNd(getDouble(rowDataItem.get(2)));
 
 			srcItems.add(srcItem);
 		}

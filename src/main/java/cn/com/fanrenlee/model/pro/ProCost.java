@@ -32,6 +32,7 @@ public class ProCost {
 	private Double costYlfxjj;
 	private Integer tJobId;
 	private Integer level;
+	private Integer type;
 
 	public String getDeptCode() {
 		return deptCode;
@@ -223,6 +224,14 @@ public class ProCost {
 
 	public void setLevel(Integer level) {
 		this.level = level;
+	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
 	}
 
 }

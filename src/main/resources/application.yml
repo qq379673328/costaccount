@@ -6,7 +6,7 @@ spring:
     datasource:
         url: jdbc:mysql://localhost:3306/costaccount?useUnicode=true&characterEncoding=UTF-8
         username: root
-        password: 
+        password: root
         driver-class-name: com.mysql.jdbc.Driver
     profiles:
         active: DEFAULT

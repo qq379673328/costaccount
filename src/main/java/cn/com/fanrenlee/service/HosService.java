@@ -85,8 +85,8 @@ public class HosService extends SimpleServiceImpl {
 		}
 		// 医院编码
 		if (!StrUtils.isNull(params.get("hosCode"))) {
-			sb.append(" and t.hos_code = ? ");
-			values.add(params.get("hosCode"));
+			sb.append(" and t.hos_code like ? ");
+			values.add("%" + params.get("hosCode") + "%");
 		}
 
 		sb.append(" ORDER BY t.create_time DESC ");

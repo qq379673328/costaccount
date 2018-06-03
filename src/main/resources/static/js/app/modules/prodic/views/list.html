@@ -72,6 +72,7 @@
 					<th rowspan="2">项目名称</th>
 					<th rowspan="2">卫生材料费</th>
 					<th rowspan="2">医疗风险基金</th>
+					<th rowspan="2">技术难度指数</th>
 					<th colspan="4">基本人力消耗</th>
 					<th rowspan="2">项目耗时</th>
 					
@@ -84,7 +85,7 @@
 					<th>药师</th>
 				</tr>
 			</thead>
-			<tr ng-show="!$data"><td colspan="4">加载中...</td></tr>
+			<tr ng-show="!$data"><td colspan="5">加载中...</td></tr>
 			<tr ng-repeat="item in $data">
 				<td>{{ (queryParams.page - 1) * queryParams.rows + $index + 1 }}</td>
 				
@@ -92,6 +93,7 @@
 				<td>{{ item.pro_name }}</td>
 				<td>{{ item.wsclf }}</td>
 				<td>{{ item.ylfxjj }}</td>
+				<td>{{ item.nd }}</td>
 				<td>{{ item.pc_ys }}</td>
 				<td>{{ item.pc_hs }}</td>
 				<td>{{ item.pc_js }}</td>

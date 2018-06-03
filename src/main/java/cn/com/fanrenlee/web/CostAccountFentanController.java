@@ -146,16 +146,36 @@ public class CostAccountFentanController {
 
 		TCostaccountJob job = costAccountFentanService.getJobByJobid(jobId);
 		THospital hos = hosService.getById(job.gettHosId());
+		// 任务信息
 		ret.put("job", job);
+		// 医院信息
 		ret.put("hos", hos);
+		// 基础数据
 		ret.put("base", costAccountFentanService.fentanBase(String.valueOf(jobId)));
+		
+		// 原始数据
 		ret.put("src", costAccountFentanService.getSrcDataList(params));
+		// 原始数据-开单工作量
 		ret.put("srcKdgzl", costAccountFentanService.getSrcDataKdgzlList(params));
+		// 原始数据-年例数
 		ret.put("srcNls", costAccountFentanService.getSrcDataNlsList(params));
+		
+		// 分摊数据
 		ret.put("fentan", costAccountFentanService.getFentanList(params, 0));
 		
+		// 结果
 		ret.put("proresult", proService.getProResult(jobId));
+		// 结果-产能成本率
 		ret.put("proresultCncbl", proService.getProResultCncbl(jobId));
+		
+		// 医院总数
+		Integer hosCount = proService.getHosCount();
+		
+		// 区域级-结果
+		ret.put("proresultZone", proService.getProResultZone(hosCount));
+		// 区域级-产能成本率
+		ret.put("proresultCncblZone", proService.getProResultCncblZone(hosCount));
+		
 		
 		return ret;
 	}

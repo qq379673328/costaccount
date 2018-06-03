@@ -19,6 +19,10 @@ public class Cncbl {
 	 */
 	private Double ysCncbl;
 	/**
+	 * 产能成本率-主治医师
+	 */
+	private Double zzysCncbl;
+	/**
 	 * 产能成本率-护士
 	 */
 	private Double hsCncbl;
@@ -130,6 +134,12 @@ public class Cncbl {
 	}
 	public void settJobId(Integer tJobId) {
 		this.tJobId = tJobId;
+	}
+	public Double getZzysCncbl() {
+		return zzysCncbl == null ? 0 : zzysCncbl;
+	}
+	public void setZzysCncbl(Double zzysCncbl) {
+		this.zzysCncbl = zzysCncbl;
 	}
 	
 }

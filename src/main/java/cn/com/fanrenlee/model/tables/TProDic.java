@@ -16,6 +16,7 @@ public class TProDic {
 	private Integer tHospitalId;
 	private Double wsclf;
 	private Double ylfxjj;
+	private Double nd;
 
 	public Integer getId() {
 		return id;
@@ -82,7 +83,7 @@ public class TProDic {
 	}
 
 	public Double getWsclf() {
-		return wsclf;
+		return wsclf == null ? 0 : wsclf;
 	}
 
 	public void setWsclf(Double wsclf) {
@@ -90,7 +91,7 @@ public class TProDic {
 	}
 
 	public Double getYlfxjj() {
-		return ylfxjj;
+		return ylfxjj == null ? 0 : ylfxjj;
 	}
 
 	public void setYlfxjj(Double ylfxjj) {
@@ -103,6 +104,61 @@ public class TProDic {
 
 	public void setCostTime(Integer costTime) {
 		this.costTime = costTime;
+	}
+
+	/**
+	 * 是否有医生参与
+	 * 
+	 * @return
+	 */
+	public boolean isDoctorIn() {
+		return this.pcYs == null || this.pcYs == 0 ? false : true;
+	}
+
+	/**
+	 * 是否只有护士参与
+	 * 
+	 * @return
+	 */
+	public boolean isOnlyHsIn() {
+		return (this.pcYs == null || this.pcYs == 0) && (this.pcJs == null || this.pcJs == 0)
+				&& (this.pcO == null || this.pcO == 0) && (this.pcHs != null && this.pcHs > 0) ? true : false;
+	}
+
+	/**
+	 * 是否只有技师参与
+	 * 
+	 * @return
+	 */
+	public boolean isOnlyJsIn() {
+		return (this.pcYs == null || this.pcYs == 0) && (this.pcHs == null || this.pcHs == 0)
+				&& (this.pcO == null || this.pcO == 0) && (this.pcJs != null && this.pcJs > 0) ? true : false;
+	}
+
+	/**
+	 * 是否只有药师参与
+	 * 
+	 * @return
+	 */
+	public boolean isOnlyYsIn() {
+		return (this.pcYs == null || this.pcYs == 0) && (this.pcJs == null || this.pcJs == 0)
+				&& (this.pcHs == null || this.pcHs == 0) && (this.pcO != null && this.pcO > 0) ? true : false;
+	}
+	
+	/**
+	 * 总消耗人数
+	 * @return
+	 */
+	public Double getTotalPerson() {
+		return this.pcYs + this.pcHs + this.pcJs + this.pcO;
+	}
+
+	public Double getNd() {
+		return nd == null ? 0 : nd;
+	}
+
+	public void setNd(Double nd) {
+		this.nd = nd;
 	}
 
 }
