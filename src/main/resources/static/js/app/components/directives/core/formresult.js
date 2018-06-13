@@ -9,7 +9,7 @@ app.directive('coreFormresult',["$timeout", function($timeout){
         link: function($scope){
         	$scope.$watch("formresult", function(){
         		if($scope.formresult == null) return;
-        		if($scope.formresult.success == "1"){//成功的信息自动关闭
+        		if($scope.formresult.success == "1" || $scope.formresult.success == "200"){//成功的信息自动关闭
         			$timeout.cancel(timer);//先取消
         			timer = $timeout(function(){//新建
             			$scope.formresult = null;

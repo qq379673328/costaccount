@@ -41,14 +41,3 @@ server:
     compression:
         #是否开启压缩
         enabled: true
-    
-# 安全
-security:
-    basic:
-        enabled: false
-        authorize-mode: 
-        path: [/**]
-        realm: 
-    user:
-        name: admin
-        password: lizhiyong

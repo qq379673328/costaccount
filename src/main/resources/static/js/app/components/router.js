@@ -124,5 +124,64 @@ app.config(function($stateProvider, $urlRouterProvider) {
 				+ 'prodic/views/edit.html',
 		controller : "ProdicEditCtrl"
 	})
+	
+	// 用户列表
+	.state('userList',{
+		url : "/user/list",
+		templateUrl : fdRouterViewsBasepath
+				+ 'auth/user/views/list.html',
+		controller : "UserListCtrl"
+	})
+	// 用户编辑
+	.state('userEdit',{
+		url : "/user/edit/{id}",
+		templateUrl : fdRouterViewsBasepath
+				+ 'auth/user/views/edit.html',
+		controller : "UserEditCtrl"
+	})
+	// 用户新增
+	.state('userAdd',{
+		url : "/user/add",
+		templateUrl : fdRouterViewsBasepath
+				+ 'auth/user/views/edit.html',
+		controller : "UserEditCtrl"
+	})
+	// 用户角色分配
+	.state('userSetRole',{
+		url : "/user/setrole?id&loginName",
+		templateUrl : fdRouterViewsBasepath
+				+ 'auth/user/views/setrole.html',
+		controller : "UserSetRoleCtrl"
+	})
+	
+	// 角色列表
+	.state('roleList',{
+		url : "/role/list",
+		templateUrl : fdRouterViewsBasepath
+				+ 'auth/role/views/list.html',
+		controller : "RoleListCtrl"
+	})
+	// 角色编辑
+	.state('roleEdit',{
+		url : "/role/edit/{id}",
+		templateUrl : fdRouterViewsBasepath
+				+ 'auth/role/views/edit.html',
+		controller : "RoleEditCtrl"
+	})
+	// 角色新增
+	.state('roleAdd',{
+		url : "/role/add",
+		templateUrl : fdRouterViewsBasepath
+				+ 'auth/role/views/edit.html',
+		controller : "RoleEditCtrl"
+	})
+	// 角色分配权限
+	.state('roleSetMf',{
+		url : "/role/setmf?id&roleName",
+		templateUrl : fdRouterViewsBasepath
+				+ 'auth/role/views/setmf.html',
+		controller : "RoleSetMfCtrl"
+	})
+	
 	;
 });

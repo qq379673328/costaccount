@@ -1,0 +1,58 @@
+<div class="navigation">
+	位置：
+	<a href="#">首页</a>
+</div>
+<form name="form">
+<div class="content">
+	<div class="mytable">
+		<div class="title">
+			<span ng-if="isAdd">
+				角色新增
+			</span>
+			<span ng-if="!isAdd">
+				角色编辑
+			</span>
+		</div>
+		<table>
+			<tbody>
+				<tr>
+					<td class="td-even">
+						<span class="warn">*</span>角色名：
+						<input class="form-input" ng-model="item.roleName" />
+					</td>
+				</tr>
+				<tr>
+					<td class="td-even">
+						<span class="warn">*</span>描述：
+						<input class="form-input" ng-model="item.roleDesc" />
+					</td>
+				</tr>
+				
+				<tr>
+					<td class="td-even">
+						<div class="btn btn-lblue" 
+							ng-show="!isRuning"
+							ng-click="save()">
+							&nbsp;&nbsp;保存&nbsp;&nbsp;
+						</div>
+						<div ng-show="isRuning">
+							保存中，请稍后...
+						</div>
+						<btn-back />
+
+					</td>
+				</tr>
+				
+				<tr>
+					<td>
+						<span class="warn">{{validInfo}}</span>
+						<div core-formresult result="formresult"></div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	
+</div>
+
+</form>

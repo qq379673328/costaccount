@@ -1,0 +1,38 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 通用-基础 -->
+<mapper namespace="cn.com.sinosoft.common.base">
+	
+	<!-- 获取菜单、功能点列表 -->
+	<select id="menu-fun-list"
+		resultType="cn.com.fanrenlee.auth.entity.ge.TAuthMenufun">
+		SELECT
+		  id,
+		  MF_ID,
+		  PMF_ID,
+		  MF_NAME,
+		  MF_LINK,
+		  MF_TYPE,
+		  MF_DESC,
+		  MF_RANK,
+		  MF_LEVEL
+		FROM t_auth_menufun
+		where 1=1
+		
+		<if test="type != null">
+		    AND MF_TYPE = #{type}
+		</if>
+		<if test="userId != null">
+		    AND (MF_ID in (
+		    	SELECT rm.`MF_ID` FROM `t_auth_rm` rm WHERE rm.`ROLE_ID` IN (
+				SELECT ur.`ROLE_ID` FROM t_auth_ur ur WHERE ur.`USER_ID` = #{userId}
+				)
+		    ) )
+		</if>
+		
+		ORDER BY MF_RANK
+	</select>
+	
+</mapper>

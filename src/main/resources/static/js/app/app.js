@@ -71,6 +71,9 @@ app.factory('ajaxHandler', ['$q', '$rootScope', function($q, $rootScope) {
 					time: new Date()
 				};
 			}
+			if(res.data.success == '500'){
+				res.status = "500";
+			}
 			return res;
 		},
         responseError: function(response) {

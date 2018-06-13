@@ -1,0 +1,48 @@
+<div class="navigation">
+	位置：
+	<a href="#">首页</a>
+</div>
+<form name="form">
+<div class="content">
+	<div class="mytable">
+		<div class="title">
+			用户角色分配-{{inParams.loginName}}
+		</div>
+		<table>
+			<tbody>
+				<tr ng-repeat="item in roles">
+					<td class="td-even">
+						<input type="checkbox" name="userroles"
+							value="item.ID" 
+							ng-checked="item.isown == '1'"
+							ng-model="item.checked" />
+						{{item.ROLE_DESC}}
+					</td>
+				</tr>
+				<tr>
+					<td class="td-even">
+						<div class="btn btn-lblue" 
+							ng-show="!isRuning"
+							ng-click="setRole()">
+							&nbsp;&nbsp;确认分配&nbsp;&nbsp;
+						</div>
+						<div ng-show="isRuning">
+							保存中，请稍后...
+						</div>
+						<btn-back />
+
+					</td>
+				</tr>
+				
+				<tr>
+					<td>
+						<div core-formresult result="formresult"></div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	
+</div>
+
+</form>

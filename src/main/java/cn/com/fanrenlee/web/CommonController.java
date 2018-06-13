@@ -24,9 +24,17 @@ public class CommonController {
 	/**
 	 * 首页
 	 */
-	@RequestMapping("/")
+	@RequestMapping({"/", "index"})
 	public String index(){
 		return "index";
+	}
+	
+	/**
+	 * 登录页
+	 */
+	@RequestMapping("/login")
+	public String login(){
+		return "login";
 	}
 	
 	/**

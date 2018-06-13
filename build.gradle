@@ -34,12 +34,30 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-security')
 	compile('org.springframework.session:spring-session')
 	compile('org.springframework.boot:spring-boot-starter-web')
+	compile('org.springframework.boot:spring-boot-configuration-processor')
 	compile('org.springframework.boot:spring-boot-starter-thymeleaf@jar')
+	
+	// mybatis
+	compile('org.mybatis.spring.boot:mybatis-spring-boot-starter:1.3.1')
+	// mybatis page
+	compile('com.github.miemiedev:mybatis-paginator:1.2.17')
+	
+	// hotreload...
+	compile("org.springframework.boot:spring-boot-devtools")
+	
+	// kaptcha
+	compile('com.github.penggle:kaptcha:2.3.2')
+	
+	// commons
+	compile('commons-beanutils:commons-beanutils:1.9.3')
 	
 	// thymeleaf 3
 	compile('org.thymeleaf:thymeleaf:3.0.3.RELEASE')
 	compile('org.thymeleaf:thymeleaf-spring4:3.0.3.RELEASE')
 	compile('nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:2.1.2')
+	
+	// html parse
+	compile('org.jsoup:jsoup:1.11.2')
 	
 	compile('org.apache.poi:poi:3.14')
 	compile('org.apache.poi:poi-ooxml:3.14')

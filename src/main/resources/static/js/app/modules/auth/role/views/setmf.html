@@ -1,0 +1,66 @@
+<style>
+	.role-set-menu{
+		line-height: 1.5em;
+	}
+	.role-set-menu-lv2{
+		text-indent: 2em;
+	}
+	.role-set-menu-lv3{
+		text-indent: 4em;
+	}
+</style>
+<div class="navigation">
+	位置：
+	<a href="#">首页</a>
+</div>
+<form name="form">
+<div class="content">
+	<div class="mytable">
+		<div class="title">
+			角色权限分配-{{inParams.roleName}}
+		</div>
+		
+			<ul class="role-set-menu">
+				<li ng-repeat="item in items">
+					<input type="checkbox" name="userroles"
+						value="item.ID" 
+						ng-model="item.isown" />
+					{{item.text}}
+					
+					<ul ng-if="item.children.length > 0" class="role-set-menu-lv2">
+						<li ng-repeat="itemLv2 in item.children">
+							<input type="checkbox" name="userroles"
+								value="itemLv2.ID" 
+								ng-model="itemLv2.isown" />
+							{{itemLv2.text}}
+							
+							<ul ng-if="itemLv2.children.length > 0" class="role-set-menu-lv3">
+								<li ng-repeat="itemLv3 in itemLv2.children">
+									<input type="checkbox" name="userroles"
+										value="itemLv3.ID" 
+										ng-model="itemLv3.isown" />
+									{{itemLv3.text}}
+								</li>
+							</ul>
+							
+						</li>
+					</ul>
+				</li>
+			</ul>
+			
+			<div class="btn btn-lblue" 
+				ng-show="!isRuning"
+				ng-click="setRole()">
+				&nbsp;&nbsp;确认分配&nbsp;&nbsp;
+			</div>
+			<div ng-show="isRuning">
+				保存中，请稍后...
+			</div>
+			<btn-back />
+
+			<div core-formresult result="formresult"></div>
+	</div>
+	
+</div>
+
+</form>

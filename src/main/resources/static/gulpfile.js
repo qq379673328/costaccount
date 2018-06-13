@@ -7,23 +7,23 @@ var clean = require('gulp-clean');
 
 // 语法检查
 gulp.task('jshint', function () {
-    return gulp.src('js/**/*.js')
-        .pipe(jshint())
-        .pipe(jshint.reporter('default'));
+	return gulp.src('js/**/*.js')
+		.pipe(jshint())
+		.pipe(jshint.reporter('default'));
 });
 
 //js 合并压缩
 gulp.task('minify', function (){
-     return gulp.src([
-                      'js/app/**/*.js',
-                      '!js/app/components/3rd/**/*.js',
-                      '!js/app/bower_components/**/*.js',
-                      '!js/app/appformlist.js'])
-        .pipe(concat('main.js'))
-        .pipe(gulp.dest('js/build'))
-        .pipe(uglify())
-        .pipe(rename('main.min.js'))
-        .pipe(gulp.dest('js/build'));
+	 return gulp.src([
+			'js/app/**/*.js',
+			'!js/app/components/3rd/**/*.js',
+			'!js/app/bower_components/**/*.js',
+			'!js/app/appformlist.js'])
+		.pipe(concat('main.js'))
+		.pipe(gulp.dest('js/build'))
+		.pipe(uglify())
+		.pipe(rename('main.min.js'))
+		.pipe(gulp.dest('js/build'));
 });
 
 //清空发布
@@ -33,7 +33,7 @@ gulp.task('clean', function () {
 
 // 监视文件的变化
 gulp.task('watch', function () {
-    gulp.watch(['js/**/*.js'],['minify']);
+	gulp.watch(['js/**/*.js'],['minify']);
 });
 
 // 注册缺省任务
