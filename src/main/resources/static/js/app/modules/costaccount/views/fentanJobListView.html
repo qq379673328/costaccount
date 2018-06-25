@@ -54,10 +54,8 @@
 				<tr>
 					<th></th>
 					<th>任务描述</th>
-					<th>所属医院</th>
 					<th>状态</th>
 					<th>创建时间</th>
-					<th>修改时间</th>
 					<th>操作</th>
 				</tr>
 			</thead>
@@ -65,11 +63,9 @@
 			<tr ng-repeat="item in $data">
 				<td>{{ (queryParams.page - 1) * queryParams.rows + $index + 1 }}</td>
 				
-				<td>{{ item.job_desc }}</td>
-				<td>{{ item.hos_name }}</td>
+				<td align="left">{{ item.job_desc }}</td>
 				<td>{{ item.state | state }}</td>
 				<td>{{ item.create_time | date: "yyyy/MM/dd" }}</td>
-				<td>{{ item.update_time | date: "yyyy/MM/dd" }}</td>
 				
 				<td class="handle">
 					<!--

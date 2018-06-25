@@ -9,7 +9,7 @@
 <div class="content">
 	<div class="searchzone">
 		<div class="line border-none">
-			<div class="desc">用户名：</div>
+			<div class="desc">账号：</div>
 			<div class="vals">
 				<input ng-model="search.loginName" />
 			</div>
@@ -35,7 +35,7 @@
 			<thead>
 				<tr>
 					<th></th>
-					<th>登录名</th>
+					<th>账号</th>
 					<th>姓名</th>
 					<th>性别</th>
 					<th>联系方式</th>
@@ -53,7 +53,11 @@
 				<td>{{ item.phone }}</td>
 				<td>{{ item.isUsed == '1' ? '正常' : '已禁用' }}</td>
 				
-				<td class="handle">
+				<td class="handle" ng-if="item.loginName == 'admin'">
+					超级管理员禁止操作
+				</td>
+				
+				<td class="handle" ng-if="item.loginName != 'admin'">
 					<a class="btn btn-small btn-lblue" 
 						href="#user/edit/{{item.id}}"
 						ng-show="!item.ishanding"

@@ -24,6 +24,12 @@ public class TCostaccountJob {
     private Date execTimeEnd;
 
     private String state;
+    
+    private String year;
+    
+    private String type;
+    
+    private String halfType;
 
     public Integer getId() {
         return id;
@@ -112,4 +118,30 @@ public class TCostaccountJob {
     public void setState(String state) {
         this.state = state == null ? null : state.trim();
     }
+
+	public String getYear() {
+		return year;
+	}
+
+	public void setYear(String year) {
+		this.year = year;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getHalfType() {
+		return halfType;
+	}
+
+	public void setHalfType(String halfType) {
+		this.halfType = halfType;
+	}
+    
+    
 }

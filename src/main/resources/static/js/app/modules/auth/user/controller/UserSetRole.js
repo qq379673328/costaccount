@@ -15,8 +15,10 @@ app.controller('UserSetRoleCtrl',function($scope,
 		if(data){
 			for(var i in data){
 				var item = data[i];
-				if(item.isown == '1'){
+				if(item.isown == 'true'){
 					item.checked = true;
+				}else{
+					item.checked = false;
 				}
 			}
 		}

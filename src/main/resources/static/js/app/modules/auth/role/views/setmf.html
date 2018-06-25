@@ -23,22 +23,25 @@
 			<ul class="role-set-menu">
 				<li ng-repeat="item in items">
 					<input type="checkbox" name="userroles"
-						value="item.ID" 
-						ng-model="item.isown" />
+						value="item.id" 
+						ng-checked="item.checked == true"
+						ng-model="item.checked" />
 					{{item.text}}
 					
 					<ul ng-if="item.children.length > 0" class="role-set-menu-lv2">
 						<li ng-repeat="itemLv2 in item.children">
 							<input type="checkbox" name="userroles"
-								value="itemLv2.ID" 
-								ng-model="itemLv2.isown" />
+								value="itemLv2.id"
+								ng-checked="itemLv2.checked == true"
+								ng-model="itemLv2.checked" />
 							{{itemLv2.text}}
 							
 							<ul ng-if="itemLv2.children.length > 0" class="role-set-menu-lv3">
 								<li ng-repeat="itemLv3 in itemLv2.children">
 									<input type="checkbox" name="userroles"
-										value="itemLv3.ID" 
-										ng-model="itemLv3.isown" />
+										value="itemLv3.id"
+										ng-checked="itemLv3.checked == true"
+										ng-model="itemLv3.checked" />
 									{{itemLv3.text}}
 								</li>
 							</ul>
@@ -50,7 +53,7 @@
 			
 			<div class="btn btn-lblue" 
 				ng-show="!isRuning"
-				ng-click="setRole()">
+				ng-click="setMf()">
 				&nbsp;&nbsp;确认分配&nbsp;&nbsp;
 			</div>
 			<div ng-show="isRuning">

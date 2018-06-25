@@ -1,15 +1,16 @@
 app.factory('BaseInfoService', ["$http", "ngTableParams", 
     function($http, ngTableParams) {
-	var userInfo = null;
+	var permissions = null;
 	
 	return {
-		//获取登录用户信息
-		getUserInfo: function(cb){
-			if(userInfo){
-				if(data) cb(data);
+		//获取登录用户权限信息
+		getPermissions: function(cb){
+			if(permissions){
+				cb(permissions);
 			}else{
-				$http.post("getLoginUser").success(function(data){
-					if(data) cb(data);
+				$http.post("api/mgr/auth/usermgr/getMyPermissions").success(function(data){
+					permissions = data;
+					if(cb) cb(permissions);
 				});
 			}
 		},

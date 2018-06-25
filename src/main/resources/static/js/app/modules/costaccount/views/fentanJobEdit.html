@@ -13,14 +13,28 @@
 		<table>
 			<tbody>
 				<tr>
-					<td class="td-even">
-						<span class="warn">*</span>任务描述：
-						<input class="form-input" ng-model="job.jobDesc" />
-					</td>
-				</tr>
-				<tr class="line">
 					<td class="td-even" colspan="3">
 						<span class="warn">*</span>选择医院：<div core-hos-select ng-model="selectHos" hosid="t_hos_id"></div>
+					</td>
+				</tr>
+				<tr>
+					<td class="td-even" colspan="3">
+						<span class="warn">*</span>类型：
+						年<input type="radio" name="type" value="年" ng-model="job.type">
+						半年<input type="radio" name="type" value="半年" ng-model="job.type">
+					</td>
+				</tr>
+				<tr>
+					<td class="td-even" colspan="3">
+						<span class="warn">*</span>年份：
+       					<select ng-model="job.year" ng-options="year for year in years"></select>
+					</td>
+				</tr>
+				<tr ng-if="job.type=='半年'">
+					<td class="td-even" colspan="3">
+						<span class="warn">*</span>阶段：
+						上半年<input type="radio" name="halfType" value="上半年" ng-model="job.halfType">
+						下半年<input type="radio" name="halfType" value="下半年" ng-model="job.halfType">
 					</td>
 				</tr>
 				
@@ -44,28 +58,23 @@
 				</tr>
 				
 				<tr>
-					<td class="td-even" colspan="4">
+					<td class="td-even">
 						<div class="btn btn-lblue" 
 							ng-show="!isRuning"
 							ng-click="save()">
 							&nbsp;&nbsp;保存&nbsp;&nbsp;
 						</div>
 						<btn-back />
-						<span class="warn">{{validInfo}}</span>
 						<div ng-show="isRuning">
 							上传中，请稍后...
 						</div>
 
 					</td>
 				</tr>
-				
-				<tr>
-					<td colspan="2">
-						<div core-formresult result="formresult"></div>
-					</td>
-				</tr>
 			</tbody>
 		</table>
+		<div class="warn">{{validInfo}}</div>
+		<div core-formresult result="formresult"></div>
 	</div>
 	
 </div>

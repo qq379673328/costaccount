@@ -43,7 +43,11 @@
 				<td>{{ item.ROLE_NAME }}</td>
 				<td>{{ item.ROLE_DESC }}</td>
 				
-				<td class="handle">
+				<td class="handle" ng-if="item.ROLE_NAME == '超级管理员'">
+					超级管理员禁止操作
+				</td>
+				
+				<td class="handle" ng-if="item.ROLE_NAME != '超级管理员'">
 					<a class="btn btn-small btn-lblue" 
 						href="#role/edit/{{item.ID}}"
 						ng-show="!item.ishanding"

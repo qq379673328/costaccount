@@ -150,6 +150,27 @@
 		ORDER BY MF_LEVEL,MF_RANK
 	</select>
 	
+	<!-- 获取权限菜单-用户 -->
+	<select id="mf-list-user-all"
+		resultType="cn.com.fanrenlee.auth.entity.ge.TAuthMenufun">
+		SELECT
+		  id,
+		  MF_ID,
+		  PMF_ID,
+		  MF_NAME,
+		  MF_LINK,
+		  MF_TYPE,
+		  MF_DESC,
+		  MF_RANK,
+		  MF_LEVEL
+		FROM t_auth_menufun
+			where 1=1
+			<if test="type != null">
+				AND type = #{type}
+			</if>
+		ORDER BY MF_LEVEL,MF_RANK
+	</select>
+	
 	<!-- 重新分配角色权限 -->
 	<insert id="mf-role-set" useGeneratedKeys="true" keyProperty="id">
 		insert into t_auth_rm

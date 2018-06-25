@@ -8,28 +8,42 @@ app.controller('FentanJobEditCtrl',function($scope,
 	
 	var jobId = $stateParams.jobId;
 	
+	$scope.job = {
+		type: '年'
+	}
+	
+	// 年份
+	var years = [];
+	var currentYear = new Date().getFullYear();
+	for(var i = 0; i < 5; i++){
+		years.push(currentYear - i);
+	}
+	$scope.years = years;
+	
 	//加载job信息
-	$http.post("costaccount/jobDetail/" + jobId)
-	.success(function(data){
-		var job = data;
-		$scope.job = job;
-		$scope.t_hos_id = job.t_hos_id;
-		$scope.job.jobDesc = job.jobDesc || job.job_desc;
-		
-		$scope.selectHos = {
-			hos_name: job.hos_name,
-			id: job.t_hos_id
-		};
-	});
+	if(jobId){
+		$http.post("costaccount/jobDetail/" + jobId)
+		.success(function(data){
+			var job = data;
+			$scope.job = job;
+			$scope.t_hos_id = job.t_hos_id;
+			$scope.job.jobDesc = job.jobDesc || job.job_desc;
+			
+			$scope.selectHos = {
+				hos_name: job.hos_name,
+				id: job.t_hos_id
+			};
+		});
+	}
 	
 	//保存
 	$scope.save = function(){
 		$scope.validInfo = "";
-		if (!$scope.job.jobDesc) {
-			$scope.validInfo = "请填写任务描述";
+		if (!$scope.job.year) {
+			$scope.validInfo = "请选择年份";
 			return;
 		}
-		if (!$scope.selectHos.id) {
+		if (!$scope.selectHos || !$scope.selectHos.id) {
 			$scope.validInfo = "请选择医院";
 			return;
 		}

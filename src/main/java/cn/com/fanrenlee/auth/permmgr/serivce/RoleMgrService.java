@@ -190,7 +190,7 @@ public class RoleMgrService {
 				childrenMenus.add(newItem);
 			}
 		}
-		if (menu.get("isown") != null && menu.get("isown").toString().equals("true") && childrenMenus.size() == 0) {
+		if (menu.get("isown") != null && menu.get("isown").toString().equals("1")) {
 			ret.put("checked", true);
 		}
 		if (childrenMenus.size() > 0) {

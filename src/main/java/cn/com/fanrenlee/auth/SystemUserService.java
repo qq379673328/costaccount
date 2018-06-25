@@ -226,7 +226,11 @@ public class SystemUserService {
 		params.put("userId", userId);
 		params.put("type", type);
 		List<TAuthMenufun> items = null;
-		items = baseDao.selectList(NAMESPACE_BASE + "mf-list-user", params);
+		if("1".equals(userId)) {// admin
+			items = baseDao.selectList(NAMESPACE_BASE + "mf-list-user-all", params);
+		}else {
+			items = baseDao.selectList(NAMESPACE_BASE + "mf-list-user", params);
+		}
 		return items;
 	}
 

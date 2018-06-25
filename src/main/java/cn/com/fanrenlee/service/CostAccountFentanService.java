@@ -58,6 +58,10 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 
 	@Resource
 	ProDicService proDicService;
+	
+	private String safeString(String s) {
+		return s == null || s.trim().equals("") ? "" : s;
+	}
 
 	/**
 	 * 保存原始数据
@@ -69,6 +73,32 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 	 */
 	@Transactional
 	public Integer saveSrcDate(InputStream inputStream, final TCostaccountJob job, TCostaccountJobBaseinfo baseInfo) {
+		// 校验job信息
+		if(job != null) {
+			String sql = "select count(1) from t_costaccount_job where t_hos_id = ? and year = ? and type = ? ";
+			List<Object> params = new ArrayList<Object>();
+			params.add(job.gettHosId());
+			params.add(job.getYear());
+			params.add(job.getType());
+			if(job.getHalfType() == null) {
+				sql += " and half_type is null ";
+			}else {
+				sql += " and half_type = ? ";
+				params.add(job.getHalfType());
+			}
+			Integer count = jdbcTemplate.queryForObject(
+					sql,
+					params.toArray(),
+					Integer.class);
+			if(count > 0) {
+				throw new ServiceException("同一医院不能上传同时间段数据");
+			}
+		}
+		
+		// 生成任务描述
+		String jobDesc = safeString(job.getHosName()) + safeString(job.getYear()) + "年" + safeString(job.getHalfType()) + "成本核算";
+		job.setJobDesc(jobDesc);
+		
 		List<List<List<String>>> srcData = null;
 		try {
 			srcData = ExcelUtil.transExcelToData(inputStream);
@@ -88,8 +118,8 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 		final List<TCostaccountSrcNls> srcItemsNls = getCadItemsNlsFromSrcData(srcData, job);
 
 		// 保存任务数据
-		final String sqlJob = "insert into t_costaccount_job " + "(job_desc, t_hos_id, hos_code, hos_name) "
-				+ "values (?, ?, ?, ?) ";
+		final String sqlJob = "insert into t_costaccount_job " + "(job_desc, t_hos_id, hos_code, hos_name, year, type, half_type) "
+				+ "values (?, ?, ?, ?, ?, ?, ?) ";
 		KeyHolder keyJob = new GeneratedKeyHolder();
 		jdbcTemplate.update(new PreparedStatementCreator() {
 			@Override
@@ -99,6 +129,10 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 				preState.setInt(2, job.gettHosId());
 				preState.setString(3, job.getHosCode());
 				preState.setString(4, job.getHosName());
+				
+				preState.setString(5, job.getYear());
+				preState.setString(6, job.getType());
+				preState.setString(7, job.getHalfType());
 				return preState;
 			}
 		}, keyJob);
@@ -1100,7 +1134,7 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 			sb.append(" AND " + SqlUtil.toDate(params.get("createTimeEnd"), 1, 0) + " >= j.create_time ");
 		}
 
-		sb.append(" ORDER BY j.create_time DESC ");
+		sb.append(" ORDER BY j.year DESC,j.type desc, j.half_type desc ");
 
 		srcSql.setSrcSql(sb.toString());
 		srcSql.setValues(values.toArray());
