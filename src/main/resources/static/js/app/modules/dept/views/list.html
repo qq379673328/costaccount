@@ -28,7 +28,7 @@
 				<span class="highlight">{{queryParams.total}}</span>
 			</span>
 			 
-			<a class="spe" href="#dept/add/{{hosId}}">新增科室</a>
+			<a class="spe" href="#dept/add/{{hosId}}" core-permission="jcsj_yy_dep_add">新增科室</a>
 			 
 		</div>
 		<table class="my-table" ng-table="tableParams">
@@ -55,11 +55,13 @@
 					<a class="btn btn-small btn-lblue" 
 						href="#dept/edit/{{hosId}}/{{item.id}}"
 						ng-show="!item.ishanding"
+						core-permission="jcsj_yy_dep_edit"
 						>编辑</a>
 						
 					<a class="btn btn-small btn-danger"
 						ng-click="item.prepareDel = !item.prepareDel"
 						ng-show="!item.ishanding"
+						core-permission="jcsj_yy_dep_del"
 						>删除</a>
 						
 					<a class="btn btn-small btn-w4"

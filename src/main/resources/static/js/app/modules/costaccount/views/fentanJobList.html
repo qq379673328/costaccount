@@ -48,7 +48,7 @@
 				<span class="highlight">{{queryParams.total}}</span>
 			</span>
 			 
-			<a class="spe" ui-sref="costaccountFentanJobEdit">创建新任务</a>
+			<a class="spe" core-permission="cbhs_rwcj_add" ui-sref="costaccountFentanJobEdit">创建新任务</a>
 			 
 		</div>
 		<table class="my-table" ng-table="tableParams">
@@ -70,34 +70,16 @@
 				<td>{{ item.create_time | date: "yyyy/MM/dd" }}</td>
 				
 				<td class="handle">
-					<!--
-					<a class="btn btn-small btn-lblue" 
-						href="#costaccount/jobEdit/{{item.id}}"
-						ng-show="!item.ishanding"
-						>编辑</a>
-					-->
 						
 					<a class="btn btn-small btn-success"
 						ng-click="runJob(item)"
+						core-permission="cbhs_rwcj_js"
 						ng-show="!item.ishanding"
 						>计算</a>
-					<!-- 
-					<a class="btn btn-small btn-primary"
-						href="#proUpload/{{item.id}}"
-						ng-show="!item.ishanding"
-						>上传项目数据</a>
-					<a class="btn btn-small btn-primary"
-						ng-click="runJobPro(item)"
-						ng-show="!item.ishanding"
-						>计算项目理论成本</a>
-					<a class="btn btn-small btn-primary"
-						href="#pro/view/{{item.id}}"
-						ng-show="!item.ishanding"
-						>查看项目理论成本</a>
-					 -->
 					
 					<a class="btn btn-small btn-danger"
 						ng-click="item.prepareDel = !item.prepareDel"
+						core-permission="cbhs_rwcj_del"
 						ng-show="!item.ishanding"
 						>删除</a>
 					

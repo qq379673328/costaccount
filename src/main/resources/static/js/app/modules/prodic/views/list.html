@@ -54,9 +54,10 @@
 				<span class="highlight">{{queryParams.total}}</span>
 			</span>
 			 
-			<a class="spe" href="#prodic/add/{{hosId}}">新增项目</a>
+			<a class="spe" href="#prodic/add/{{hosId}}" core-permission="jcsj_xm_add">新增项目</a>
 			<a class="btn btn-lblue" 
 				ng-show="!importDicsState"
+				core-permission="jcsj_xm_import"
 				ng-click="importDicsState = !importDicsState">导入项目字典</a>
 			<a class="spe" 
 				ng-show="importDicsState"
@@ -104,11 +105,13 @@
 					<a class="btn btn-small btn-lblue" 
 						href="#prodic/edit/{{hosId}}/{{item.id}}"
 						ng-show="!item.ishanding"
+						core-permission="jcsj_xm_edit"
 						>编辑</a>
 						
 					<a class="btn btn-small btn-danger"
 						ng-click="item.prepareDel = !item.prepareDel"
 						ng-show="!item.ishanding"
+						core-permission="jcsj_xm_del"
 						>删除</a>
 						
 					<a class="btn btn-small btn-w4"

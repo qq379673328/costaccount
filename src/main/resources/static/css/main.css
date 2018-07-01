@@ -889,3 +889,8 @@ hr {
 .center{
 	text-align: center;
 }
+.role-set-menu>li{float:left; clear: both;}
+.role-set-menu-lv2>li{
+	float: left;
+}
+

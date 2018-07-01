@@ -2,7 +2,7 @@ var fdRouterViewsBasepath = "js/app/modules/";
 
 // 路由
 app.config(function($stateProvider, $urlRouterProvider) {
-	$urlRouterProvider.otherwise("/costaccount/jobList");
+	$urlRouterProvider.otherwise("/index");
 	$stateProvider
 	// 首页
 	.state('index', {
@@ -39,6 +39,30 @@ app.config(function($stateProvider, $urlRouterProvider) {
 		templateUrl : fdRouterViewsBasepath
 				+ 'costaccount/views/fentanJobView.html',
 		controller : "FentanJobViewCtrl"
+	})
+	
+	// 区域级任务-任务创建
+	.state('jobzonelist',{
+		url : "/costaccount/jobzoneList",
+		templateUrl : fdRouterViewsBasepath
+				+ 'jobzone/views/jobzoneList.html',
+		controller : "JobzoneListCtrl"
+	})
+	// 区域级任务-结果查看
+	.state('jobzoneView',{
+		url : "/costaccount/jobzoneview/{jobId}",
+		params: {jobId: null},
+		templateUrl : fdRouterViewsBasepath
+				+ 'jobzone/views/jobzoneView.html',
+		controller : "JobzoneViewCtrl"
+	})
+	// 区域级任务-任务编辑
+	.state('jobzoneEdit',{
+		url : "/costaccount/jobzoneEdit/{jobId}",
+		params: {jobId: null},
+		templateUrl : fdRouterViewsBasepath
+				+ 'jobzone/views/jobzoneEdit.html',
+		controller : "JobzoneEditCtrl"
 	})
 	
 	// 成本核算-项目算法-数据上传
@@ -181,6 +205,13 @@ app.config(function($stateProvider, $urlRouterProvider) {
 		templateUrl : fdRouterViewsBasepath
 				+ 'auth/role/views/setmf.html',
 		controller : "RoleSetMfCtrl"
+	})
+	// 密码修改
+	.state('pwdchange',{
+		url : "/pwdchange",
+		templateUrl : fdRouterViewsBasepath
+				+ 'auth/user/views/pwdchange.html',
+		controller : "PwdchangeCtrl"
 	})
 	
 	;

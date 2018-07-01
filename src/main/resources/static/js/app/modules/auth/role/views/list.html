@@ -24,7 +24,7 @@
 				<span class="highlight">{{queryParams.total}}</span>
 			</span>
 			
-			<a class="spe" href="#role/add">创建新角色</a>
+			<a class="spe" href="#role/add" core-permission="system_role_add">创建新角色</a>
 			
 		</div>
 		<table class="my-table" ng-table="tableParams">
@@ -51,15 +51,18 @@
 					<a class="btn btn-small btn-lblue" 
 						href="#role/edit/{{item.ID}}"
 						ng-show="!item.ishanding"
+						core-permission="system_role_edit"
 						>编辑</a>
 						
 					<a class="btn btn-small btn-danger"
 						ng-show="!item.ishanding"
 						ng-click="item.prepareDel=!item.prepareDel"
+						core-permission="system_role_del"
 						>删除</a>
 						
 					<a class="btn btn-small btn-lblue"
 						ui-sref="roleSetMf({id: item.ID, roleName: item.ROLE_NAME})"
+						core-permission="system_role_mf"
 						>权限分配</a>
 						
 					<a class="btn btn-small btn-w4"

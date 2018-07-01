@@ -1,0 +1,37 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 区域级任务 -->
+<mapper namespace="cn.com.sinosoft.jobzone">
+
+	<!-- 获取列表-分页查询 -->
+	<select id="list"
+		resultType="hashmap">
+		SELECT
+		  *
+		FROM t_job_zone t
+		where 1=1
+		<if test="params.jobDesc != null and params.jobDesc != ''">
+		    AND t.`desc` like concat('%',#{params.jobDesc}, '%')
+		</if>
+		<if test="params.createTimeStart != null and params.createTimeStart != ''">
+			<![CDATA[AND STR_TO_DATE(CONCAT(#{params.createTimeStart}, ' 00:00:00'), '%Y-%m-%d %H:%i:%s') <= t.create_time]]>
+		</if>
+		<if test="params.createTimeEnd != null and params.createTimeEnd != ''">
+			<![CDATA[AND STR_TO_DATE(CONCAT(#{params.createTimeEnd}, ' 23:59:59'), '%Y-%m-%d %H:%i:%s') >= t.create_time]]>
+		</if>
+		ORDER BY t.create_time desc
+	</select>
+	
+	<!-- 重新分配角色权限 -->
+	<insert id="set-rel" useGeneratedKeys="true" keyProperty="id">
+		insert into t_job_zone_reljob
+			(jobzone_id, ccjob_id)
+		values
+		<foreach collection="ids" item="ccid" index="index" separator="," >
+			( #{id}, #{ccid})
+		</foreach>
+	</insert>
+	
+</mapper>

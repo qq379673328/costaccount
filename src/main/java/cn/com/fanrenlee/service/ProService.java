@@ -63,8 +63,10 @@ public class ProService extends SimpleServiceImpl {
 	 * 
 	 * @return
 	 */
-	public List<Map<String, Object>> getProResultZone(Integer hosCount) {
-		if (hosCount == null || hosCount == 0) {
+	public List<Map<String, Object>> getProResultZone(String zoneJobId) {
+		Integer count = jdbcTemplate.queryForObject("select count(1) from t_job_zone_reljob where jobzone_id = ? ",
+				new Object[] { zoneJobId }, Integer.class);
+		if (count == null || count == 0) {
 			return new ArrayList<Map<String, Object>>();
 		}
 		String sql = " select t.pro_code,t.pro_name,t.type, "
@@ -73,39 +75,38 @@ public class ProService extends SimpleServiceImpl {
 				+ " sum(t.cost_spe_direct + t.cost_spe_mid_all)/? cost_spe,"
 				+ " sum(t.cost_asset_direct + t.cost_asset_mid_all)/? cost_asset,"
 				+ " sum(t.cost_other_direct + t.cost_other_mid_all)/? cost_other,"
-				+ " sum(t.cost_ylfxjj)/? cost_ylfxjj,"
-				+ " sum(t.cost_wsclf)/? cost_wsclf"
-				+ " from t_pro_result t where t.level = 2 " + " group by t.pro_code,t.pro_name,t.type";
+				+ " sum(t.cost_ylfxjj)/? cost_ylfxjj," + " sum(t.cost_wsclf)/? cost_wsclf"
+				+ " from t_pro_result t where t.level = 2 "
+				+ " and t.t_job_id in (select m.ccjob_id from t_job_zone_reljob m where m.jobzone_id = ? )"
+				+ " group by t.pro_code,t.pro_name,t.type";
 		return jdbcTemplate.queryForList(sql,
-				new Object[] { hosCount, hosCount, hosCount, hosCount, hosCount, hosCount, hosCount });
+				new Object[] { count, count, count, count, count, count, count, zoneJobId });
 	}
-	
+
 	/**
 	 * 获取处理结果-产能成本率-区域级
 	 * 
 	 * @return
 	 */
-	public List<Map<String, Object>> getProResultCncblZone(Integer hosCount) {
-		if (hosCount == null || hosCount == 0) {
+	public List<Map<String, Object>> getProResultCncblZone(String zoneJobId) {
+		Integer count = jdbcTemplate.queryForObject("select count(1) from t_job_zone_reljob where jobzone_id = ? ",
+				new Object[] { zoneJobId }, Integer.class);
+		if (count == null || count == 0) {
 			return new ArrayList<Map<String, Object>>();
 		}
-		String sql = " select "
-				+ " sum(t.zzys_cncbl)/? zzys_cncbl,"
-				+ " sum(t.ys_cncbl)/? ys_cncbl,"
-				+ " sum(t.hs_cncbl)/? hs_cncbl,"
-				+ " sum(t.js_cncbl)/? js_cncbl,"
-				+ " sum(t.op_cncbl)/? op_cncbl,"
-				+ " sum(t.house_cncbl)/? house_cncbl,"
-				+ " sum(t.spe_cncbl)/? spe_cncbl,"
-				+ " sum(t.asset_cncbl)/? asset_cncbl,"
-				+ " sum(t.oc_cncbl)/? oc_cncbl"
-				+ " from t_pro_result_cncbl t where t.level = 2 and type = 3";
-		return jdbcTemplate.queryForList(sql,
-				new Object[] { hosCount, hosCount, hosCount, hosCount, hosCount, hosCount, hosCount , hosCount, hosCount});
+		String sql = " select " + " sum(t.zzys_cncbl)/? zzys_cncbl," + " sum(t.ys_cncbl)/? ys_cncbl,"
+				+ " sum(t.hs_cncbl)/? hs_cncbl," + " sum(t.js_cncbl)/? js_cncbl," + " sum(t.op_cncbl)/? op_cncbl,"
+				+ " sum(t.house_cncbl)/? house_cncbl," + " sum(t.spe_cncbl)/? spe_cncbl,"
+				+ " sum(t.asset_cncbl)/? asset_cncbl," + " sum(t.oc_cncbl)/? oc_cncbl"
+				+ " from t_pro_result_cncbl t where t.level = 2 and type = 3"
+				+ " and t.t_job_id in (select m.ccjob_id from t_job_zone_reljob m where m.jobzone_id = ? )";
+		return jdbcTemplate.queryForList(sql, new Object[] { count, count, count, count, count, count,
+				count, count, count , zoneJobId});
 	}
 
 	/**
 	 * 医院数
+	 * 
 	 * @return
 	 */
 	public int getHosCount() {

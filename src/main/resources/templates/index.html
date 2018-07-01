@@ -24,8 +24,11 @@
 				<span></span>
 			</div>
 			<div>
+				<span><a href="#pwdchange" style="text-decoration: underline;"><i class="fa fa-key"></i>密码修改</a></span>
+				&nbsp;&nbsp;&nbsp;&nbsp;
 				<span>
 					您好，<span th:text="${session.loginUserInfo.userName}">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+					&nbsp;&nbsp;&nbsp;&nbsp;
 					<a href="logout" style="text-decoration: underline;"><i class="fa fa-power-off"></i>退出</a>
 				</span>
 			</div>
@@ -55,6 +58,13 @@
 				class="lv2" ui-sref="costaccountFentanJoblistView">
 				<i class="fa fa-caret-right"></i>&nbsp;结果查看</div>
 				
+			<div class="lv1"><i class="fa fa-edit"></i>&nbsp;区域级成本核算</div>
+			<div 
+				core-permission="cbhs_rwcj"
+				ng-class="{true: 'select'}[$root.menu=='jobzone']"
+				class="lv2" ui-sref="jobzonelist">
+				<i class="fa fa-caret-right"></i>&nbsp;任务管理</div>
+				
 			<div class="lv1"><i class="fa fa-edit"></i>&nbsp;基础数据维护</div>
 			<div 
 				core-permission="jcsj_yy"
@@ -69,12 +79,12 @@
 			
 			<div class="lv1"><i class="fa fa-edit"></i>&nbsp;系统维护</div>
 			<div 
-				core-permission="cbhs_jgck"
+				core-permission="system_user"
 				ng-class="{true: 'select'}[$root.menu=='user']"
 				class="lv2" ui-sref="userList">
 				<i class="fa fa-caret-right"></i>&nbsp;用户管理</div>
 			<div 
-				core-permission="cbhs_jgck"
+				core-permission="system_role"
 				ng-class="{true: 'select'}[$root.menu=='role']"
 				class="lv2" ui-sref="roleList">
 				<i class="fa fa-caret-right"></i>&nbsp;角色管理</div>

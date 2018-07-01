@@ -59,10 +59,10 @@
 		<if test="params.loginName != null and params.loginName != ''">
 		    AND login_name like concat('%',#{params.loginName}, '%')
 		</if>
-		<if test="params.createDateBegin != null">
+		<if test="params.createDateBegin != null and params.createDateBegin != ''">
 			<![CDATA[AND STR_TO_DATE(CONCAT(#{params.createDateBegin}, ' 00:00:00'), '%Y-%m-%d %H:%i:%s') <= t.create_time]]>
 		</if>
-		<if test="params.createDateEnd != null">
+		<if test="params.createDateEnd != null and params.createDateEnd != ''">
 			<![CDATA[AND STR_TO_DATE(CONCAT(#{params.createDateEnd}, ' 23:59:59'), '%Y-%m-%d %H:%i:%s') >= t.create_time]]>
 		</if>
 		

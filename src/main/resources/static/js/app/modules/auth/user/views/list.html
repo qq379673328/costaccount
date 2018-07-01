@@ -28,7 +28,7 @@
 				<span class="highlight">{{queryParams.total}}</span>
 			</span>
 			
-			<a class="spe" href="#user/add">创建新用户</a>
+			<a class="spe" href="#user/add" core-permission="system_user_add">创建新用户</a>
 			
 		</div>
 		<table class="my-table" ng-table="tableParams">
@@ -61,26 +61,31 @@
 					<a class="btn btn-small btn-lblue" 
 						href="#user/edit/{{item.id}}"
 						ng-show="!item.ishanding"
+						core-permission="system_user_edit"
 						>编辑</a>
 						
 					<a class="btn btn-small btn-danger"
 						ng-if="item.isUsed == '1'"
 						ng-show="!item.ishanding"
 						ng-click="item.prepareDel=!item.prepareDel"
+						core-permission="system_user_disable"
 						>禁用</a>
 						
 					<a class="btn btn-small btn-lblue" 
 						ng-if="item.isUsed == '0'"
 						ng-show="!item.ishanding"
 						ng-click="item.ishanding==true;enable(item);"
+						core-permission="system_user_enable"
 						>启用</a>
 						
 					<a class="btn btn-small btn-lblue"
 						ui-sref="userSetRole({id: item.id, loginName: item.loginName})"
+						core-permission="system_user_rolw"
 						>角色分配</a>
 						
 					<a class="btn btn-small btn-lblue" 
 						ng-click="item.ishanding==true;resetPwd(item);"
+						core-permission="system_user_pwd"
 						ng-show="!item.ishanding"
 						>重置密码</a>
 						

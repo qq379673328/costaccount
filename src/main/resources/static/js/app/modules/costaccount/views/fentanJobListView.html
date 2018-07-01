@@ -68,50 +68,21 @@
 				<td>{{ item.create_time | date: "yyyy/MM/dd" }}</td>
 				
 				<td class="handle">
-					<!--
-					<a class="btn btn-small btn-lblue" 
-						href="#costaccount/jobEdit/{{item.id}}"
-						ng-show="!item.ishanding"
-						>编辑</a>
-					-->
 						
 					<a class="btn btn-small btn-success"
 						ng-click="runJob(item)"
+						core-permission="cbhs_jgck_qxjs"
 						ng-show="!item.ishanding"
 						>重新计算</a>
 					<a class="btn btn-small btn-success"
 						href="#costaccount/jobView/{{item.id}}"
+						core-permission="cbhs_jgck_ck"
 						ng-show="!item.ishanding"
 						>查看结果</a>
-					<!-- 
-					<a class="btn btn-small btn-primary"
-						href="#proUpload/{{item.id}}"
-						ng-show="!item.ishanding"
-						>上传项目数据</a>
-					<a class="btn btn-small btn-primary"
-						ng-click="runJobPro(item)"
-						ng-show="!item.ishanding"
-						>计算项目理论成本</a>
-					<a class="btn btn-small btn-primary"
-						href="#pro/view/{{item.id}}"
-						ng-show="!item.ishanding"
-						>查看项目理论成本</a>
-					 -->
 					
 					<a class="btn btn-small btn-w4"
 						ng-show="item.ishanding"
 						>操作中...</a>
-					
-					<table ng-show="item.prepareDel">
-						<tr>
-							<td colspan="5"></td>
-							<td>
-								<a class="btn btn-small btn-danger btn-w4"
-									ng-click="item.ishanding==true;del(item);"
-									>确认删除</a>
-							</td>
-						</tr>
-					</table>
 					
 				</td>
 			</tr>

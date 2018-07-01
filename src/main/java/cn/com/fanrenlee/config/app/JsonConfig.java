@@ -47,12 +47,12 @@ public class JsonConfig extends WebMvcConfigurerAdapter {
 		om.registerModule(new SimpleModule()
 				// 自定义转换
 				.addSerializer(BigDecimal.class, ToStringSerializer.instance)
-				.addSerializer(Long.class, ToStringSerializer.instance)
-				.addSerializer(Long.TYPE, ToStringSerializer.instance)
-				.addSerializer(Float.class, ToStringSerializer.instance)
-				.addSerializer(Float.TYPE, ToStringSerializer.instance)
-				.addSerializer(Double.class, ToStringSerializer.instance)
-				.addSerializer(Double.TYPE, ToStringSerializer.instance)
+				//.addSerializer(Long.class, ToStringSerializer.instance)
+				//.addSerializer(Long.TYPE, ToStringSerializer.instance)
+				//.addSerializer(Float.class, ToStringSerializer.instance)
+				//.addSerializer(Float.TYPE, ToStringSerializer.instance)
+				//.addSerializer(Double.class, ToStringSerializer.instance)
+				//.addSerializer(Double.TYPE, ToStringSerializer.instance)
 				.addSerializer(Integer.class, ToStringSerializer.instance)
 				.addSerializer(Integer.TYPE, ToStringSerializer.instance)
 				.addSerializer(BigDecimal.class, new JsonSerializer<BigDecimal>() {

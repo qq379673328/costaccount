@@ -4,6 +4,7 @@
 package cn.com.fanrenlee.web;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -113,6 +114,14 @@ public class CostAccountFentanController {
 	public @ResponseBody PagingResult getJobList(@RequestParam Map<String, String> params, PageParam pageParams) {
 		return costAccountFentanService.getJobList(params, pageParams);
 	}
+	
+	/**
+	 * 获取任务列表
+	 */
+	@RequestMapping(value = "getSpeJobList", method = RequestMethod.POST)
+	public @ResponseBody List<Map<String, Object>> getSpeJobList(String year, String type, String halfType) {
+		return costAccountFentanService.getSpeJobList(year, type, halfType);
+	}
 
 	/**
 	 * 获取任务详情-任务信息
@@ -167,15 +176,6 @@ public class CostAccountFentanController {
 		ret.put("proresult", proService.getProResult(jobId));
 		// 结果-产能成本率
 		ret.put("proresultCncbl", proService.getProResultCncbl(jobId));
-		
-		// 医院总数
-		Integer hosCount = proService.getHosCount();
-		
-		// 区域级-结果
-		ret.put("proresultZone", proService.getProResultZone(hosCount));
-		// 区域级-产能成本率
-		ret.put("proresultCncblZone", proService.getProResultCncblZone(hosCount));
-		
 		
 		return ret;
 	}

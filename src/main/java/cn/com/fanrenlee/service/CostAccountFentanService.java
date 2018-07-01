@@ -58,7 +58,7 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 
 	@Resource
 	ProDicService proDicService;
-	
+
 	private String safeString(String s) {
 		return s == null || s.trim().equals("") ? "" : s;
 	}
@@ -74,31 +74,29 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 	@Transactional
 	public Integer saveSrcDate(InputStream inputStream, final TCostaccountJob job, TCostaccountJobBaseinfo baseInfo) {
 		// 校验job信息
-		if(job != null) {
+		if (job != null) {
 			String sql = "select count(1) from t_costaccount_job where t_hos_id = ? and year = ? and type = ? ";
 			List<Object> params = new ArrayList<Object>();
 			params.add(job.gettHosId());
 			params.add(job.getYear());
 			params.add(job.getType());
-			if(job.getHalfType() == null) {
+			if (job.getHalfType() == null) {
 				sql += " and half_type is null ";
-			}else {
+			} else {
 				sql += " and half_type = ? ";
 				params.add(job.getHalfType());
 			}
-			Integer count = jdbcTemplate.queryForObject(
-					sql,
-					params.toArray(),
-					Integer.class);
-			if(count > 0) {
+			Integer count = jdbcTemplate.queryForObject(sql, params.toArray(), Integer.class);
+			if (count > 0) {
 				throw new ServiceException("同一医院不能上传同时间段数据");
 			}
 		}
-		
+
 		// 生成任务描述
-		String jobDesc = safeString(job.getHosName()) + safeString(job.getYear()) + "年" + safeString(job.getHalfType()) + "成本核算";
+		String jobDesc = safeString(job.getHosName()) + safeString(job.getYear()) + "年" + safeString(job.getHalfType())
+				+ "成本核算";
 		job.setJobDesc(jobDesc);
-		
+
 		List<List<List<String>>> srcData = null;
 		try {
 			srcData = ExcelUtil.transExcelToData(inputStream);
@@ -118,8 +116,8 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 		final List<TCostaccountSrcNls> srcItemsNls = getCadItemsNlsFromSrcData(srcData, job);
 
 		// 保存任务数据
-		final String sqlJob = "insert into t_costaccount_job " + "(job_desc, t_hos_id, hos_code, hos_name, year, type, half_type) "
-				+ "values (?, ?, ?, ?, ?, ?, ?) ";
+		final String sqlJob = "insert into t_costaccount_job "
+				+ "(job_desc, t_hos_id, hos_code, hos_name, year, type, half_type) " + "values (?, ?, ?, ?, ?, ?, ?) ";
 		KeyHolder keyJob = new GeneratedKeyHolder();
 		jdbcTemplate.update(new PreparedStatementCreator() {
 			@Override
@@ -129,7 +127,7 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 				preState.setInt(2, job.gettHosId());
 				preState.setString(3, job.getHosCode());
 				preState.setString(4, job.getHosName());
-				
+
 				preState.setString(5, job.getYear());
 				preState.setString(6, job.getType());
 				preState.setString(7, job.getHalfType());
@@ -657,7 +655,7 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 
 				ps.setInt(12, item.getType());
 				ps.setInt(13, item.getLevel());
-				
+
 				ps.setDouble(14, item.getZzysCncbl());
 
 			}
@@ -799,6 +797,8 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 		jdbcTemplate.update("delete from t_costaccount_level3 where t_job_id = ? ", jobId);
 		jdbcTemplate.update("delete from t_pro_result where t_job_id = ? ", jobId);
 		jdbcTemplate.update("delete from t_pro_result_cncbl where t_job_id = ? ", jobId);
+		
+		jdbcTemplate.update("delete from t_job_zone_reljob where ccjob_id = ? ", jobId);
 	}
 
 	/**
@@ -1140,6 +1140,25 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 		srcSql.setValues(values.toArray());
 
 		return pagingSearch(params, pageParams, srcSql);
+	}
+
+	/**
+	 * 获取任务列表
+	 * 
+	 * @return
+	 */
+	public List<Map<String, Object>> getSpeJobList(String year, String type, String halfType) {
+		if(halfType == null) {
+			return jdbcTemplate.queryForList(
+					"SELECT j.* FROM `t_costaccount_job` j where 1=1 and year = ? and type = ? and half_type is null", 
+					year, type);
+		}else {
+			return jdbcTemplate.queryForList(
+					"SELECT j.* FROM `t_costaccount_job` j where 1=1 and year = ? and type = ? and half_type = ?", 
+					year, type, halfType);
+		}
+		
+		
 	}
 
 	/**

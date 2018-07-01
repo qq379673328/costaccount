@@ -60,6 +60,6 @@ public class UserInfoController {
 	@PostMapping("alterPwd")
 	public APIResult<String> alterPwd(@RequestParam Map<String, String> params) {
 		userInfoService.alterPwd(params);
-		return new APIResult<String>(null, "修改成功", true);
+		return new APIResult<String>(null, "密码修改成功", true);
 	}
 }
