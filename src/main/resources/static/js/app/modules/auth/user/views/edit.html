@@ -46,6 +46,14 @@
 						<input class="form-input" ng-model="item.phone" />
 					</td>
 				</tr>
+				<tr>
+					<td class="td-even">
+						所属机构：
+						<select ng-model="item.orgId">
+							<option ng-repeat="x in orgs" value="{{x.id}}">{{x.orgName}}</option>
+						</select>
+					</td>
+				</tr>
 				
 				<tr>
 					<td class="td-even">

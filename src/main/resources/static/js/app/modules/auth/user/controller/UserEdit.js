@@ -7,6 +7,12 @@ app.controller('UserEditCtrl',function($scope,
 	var id = $stateParams.id;
 	$scope.isAdd = id ? false : true;
 	
+	// 所属机构
+	$http.post("org/getAll")
+	.success(function(data){
+		$scope.orgs = data.data;
+	});
+	
 	if(id){
 		//加载信息
 		$http.post("api/mgr/auth/usermgr/detail/" + id)
@@ -26,6 +32,12 @@ app.controller('UserEditCtrl',function($scope,
 		
 		if (!$scope.item.name) {
 			$scope.validInfo = "姓名不能为空";
+			return;
+		}
+		
+		if (!$scope.item.orgId) {
+		debugger;
+			$scope.validInfo = "所属机构不能为空";
 			return;
 		}
 		

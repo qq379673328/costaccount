@@ -19,12 +19,13 @@ import org.springframework.transaction.annotation.Transactional;
 import cn.com.fanrenlee.auth.BaseDao;
 import cn.com.fanrenlee.auth.domain.common.PageParam;
 import cn.com.fanrenlee.auth.domain.common.PagingResult;
+import cn.com.fanrenlee.auth.usermgr.serivce.UserMgrService;
 
 /**
  * 区域级任务
  */
 @Service
-public class JobZoneService {
+public class JobZoneService extends SimpleServiceImpl{
 
 	public static final String NAMESPACE_BASE = "cn.com.sinosoft.jobzone.";
 
@@ -32,6 +33,8 @@ public class JobZoneService {
 	BaseDao dao;
 	@Resource
 	JdbcTemplate template;
+	@Resource
+	UserMgrService userMgrService;
 
 	/**
 	 * 获取列表
@@ -40,8 +43,11 @@ public class JobZoneService {
 	 * @param page
 	 * @return
 	 */
-	public PagingResult<List<Map<String, Object>>> getList(Map<String, String> searchParams, PageParam pageParam) {
+	public PagingResult<List<Map<String, Object>>> getList(Map<String, Object> searchParams, PageParam pageParam) {
 		Map<String, Object> params = new HashMap<String, Object>();
+		String loginUser = getLoginUser();
+		Integer orgId = userMgrService.getByLoginName(loginUser).getOrgId();
+		searchParams.put("orgId", orgId);
 		params.put("params", searchParams);
 		PagingResult<List<Map<String, Object>>> result = dao.selectPage(NAMESPACE_BASE + "list", params, pageParam);
 		return result;
@@ -99,15 +105,16 @@ public class JobZoneService {
 			throw new ServiceException("描述【" + desc + "】已存在");
 		}
 
-		final String sql = " insert into t_job_zone (  `desc`  )  VALUES ( ? ) ";
+		final String sql = " insert into t_job_zone (  `desc`, create_user  )  VALUES ( ?, ? ) ";
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		template.update(new PreparedStatementCreator() {
 
 			@Override
 			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
 				// 设置返回的主键字段名
-				PreparedStatement ps = con.prepareStatement(sql, new String[] { "desc" });
+				PreparedStatement ps = con.prepareStatement(sql, new String[] { "desc", "create_user" });
 				ps.setString(1, desc);
+				ps.setString(2, getLoginUser());
 				return ps;
 			}
 		}, keyHolder);

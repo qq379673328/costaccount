@@ -30,6 +30,8 @@ public class TCostaccountJob {
     private String type;
     
     private String halfType;
+    
+    private String createUser;
 
     public Integer getId() {
         return id;
@@ -141,6 +143,14 @@ public class TCostaccountJob {
 
 	public void setHalfType(String halfType) {
 		this.halfType = halfType;
+	}
+
+	public String getCreateUser() {
+		return createUser;
+	}
+
+	public void setCreateUser(String createUser) {
+		this.createUser = createUser;
 	}
     
     

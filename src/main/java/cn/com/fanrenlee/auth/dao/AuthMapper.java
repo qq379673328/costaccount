@@ -68,14 +68,14 @@ public interface AuthMapper {
 
 	@Insert({ "insert into t_auth_user (ID, CREATE_USER, CREATE_TIME, ", "UPDATE_USER, UPDATE_TIME, ",
 			"LOGIN_NAME, `NAME`, ", "PASS_WORD, USER_TYPE, ", "USER_LEVEL, ORG_CODE, ", "ZONE_CODE, IS_USED, EMAIL, ",
-			"SEX, PHONE)",
+			"SEX, PHONE, ORG_ID)",
 			"values (#{id,jdbcType=VARCHAR}, #{createUser,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, ",
 			"#{updateUser,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, ",
 			"#{loginName,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, ",
 			"#{passWord,jdbcType=VARCHAR}, #{userType,jdbcType=CHAR}, ",
 			"#{userLevel,jdbcType=CHAR}, #{orgCode,jdbcType=VARCHAR}, ",
 			"#{zoneCode,jdbcType=VARCHAR}, #{isUsed,jdbcType=CHAR}, #{email,jdbcType=VARCHAR}, ",
-			"#{sex,jdbcType=CHAR}, #{phone,jdbcType=VARCHAR})" })
+			"#{sex,jdbcType=CHAR}, #{phone,jdbcType=VARCHAR}, #{orgId,jdbcType=INTEGER})" })
 	int insertUser(TAuthUser record);
 
 }

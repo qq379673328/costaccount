@@ -67,6 +67,19 @@ public class UserMgrService {
 	public TAuthUser get(String id) {
 		return getUserMapper().selectByPrimaryKey(id);
 	}
+	
+	/**
+	 * 获取详情
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public TAuthUser getByLoginName(String loginName) {
+		TAuthUserExample ex = new TAuthUserExample();
+		ex.createCriteria().andLoginNameEqualTo(loginName);
+		List<TAuthUser> users = getUserMapper().selectByExample(ex);
+		return users.size() > 0 ? users.get(0) : null;
+	}
 
 	/**
 	 * 登录名是否存在

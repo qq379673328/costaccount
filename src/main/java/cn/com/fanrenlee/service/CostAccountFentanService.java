@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mysql.jdbc.Statement;
 
+import cn.com.fanrenlee.auth.usermgr.serivce.UserMgrService;
 import cn.com.fanrenlee.model.common.PageParam;
 import cn.com.fanrenlee.model.common.PagingResult;
 import cn.com.fanrenlee.model.common.PagingSrcSql;
@@ -59,6 +60,8 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 
 	@Resource
 	ProDicService proDicService;
+	@Resource
+	UserMgrService userMgrService;
 
 	private String safeString(String s) {
 		return s == null || s.trim().equals("") ? "" : s;
@@ -120,7 +123,7 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 
 		// 保存任务数据
 		final String sqlJob = "insert into t_costaccount_job "
-				+ "(job_desc, t_hos_id, hos_code, hos_name, year, type, half_type) " + "values (?, ?, ?, ?, ?, ?, ?) ";
+				+ "(job_desc, t_hos_id, hos_code, hos_name, year, type, half_type, create_user) " + "values (?, ?, ?, ?, ?, ?, ?, ?) ";
 		KeyHolder keyJob = new GeneratedKeyHolder();
 		jdbcTemplate.update(new PreparedStatementCreator() {
 			@Override
@@ -134,6 +137,7 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 				preState.setString(5, job.getYear());
 				preState.setString(6, job.getType());
 				preState.setString(7, job.getHalfType());
+				preState.setString(8, getLoginUser());
 				return preState;
 			}
 		}, keyJob);
@@ -1192,7 +1196,7 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 
 		PagingSrcSql srcSql = new PagingSrcSql();
 		List<Object> values = new ArrayList<Object>();
-		StringBuffer sb = new StringBuffer(" SELECT j.* FROM `t_costaccount_job` j where 1=1 ");
+		StringBuffer sb = new StringBuffer(" SELECT j.* FROM `t_costaccount_job` j left join t_auth_user u on j.create_user = u.login_name where 1=1 ");
 		// 任务名
 		if (!StrUtils.isNull(params.get("jobDesc"))) {
 			sb.append(" and j.job_desc like ? ");
@@ -1209,6 +1213,12 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 		if (!StrUtils.isNull(params.get("createTimeEnd"))) {// 创建日期-结束
 			sb.append(" AND " + SqlUtil.toDate(params.get("createTimeEnd"), 1, 0) + " >= j.create_time ");
 		}
+		
+		// 创建人
+		String loginUser = getLoginUser();
+		Integer orgId = userMgrService.getByLoginName(loginUser).getOrgId();
+		sb.append(" AND u.org_id = ? ");
+		values.add(orgId);
 
 		sb.append(" ORDER BY j.year DESC,j.type desc, j.half_type desc ");
 
@@ -1217,6 +1227,7 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 
 		return pagingSearch(params, pageParams, srcSql);
 	}
+	
 
 	/**
 	 * 获取任务列表
@@ -1224,14 +1235,18 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 	 * @return
 	 */
 	public List<Map<String, Object>> getSpeJobList(String year, String type, String halfType) {
+		String loginUser = getLoginUser();
+		Integer orgId = userMgrService.getByLoginName(loginUser).getOrgId();
 		if (halfType == null) {
 			return jdbcTemplate.queryForList(
-					"SELECT j.* FROM `t_costaccount_job` j where 1=1 and year = ? and type = ? and half_type is null",
-					year, type);
+					"SELECT j.* FROM `t_costaccount_job` j left join t_auth_user u on j.create_user = u.login_name "
+					+ " where 1=1 and year = ? and type = ? and half_type is null AND u.org_id = ?  ",
+					year, type, orgId);
 		} else {
 			return jdbcTemplate.queryForList(
-					"SELECT j.* FROM `t_costaccount_job` j where 1=1 and year = ? and type = ? and half_type = ?", year,
-					type, halfType);
+					"SELECT j.* FROM `t_costaccount_job` j left join t_auth_user u on j.create_user = u.login_name "
+					+ " where 1=1 and year = ? and type = ? and half_type = ? AND u.org_id = ? ", year,
+					type, halfType, orgId);
 		}
 
 	}

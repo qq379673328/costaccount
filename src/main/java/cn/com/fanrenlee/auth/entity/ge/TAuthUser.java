@@ -35,6 +35,8 @@ public class TAuthUser implements Serializable {
 	private String sex;
 
 	private String phone;
+	
+	private Integer orgId;
 
 	private static final long serialVersionUID = 1L;
 
@@ -227,5 +229,13 @@ public class TAuthUser implements Serializable {
 		result = prime * result + ((getSex() == null) ? 0 : getSex().hashCode());
 		result = prime * result + ((getPhone() == null) ? 0 : getPhone().hashCode());
 		return result;
+	}
+
+	public Integer getOrgId() {
+		return orgId;
+	}
+
+	public void setOrgId(Integer orgId) {
+		this.orgId = orgId;
 	}
 }

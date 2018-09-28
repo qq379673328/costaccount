@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import cn.com.fanrenlee.model.common.PageParam;
@@ -93,6 +94,10 @@ public class SimpleServiceImpl {
 		StringBuffer sb = new StringBuffer();
 		sb.append(sql + " LIMIT " + (pageParams.getPage() - 1) * pageParams.getRows() + "," + pageParams.getRows());
 		return sb.toString();
+	}
+	
+	public String getLoginUser() {
+		return SecurityContextHolder.getContext().getAuthentication().getName();
 	}
 
 }

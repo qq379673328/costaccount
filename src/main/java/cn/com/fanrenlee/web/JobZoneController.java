@@ -31,7 +31,7 @@ public class JobZoneController {
 	ProService proService;
 
 	/**
-	 * 获取角色管理列表
+	 * 获取列表
 	 *
 	 * @param params
 	 * @param page
@@ -39,7 +39,7 @@ public class JobZoneController {
 	 */
 	@RequestMapping("list")
 	@ResponseBody
-	public PagingResult<List<Map<String, Object>>> getList(@RequestParam Map<String, String> searchParams,
+	public PagingResult<List<Map<String, Object>>> getList(@RequestParam Map<String, Object> searchParams,
 			PageParam pageParam) {
 		return service.getList(searchParams, pageParam);
 	}
@@ -62,7 +62,7 @@ public class JobZoneController {
 	}
 
 	/**
-	 * 删除角色
+	 * 删除
 	 *
 	 * @param ids
 	 * @return

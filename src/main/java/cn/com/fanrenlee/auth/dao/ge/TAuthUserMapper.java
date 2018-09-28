@@ -61,11 +61,13 @@ public interface TAuthUserMapper {
 			@Result(column = "IS_USED", property = "isUsed", jdbcType = JdbcType.CHAR),
 			@Result(column = "EMAIL", property = "email", jdbcType = JdbcType.VARCHAR),
 			@Result(column = "SEX", property = "sex", jdbcType = JdbcType.CHAR),
-			@Result(column = "PHONE", property = "phone", jdbcType = JdbcType.VARCHAR) })
+			@Result(column = "PHONE", property = "phone", jdbcType = JdbcType.VARCHAR),
+			@Result(column = "ORG_ID", property = "orgId", jdbcType = JdbcType.INTEGER)
+	})
 	List<TAuthUser> selectByExample(TAuthUserExample example);
 
 	@Select({ "select", "ID, CREATE_USER, CREATE_TIME, UPDATE_USER, UPDATE_TIME, LOGIN_NAME, `NAME`, ",
-			"PASS_WORD, USER_TYPE, USER_LEVEL, ORG_CODE, ZONE_CODE, IS_USED, EMAIL, SEX, ", "PHONE", "from t_auth_user",
+			"PASS_WORD, USER_TYPE, USER_LEVEL, ORG_CODE, ZONE_CODE, IS_USED, EMAIL, SEX, ", "PHONE, ORG_ID ", "from t_auth_user",
 			"where ID = #{id,jdbcType=VARCHAR}" })
 	@Results({ @Result(column = "ID", property = "id", jdbcType = JdbcType.VARCHAR, id = true),
 			@Result(column = "CREATE_USER", property = "createUser", jdbcType = JdbcType.VARCHAR),
@@ -82,7 +84,9 @@ public interface TAuthUserMapper {
 			@Result(column = "IS_USED", property = "isUsed", jdbcType = JdbcType.CHAR),
 			@Result(column = "EMAIL", property = "email", jdbcType = JdbcType.VARCHAR),
 			@Result(column = "SEX", property = "sex", jdbcType = JdbcType.CHAR),
-			@Result(column = "PHONE", property = "phone", jdbcType = JdbcType.VARCHAR) })
+			@Result(column = "PHONE", property = "phone", jdbcType = JdbcType.VARCHAR),
+			@Result(column = "ORG_ID", property = "orgId", jdbcType = JdbcType.INTEGER)
+	})
 	TAuthUser selectByPrimaryKey(String id);
 
 	@UpdateProvider(type = TAuthUserSqlProvider.class, method = "updateByExampleSelective")

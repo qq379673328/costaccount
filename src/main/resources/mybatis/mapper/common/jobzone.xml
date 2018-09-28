@@ -9,8 +9,9 @@
 	<select id="list"
 		resultType="hashmap">
 		SELECT
-		  *
+		  t.*
 		FROM t_job_zone t
+		left join t_auth_user u on t.create_user = u.login_name 
 		where 1=1
 		<if test="params.jobDesc != null and params.jobDesc != ''">
 		    AND t.`desc` like concat('%',#{params.jobDesc}, '%')
@@ -21,10 +22,11 @@
 		<if test="params.createTimeEnd != null and params.createTimeEnd != ''">
 			<![CDATA[AND STR_TO_DATE(CONCAT(#{params.createTimeEnd}, ' 23:59:59'), '%Y-%m-%d %H:%i:%s') >= t.create_time]]>
 		</if>
+		AND u.org_id = #{params.orgId}
 		ORDER BY t.create_time desc
 	</select>
 	
-	<!-- 重新分配角色权限 -->
+	<!-- 批量插入 -->
 	<insert id="set-rel" useGeneratedKeys="true" keyProperty="id">
 		insert into t_job_zone_reljob
 			(jobzone_id, ccjob_id)

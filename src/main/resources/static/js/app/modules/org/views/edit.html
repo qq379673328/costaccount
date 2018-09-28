@@ -1,0 +1,48 @@
+<div class="navigation">
+	位置：
+	<a href="#">首页</a>
+</div>
+<form name="form">
+<div class="content">
+	<div class="mytable">
+		<div class="title">
+			<span>
+				机构编辑
+			</span>
+		</div>
+		<table>
+			<tbody>
+				<tr>
+					<td class="td-even">
+						<span class="warn">*</span>机构名称：
+						<input class="form-input" ng-model="org.orgName" />
+					</td>
+				</tr>
+				
+				<tr>
+					<td class="td-even">
+						<div class="btn btn-lblue" 
+							ng-show="!isRuning"
+							ng-click="save()">
+							&nbsp;&nbsp;保存&nbsp;&nbsp;
+						</div>
+						<btn-back />
+						<div ng-show="isRuning">
+							保存中，请稍后...
+						</div>
+
+					</td>
+				</tr>
+				
+				<tr>
+					<td colspan="2">
+						<div core-formresult result="formresult"></div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	
+</div>
+
+</form>

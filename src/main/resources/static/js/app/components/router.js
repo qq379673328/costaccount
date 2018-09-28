@@ -105,6 +105,29 @@ app.config(function($stateProvider, $urlRouterProvider) {
 		controller : "HosEditCtrl"
 	})
 	
+	// 机构列表
+	.state('orgList',{
+		url : "/org/list",
+		templateUrl : fdRouterViewsBasepath
+				+ 'org/views/list.html',
+		controller : "OrgListCtrl"
+	})
+	// 机构编辑
+	.state('orgEdit',{
+		url : "/org/edit/{id}",
+		params: {id: null},
+		templateUrl : fdRouterViewsBasepath
+				+ 'org/views/edit.html',
+		controller : "OrgEditCtrl"
+	})
+	// 机构新增
+	.state('orgAdd',{
+		url : "/org/add",
+		templateUrl : fdRouterViewsBasepath
+				+ 'org/views/edit.html',
+		controller : "OrgEditCtrl"
+	})
+	
 	// 科室列表
 	.state('deptList',{
 		url : "/dept/list/{hosId}",

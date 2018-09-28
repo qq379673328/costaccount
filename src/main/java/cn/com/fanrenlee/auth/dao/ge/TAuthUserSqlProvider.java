@@ -115,6 +115,7 @@ public class TAuthUserSqlProvider {
 		sql.SELECT("EMAIL");
 		sql.SELECT("SEX");
 		sql.SELECT("PHONE");
+		sql.SELECT("ORG_id");
 		sql.FROM("t_auth_user");
 		applyWhere(sql, example, false);
 
@@ -288,6 +289,10 @@ public class TAuthUserSqlProvider {
 
 		if (record.getPhone() != null) {
 			sql.SET("PHONE = #{phone,jdbcType=VARCHAR}");
+		}
+		
+		if (record.getOrgId() != null) {
+			sql.SET("ORG_ID = #{orgId,jdbcType=INTEGER}");
 		}
 
 		sql.WHERE("ID = #{id,jdbcType=VARCHAR}");
