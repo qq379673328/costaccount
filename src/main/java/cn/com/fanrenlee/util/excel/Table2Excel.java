@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -45,136 +46,183 @@ public class Table2Excel {
 	private List<Integer[]> mergeCells = new ArrayList<Integer[]>();
 	private Map<String, Object> mergeFlag = new HashMap<String, Object>();
 	private CellStyle cellStyle;
-	private int colMax = 0;
+	private CellStyle cellStyleNumber;
+	private CellStyle cellStyleInt;
 	
-	public Table2Excel(){
+	private int colMax = 0;
+
+	public Table2Excel() {
 		wb = new HSSFWorkbook();
 		cellStyle = wb.createCellStyle();
-        cellStyle.setBorderBottom((short)1);
-        cellStyle.setBorderTop((short)1);
-        cellStyle.setBorderLeft((short)1);
-        cellStyle.setBorderRight((short)1);
-        cellStyle.setBottomBorderColor(HSSFFont.COLOR_NORMAL);
-        cellStyle.setTopBorderColor(HSSFFont.COLOR_NORMAL);
-        cellStyle.setLeftBorderColor(HSSFFont.COLOR_NORMAL);
-        cellStyle.setRightBorderColor(HSSFFont.COLOR_NORMAL);
-        cellStyle.setAlignment(CellStyle.ALIGN_CENTER);
-        cellStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
-        cellStyle.setWrapText(true);
+		cellStyle.setBorderBottom((short) 1);
+		cellStyle.setBorderTop((short) 1);
+		cellStyle.setBorderLeft((short) 1);
+		cellStyle.setBorderRight((short) 1);
+		cellStyle.setBottomBorderColor(HSSFFont.COLOR_NORMAL);
+		cellStyle.setTopBorderColor(HSSFFont.COLOR_NORMAL);
+		cellStyle.setLeftBorderColor(HSSFFont.COLOR_NORMAL);
+		cellStyle.setRightBorderColor(HSSFFont.COLOR_NORMAL);
+		cellStyle.setAlignment(CellStyle.ALIGN_CENTER);
+		cellStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+		cellStyle.setWrapText(true);
+
+		cellStyleNumber = wb.createCellStyle();
+		cellStyleNumber.setBorderBottom((short) 1);
+		cellStyleNumber.setBorderTop((short) 1);
+		cellStyleNumber.setBorderLeft((short) 1);
+		cellStyleNumber.setBorderRight((short) 1);
+		cellStyleNumber.setBottomBorderColor(HSSFFont.COLOR_NORMAL);
+		cellStyleNumber.setTopBorderColor(HSSFFont.COLOR_NORMAL);
+		cellStyleNumber.setLeftBorderColor(HSSFFont.COLOR_NORMAL);
+		cellStyleNumber.setRightBorderColor(HSSFFont.COLOR_NORMAL);
+		cellStyleNumber.setAlignment(CellStyle.ALIGN_CENTER);
+		cellStyleNumber.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+		cellStyleNumber.setWrapText(true);
+		cellStyleNumber.setDataFormat(HSSFDataFormat.getBuiltinFormat("#,##0.00"));
+
+		cellStyleInt = wb.createCellStyle();
+		cellStyleInt.setBorderBottom((short) 1);
+		cellStyleInt.setBorderTop((short) 1);
+		cellStyleInt.setBorderLeft((short) 1);
+		cellStyleInt.setBorderRight((short) 1);
+		cellStyleInt.setBottomBorderColor(HSSFFont.COLOR_NORMAL);
+		cellStyleInt.setTopBorderColor(HSSFFont.COLOR_NORMAL);
+		cellStyleInt.setLeftBorderColor(HSSFFont.COLOR_NORMAL);
+		cellStyleInt.setRightBorderColor(HSSFFont.COLOR_NORMAL);
+		cellStyleInt.setAlignment(CellStyle.ALIGN_CENTER);
+		cellStyleInt.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+		cellStyleInt.setWrapText(true);
+		cellStyleInt.setDataFormat(HSSFDataFormat.getBuiltinFormat("#,#0"));
 	}
-	
+
 	/**
 	 * 将xml格式table，转换为excel输出流<br/>
 	 * 由于jquery在ie下使用.html()获取的内容不符合xml规范，无法解析通过，故此方法废弃，但正常的xml可以解析，格式如:<br/>
 	 * &lt;table>&lt;tr>&lt;td>&lt;/td>&lt;/tr>&lt;/table>;
+	 * 
 	 * @param tableJson
 	 * @param outputStream
 	 * @throws Exception
 	 */
 	@Deprecated
-	public void transXml2Excel(String tableJson, OutputStream outputStream) throws Exception{
+	public void transXml2Excel(String tableJson, OutputStream outputStream) throws Exception {
 		tableJson = handleTableJson(tableJson);
-		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance(); 
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		DocumentBuilder db;
 		db = dbf.newDocumentBuilder();
-		Document document = db.parse(new ByteArrayInputStream(tableJson.getBytes("UTF-8"))); 
+		Document document = db.parse(new ByteArrayInputStream(tableJson.getBytes("UTF-8")));
 		NodeList rootNodeList = document.getChildNodes();
 		Node node = rootNodeList.item(0);
-		//处理节点
+		// 处理节点
 		handleNode(node, wb);
-		//合并单元格
+		// 合并单元格
 		mergeCell();
-		//调整列宽
+		// 调整列宽
 		autoCell();
 		wb.write(outputStream);
 	}
+
+	public static boolean isDouble(String str) {
+		boolean isDouble = Pattern.compile("^-?([1-9]\\d*\\.\\d*|0\\.\\d*[1-9]\\d*|0?\\.0+|0)$").matcher(str).find();
+		return isDouble;
+
+	}
 	
+	public static boolean isInt(String str) {
+		boolean isInt = Pattern.compile("^-?[1-9]\\d*$").matcher(str).find();
+		return isInt;
+
+	}
+
 	/**
 	 * 处理节点
+	 * 
 	 * @param node
 	 * @param wb
 	 */
-	private void handleNode(Node node, Workbook wb){
+	private void handleNode(Node node, Workbook wb) {
 		String nodeName = node.getNodeName();
-		//当前节点处理
+		// 当前节点处理
 		NamedNodeMap nodeAttrs = node.getAttributes();
-		if(nodeName.equals("table") || nodeName.equals("TABLE")){
+		if (nodeName.equals("table") || nodeName.equals("TABLE")) {
 			sheet = wb.createSheet();
-		}else if(nodeName.equals("thead") || nodeName.equals("THEAD")){
-		}else if(nodeName.equals("tbody") || nodeName.equals("TBODY")){
-		}else if(nodeName.equals("tfoot") || nodeName.equals("TFOOT")){
-		}else if(nodeName.equals("tr") || nodeName.equals("TR")){
+		} else if (nodeName.equals("thead") || nodeName.equals("THEAD")) {
+		} else if (nodeName.equals("tbody") || nodeName.equals("TBODY")) {
+		} else if (nodeName.equals("tfoot") || nodeName.equals("TFOOT")) {
+		} else if (nodeName.equals("tr") || nodeName.equals("TR")) {
 			row = sheet.createRow(rowIdx);
 			rowIdx++;
 			cellIdx = 0;
-		}else if(nodeName.equals("td") || nodeName.equals("th")
-				 || nodeName.equals("TD") || nodeName.equals("TH")){
-			while(mergeFlag.get("" + (rowIdx -1) + "," + cellIdx) != null){
+		} else if (nodeName.equals("td") || nodeName.equals("th") || nodeName.equals("TD") || nodeName.equals("TH")) {
+			while (mergeFlag.get("" + (rowIdx - 1) + "," + cellIdx) != null) {
 				cellIdx++;
 			}
 			cell = row.createCell(cellIdx);
 			cell.setCellValue(node.getTextContent());
 			cell.setCellStyle(cellStyle);
-			Node colSpanNode = nodeAttrs.getNamedItem("colspan") == null ? 
-					nodeAttrs.getNamedItem("COLSPAN") : nodeAttrs.getNamedItem("colspan");
-			Node rowSpanNode = nodeAttrs.getNamedItem("rowspan") == null ?
-					nodeAttrs.getNamedItem("ROWSPAN") : nodeAttrs.getNamedItem("rowspan");;
+			
+			Node colSpanNode = nodeAttrs.getNamedItem("colspan") == null ? nodeAttrs.getNamedItem("COLSPAN")
+					: nodeAttrs.getNamedItem("colspan");
+			Node rowSpanNode = nodeAttrs.getNamedItem("rowspan") == null ? nodeAttrs.getNamedItem("ROWSPAN")
+					: nodeAttrs.getNamedItem("rowspan");
+			;
 			int cols = 1;
 			int rows = 1;
-			if(colSpanNode != null){
+			if (colSpanNode != null) {
 				String c = colSpanNode.getNodeValue();
 				cols = c == null ? 1 : Integer.valueOf(c);
 			}
-			if(rowSpanNode != null){
+			if (rowSpanNode != null) {
 				String r = rowSpanNode.getNodeValue();
 				rows = r == null ? 1 : Integer.valueOf(r);
 			}
-			//处理合并表头
-			int beginRow = rowIdx -1;
-			int endRow = rowIdx -1 + rows -1;
+			// 处理合并表头
+			int beginRow = rowIdx - 1;
+			int endRow = rowIdx - 1 + rows - 1;
 			int beginCol = cellIdx;
 			int endCol = cellIdx + cols - 1;
-			if(endRow != beginRow || endCol != beginCol){
-				mergeCells.add(new Integer[]{beginRow, endRow, beginCol, endCol});
+			if (endRow != beginRow || endCol != beginCol) {
+				mergeCells.add(new Integer[] { beginRow, endRow, beginCol, endCol });
 			}
-			for(int i = beginRow; i<= endRow; i++){
-				for(int j = beginCol; j <= endCol; j++){
+			for (int i = beginRow; i <= endRow; i++) {
+				for (int j = beginCol; j <= endCol; j++) {
 					mergeFlag.put("" + i + "," + j, true);
 				}
 			}
-			
+
 			cellIdx = cellIdx + cols;
 			colMax = cellIdx > colMax ? cellIdx : colMax;
 		}
-		//子节点
+		// 子节点
 		NodeList nodeList = node.getChildNodes();
-		for(int i = 0; i < nodeList.getLength(); i++){
+		for (int i = 0; i < nodeList.getLength(); i++) {
 			Node oneNode = nodeList.item(i);
 			handleNode(oneNode, wb);
 		}
 	}
-	
+
 	/**
 	 * 处理tablejson
+	 * 
 	 * @param tableJson
 	 * @return
 	 */
-	private String handleTableJson(String tableJson){
-		if(tableJson == null || tableJson.equals("")){
+	private String handleTableJson(String tableJson) {
+		if (tableJson == null || tableJson.equals("")) {
 			return null;
 		}
-		//替换字符-"<br />" >> ""
+		// 替换字符-"<br />" >> ""
 		Pattern pattern = Pattern.compile("<br />|<br/>|<br>|<BR>|<BR/>|<BR />|<font>|</font>");
 		Matcher matcher = pattern.matcher(tableJson);
 		return matcher.replaceAll("");
-		
+
 	}
-	
+
 	/**
 	 * 合并节点
 	 */
-	private void mergeCell(){
-		for(Integer[] oneMerge : mergeCells){
+	private void mergeCell() {
+		for (Integer[] oneMerge : mergeCells) {
 			CellRangeAddress address = new CellRangeAddress(oneMerge[0], oneMerge[1], oneMerge[2], oneMerge[3]);
 			sheet.addMergedRegion(address);
 			RegionUtil.setBorderBottom(1, address, sheet, wb);
@@ -183,57 +231,65 @@ public class Table2Excel {
 			RegionUtil.setBorderTop(1, address, sheet, wb);
 		}
 	}
-	
+
 	/**
 	 * 调整列宽
 	 *
 	 */
-	private void autoCell(){
-		for(int i = 0; i < colMax; i++){
-			sheet.autoSizeColumn((short)i, true);
-			sheet.setColumnWidth(i, sheet.getColumnWidth(i) + 5*256);
+	private void autoCell() {
+		for (int i = 0; i < colMax; i++) {
+			sheet.autoSizeColumn((short) i, true);
+			sheet.setColumnWidth(i, sheet.getColumnWidth(i) + 5 * 256);
 		}
 	}
-	
+
 	/**
 	 * 处理json格式数据生成excel,格式如下:<br/>
 	 * "[[{'cols':3,'rows':4,'val':'3'},{'cols':3,'rows':4,'val':'3'}]]"
+	 * 
 	 * @param tableJson
 	 * @param outputStream
 	 * @throws Exception
 	 * @author <a href="mailto:nytclizy@gmail.com">李志勇</a>
 	 */
-	public void transJson2Excel(String tableJson, OutputStream outputStream)
-		throws Exception{
+	public void transJson2Excel(String tableJson, OutputStream outputStream) throws Exception {
 		tableJson = handleTableJson(tableJson);
 		ObjectMapper om = new ObjectMapper();
 		ExcelTransTd[][] data = om.readValue(tableJson, ExcelTransTd[][].class);
 		sheet = wb.createSheet();
-		for(int j = 0; j < data.length; j++){
+		for (int j = 0; j < data.length; j++) {
 			ExcelTransTd[] rowData = data[j];
 			row = sheet.createRow(rowIdx);
 			cellIdx = 0;
 			rowIdx++;
-			for(int i = 0; i < rowData.length; i++){
+			for (int i = 0; i < rowData.length; i++) {
 				ExcelTransTd excelTransTd = rowData[i];
-				while(mergeFlag.get("" + (rowIdx -1) + "," + cellIdx) != null){
+				while (mergeFlag.get("" + (rowIdx - 1) + "," + cellIdx) != null) {
 					cellIdx++;
 				}
 				cell = row.createCell(cellIdx);
 				cell.setCellValue(excelTransTd.getVal());
+
 				cell.setCellStyle(cellStyle);
+				if (isDouble(excelTransTd.getVal())) {
+					cell.setCellStyle(cellStyleNumber);
+					cell.setCellValue(Double.parseDouble(excelTransTd.getVal()));
+				}else if(isInt(excelTransTd.getVal())) {
+					cell.setCellStyle(cellStyleInt);
+					cell.setCellValue(Integer.parseInt(excelTransTd.getVal()));
+				}
 				int cols = excelTransTd.getCols();
 				int rows = excelTransTd.getRows();
-				//处理合并表头
-				int beginRow = rowIdx -1;
-				int endRow = rowIdx -1 + rows -1;
+				// 处理合并表头
+				int beginRow = rowIdx - 1;
+				int endRow = rowIdx - 1 + rows - 1;
 				int beginCol = cellIdx;
 				int endCol = cellIdx + cols - 1;
-				if(endRow != beginRow || endCol != beginCol){
-					mergeCells.add(new Integer[]{beginRow, endRow, beginCol, endCol});
+				if (endRow != beginRow || endCol != beginCol) {
+					mergeCells.add(new Integer[] { beginRow, endRow, beginCol, endCol });
 				}
-				for(int m = beginRow; m<= endRow; m++){
-					for(int n = beginCol; n <= endCol; n++){
+				for (int m = beginRow; m <= endRow; m++) {
+					for (int n = beginCol; n <= endCol; n++) {
 						mergeFlag.put("" + m + "," + n, true);
 					}
 				}
@@ -241,12 +297,11 @@ public class Table2Excel {
 				colMax = cellIdx > colMax ? cellIdx : colMax;
 			}
 		}
-		//合并单元格
+		// 合并单元格
 		mergeCell();
-		//调整列宽
+		// 调整列宽
 		autoCell();
 		wb.write(outputStream);
 	}
-	
-	
+
 }

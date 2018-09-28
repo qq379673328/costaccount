@@ -40,6 +40,7 @@ import cn.com.fanrenlee.model.tables.TCostaccountLevel1;
 import cn.com.fanrenlee.model.tables.TCostaccountLevel2;
 import cn.com.fanrenlee.model.tables.TCostaccountLevel3;
 import cn.com.fanrenlee.model.tables.TCostaccountSrc;
+import cn.com.fanrenlee.model.tables.TCostaccountSrcDept;
 import cn.com.fanrenlee.model.tables.TCostaccountSrcKdgzl;
 import cn.com.fanrenlee.model.tables.TCostaccountSrcNls;
 import cn.com.fanrenlee.model.tables.TProDic;
@@ -114,6 +115,8 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 		final List<TCostaccountSrcKdgzl> srcItemsKdgzl = getCadItemsKdgzlFromSrcData(srcData, job);
 		// 原始业务数据-项目年例数
 		final List<TCostaccountSrcNls> srcItemsNls = getCadItemsNlsFromSrcData(srcData, job);
+		// 原始业务数据-科室对照
+		final List<TCostaccountSrcDept> srcItemsDept = getCadItemsDeptFromSrcData(srcData, job);
 
 		// 保存任务数据
 		final String sqlJob = "insert into t_costaccount_job "
@@ -290,6 +293,41 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 
 		});
 
+		// 保存业务数据-科室对照
+		String sqlServiceDept = "insert into t_costaccount_src_dept ( t_job_id, bz_dept_code, bz_dept_name, "
+				+ " dept_code, dept_name) values (?,?,?,?,?) ";
+		jdbcTemplate.batchUpdate(sqlServiceDept, new BatchPreparedStatementSetter() {
+
+			@Override
+			public void setValues(PreparedStatement ps, int i) throws SQLException {
+				TCostaccountSrcDept item = srcItemsDept.get(i);
+
+				// + " t_job_id, bz_dept_code, bz_dept_name, "
+				ps.setObject(1, jobId);
+				ps.setString(2, handleDeptCode(item.getBzDeptCode()));
+				ps.setObject(3, item.getBzDeptName());
+
+				// + " dept_code, dept_name
+				ps.setString(4, handleDeptCode(item.getDeptCode()));
+				ps.setObject(5, item.getDeptName());
+
+			}
+
+			// 处理科室编码，防止出现.0
+			private String handleDeptCode(String deptCode) {
+				if (deptCode != null && deptCode.endsWith(".0")) {
+					return deptCode.substring(0, deptCode.length() - 2);
+				}
+				return deptCode;
+			}
+
+			@Override
+			public int getBatchSize() {
+				return srcItemsDept.size();
+			}
+
+		});
+
 		return jobId;
 	}
 
@@ -450,6 +488,42 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 			srcItem.setProCode(rowDataItem.get(2));
 			srcItem.setProName(rowDataItem.get(3));
 			srcItem.setNls(getInteger(rowDataItem.get(4)));
+
+			srcItems.add(srcItem);
+		}
+		return srcItems;
+	}
+
+	/**
+	 * 从原始excel数据中获取数据-科室对照-第四页
+	 *
+	 * @param srcData
+	 * @return
+	 * @throws ServiceException
+	 */
+	private List<TCostaccountSrcDept> getCadItemsDeptFromSrcData(List<List<List<String>>> srcData, TCostaccountJob job)
+			throws ServiceException {
+		if (srcData == null || srcData.size() <= 3) {
+			return null;
+		}
+		List<TCostaccountSrcDept> srcItems = new ArrayList<TCostaccountSrcDept>();
+		List<List<String>> sheetDataItem = srcData.get(3);
+		if (sheetDataItem.size() <= 3) {
+			throw new ServiceException("第四页数据【科室对照】不符合规范，至少应有2行数据（一行表头，至少一行业务数据）");
+		}
+
+		// 处理业务数据-从第二行开始
+		for (int i = 1; i < sheetDataItem.size(); i++) {
+			List<String> rowDataItem = sheetDataItem.get(i);
+			int rowDataitemSize = rowDataItem.size();
+			if (rowDataitemSize < 4) {
+				throw new ServiceException("第四页【科室对照】数据行应有四列数据(行" + (i + 1) + ")");
+			}
+			TCostaccountSrcDept srcItem = new TCostaccountSrcDept();
+			srcItem.setBzDeptCode(rowDataItem.get(0));
+			srcItem.setBzDeptName(rowDataItem.get(1));
+			srcItem.setDeptCode(rowDataItem.get(2));
+			srcItem.setDeptName(rowDataItem.get(3));
 
 			srcItems.add(srcItem);
 		}
@@ -797,7 +871,7 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 		jdbcTemplate.update("delete from t_costaccount_level3 where t_job_id = ? ", jobId);
 		jdbcTemplate.update("delete from t_pro_result where t_job_id = ? ", jobId);
 		jdbcTemplate.update("delete from t_pro_result_cncbl where t_job_id = ? ", jobId);
-		
+
 		jdbcTemplate.update("delete from t_job_zone_reljob where ccjob_id = ? ", jobId);
 	}
 
@@ -816,6 +890,8 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 		jdbcTemplate.update("delete from t_costaccount_src_kdgzl where t_job_id = ? ", jobId);
 		// 原始数据-项目年例数
 		jdbcTemplate.update("delete from t_costaccount_src_nls where t_job_id = ? ", jobId);
+		// 原始数据-科室对照
+		jdbcTemplate.update("delete from t_costaccount_src_dept where t_job_id = ? ", jobId);
 
 		// 任务自身
 		jdbcTemplate.update("delete from t_costaccount_job where id = ? ", jobId);
@@ -1148,17 +1224,16 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 	 * @return
 	 */
 	public List<Map<String, Object>> getSpeJobList(String year, String type, String halfType) {
-		if(halfType == null) {
+		if (halfType == null) {
 			return jdbcTemplate.queryForList(
-					"SELECT j.* FROM `t_costaccount_job` j where 1=1 and year = ? and type = ? and half_type is null", 
+					"SELECT j.* FROM `t_costaccount_job` j where 1=1 and year = ? and type = ? and half_type is null",
 					year, type);
-		}else {
+		} else {
 			return jdbcTemplate.queryForList(
-					"SELECT j.* FROM `t_costaccount_job` j where 1=1 and year = ? and type = ? and half_type = ?", 
-					year, type, halfType);
+					"SELECT j.* FROM `t_costaccount_job` j where 1=1 and year = ? and type = ? and half_type = ?", year,
+					type, halfType);
 		}
-		
-		
+
 	}
 
 	/**
@@ -1239,9 +1314,9 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 		}
 
 		List<Object> values = new ArrayList<Object>();
-		StringBuffer sb = new StringBuffer(" SELECT t.*, "
+		StringBuffer sb = new StringBuffer(" SELECT t.*,d.bz_dept_code,d.bz_dept_name, "
 				+ " (select d.`dept_type_code` from t_dept d where d.`dept_code` = t.`dept_code` and d.`t_hospital_id` = (select j.`t_hos_id` from t_costaccount_job j where j.id = t.t_job_id) ) as dept_type_code "
-				+ "  FROM " + tableName + " t where t.t_job_id = ? ");
+				+ "  FROM " + tableName + " t left join t_costaccount_src_dept d on t.t_job_id = d.t_job_id and t.dept_code = d.dept_code where t.t_job_id = ? ");
 
 		values.add(params.get("jobId"));
 

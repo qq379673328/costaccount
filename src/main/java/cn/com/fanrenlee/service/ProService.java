@@ -47,14 +47,14 @@ public class ProService extends SimpleServiceImpl {
 	 * 获取处理结果
 	 */
 	public List<Map<String, Object>> getProResult(Integer jobId) {
-		return jdbcTemplate.queryForList(" SELECT * from t_pro_result where t_job_id = ?", new Object[] { jobId });
+		return jdbcTemplate.queryForList(" SELECT t.*,d.bz_dept_code,d.bz_dept_name from t_pro_result t left join t_costaccount_src_dept d on t.t_job_id = d.t_job_id and t.dept_code = d.dept_code where t.t_job_id = ?", new Object[] { jobId });
 	}
 
 	/**
 	 * 获取处理结果-产能成本率
 	 */
 	public List<Map<String, Object>> getProResultCncbl(Integer jobId) {
-		return jdbcTemplate.queryForList(" SELECT * from t_pro_result_cncbl where t_job_id = ? order by dept_code,type",
+		return jdbcTemplate.queryForList(" SELECT t.*,d.bz_dept_code,d.bz_dept_name from t_pro_result_cncbl t left join t_costaccount_src_dept d on t.t_job_id = d.t_job_id and t.dept_code = d.dept_code where t.t_job_id = ? order by dept_code,type",
 				new Object[] { jobId });
 	}
 

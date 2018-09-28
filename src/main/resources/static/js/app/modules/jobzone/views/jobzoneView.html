@@ -22,6 +22,8 @@
 				ng-class="{true: 'select', false: 'unselect'}[showtype=='shiji']" >实际成本算法结果</a>
 			<a class="item" ng-click="showtype='point';show='point2'"
 				ng-class="{true: 'select', false: 'unselect'}[showtype=='point']" >价值点数算法结果</a>
+			<a class="item" ng-click="showtype='db';show='db3'"
+				ng-class="{true: 'select', false: 'unselect'}[showtype=='db']" >成本对比</a>
 		</div>
 	</div>
 
@@ -53,6 +55,15 @@
 				ng-class="{true: 'select', false: 'unselect'}[show=='point2']" >区域级-项目价值点数</a>
 			<a class="item" ng-click="show='point5'"
 				ng-class="{true: 'select', false: 'unselect'}[show=='point5']" >区域级-全成本产能成本率</a>
+		</div>
+	</div>
+	
+	<div class="mytable" ng-show="showtype=='db'" style="margin-top: 10px; margin-bottom: 10px;">
+		<div class="title" style="background-color: #2f96b4">
+			
+			<a class="item" ng-click="show='db3'"
+				ng-class="{true: 'select', false: 'unselect'}[show=='db3']" >区域级-项目成本对比</a>
+			
 		</div>
 	</div>
 	
@@ -285,6 +296,39 @@
 				<td>{{ item.spe_cncbl | number:2 | tableShowNull}}</td>
 				<td>{{ item.asset_cncbl | number:2 | tableShowNull}}</td>
 				<td>{{ item.oc_cncbl | number:2 | tableShowNull}}</td>
+				
+			</tr>
+		</table>
+	</div>
+	
+	<!-- ==========成本对比============ -->
+	
+	
+	<!-- 展示报表3：区域级-项目成本对比 -->
+	<div class="mytable" ng-show="show=='db3'" style="overflow-x: scroll;">
+		<table class="my-table"
+		 tabexp>
+			<thead>
+				<tr>
+					<th>序号</th>
+					<th>任务描述</th>
+					<th>项目名称</th>
+					
+					<th>理论成本（全成本）</th>
+					<th>实际成本（全成本）</th>
+					<th>价值点数</th>
+				</tr>
+			</thead>
+			<tr ng-repeat="item in quDb">
+				<td>{{ $index + 1 }}</td>
+				
+				<td>{{ job.desc }}</td>
+				
+				<td>{{ item.pro_name }}</td>
+				
+				<td>{{ item.a | number:2 | tableShowNull}}</td>
+				<td>{{ item.b | number:2 | tableShowNull}}</td>
+				<td>{{ item.c | number:2 | tableShowNull}}</td>
 				
 			</tr>
 		</table>

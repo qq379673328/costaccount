@@ -17,12 +17,11 @@ app.controller('DeptEditCtrl',function($scope,
 		["LC", "临床"]
 		],
 		deptSpe: [
-		["OUTPATIENTCASHIER", "门诊收费处科室"],
-		["REGISTER", "挂号处科室"],
+		["REGISTER", "挂号收费处"],
 		["OUTPATIENT", "门诊科室"],
 		["SUPPLY", "供应室科室"],
 		["INHOS", "住院科室"],
-		["CASHIER", "住院收费处科室"],
+		["CASHIER", "住院收费处"],
 		["MEDICALRECORD", "病案室科室"]
 		]
 	};
