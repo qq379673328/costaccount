@@ -29,7 +29,7 @@ app.controller('FentanJobViewCtrl',function($scope,
 				var dataFentan = [];
 				if(data.srcNls && data.fentan){
 					for(var i in data.fentan){
-						if(srcNlsMap[data.fentan[i].dept_code]){
+						if(srcNlsMap[data.fentan[i].dept_code] || data.fentan[i].level == 2){
 							dataFentan.push(data.fentan[i]);
 						}
 					}
@@ -40,7 +40,7 @@ app.controller('FentanJobViewCtrl',function($scope,
 				var proCosts = [];
 				if(data.srcNls && data.proresult){
 					for(var i in data.proresult){
-						if(srcNlsMap[data.proresult[i].dept_code]){
+						if(srcNlsMap[data.proresult[i].dept_code] || data.proresult[i].level == 2){
 							proCosts.push(data.proresult[i]);
 						}
 					}
