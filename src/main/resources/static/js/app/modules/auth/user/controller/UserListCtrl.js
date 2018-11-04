@@ -58,6 +58,16 @@ app.controller('UserListCtrl',function($scope,
 		$scope.reload();
 	}, true);
 	
+	// 删除
+	$scope.del = function(item){
+		item.ishanding = true;
+		$http.post("api/mgr/auth/usermgr/del", {id: item.id}).success(function(data){
+			$scope.reload();
+		}).error(function(){
+			item.ishanding = false;
+		});
+	};
+	
 	// 禁用
 	$scope.disable = function(item){
 		item.ishanding = true;

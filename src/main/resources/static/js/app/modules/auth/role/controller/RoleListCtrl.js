@@ -61,7 +61,7 @@ app.controller('RoleListCtrl',function($scope,
 	// 删除
 	$scope.del = function(item){
 		item.ishanding = true;
-		$http.post("api/mgr/auth/rolemgr/del", {ids: item.id}).success(function(data){
+		$http.post("api/mgr/auth/rolemgr/del", {ids: item.ID}).success(function(data){
 			$scope.reload();
 		}).error(function(){
 			item.ishanding = false;

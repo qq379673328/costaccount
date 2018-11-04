@@ -89,6 +89,12 @@
 						ng-show="!item.ishanding"
 						>重置密码</a>
 						
+					<a class="btn btn-small btn-danger"
+						ng-show="!item.ishanding"
+						ng-click="item.prepareDelOk=!item.prepareDelOk"
+						core-permission="system_user_del"
+						>删除</a>
+						
 					<a class="btn btn-small btn-w4"
 						ng-show="item.ishanding"
 						>操作中...</a>
@@ -100,6 +106,17 @@
 								<a class="btn btn-small btn-danger btn-w4"
 									ng-click="item.ishanding==true;disable(item);"
 									>确认禁用</a>
+							</td>
+						</tr>
+					</table>
+					
+					<table ng-show="item.prepareDelOk">
+						<tr>
+							<td colspan="5"></td>
+							<td>
+								<a class="btn btn-small btn-danger btn-w4"
+									ng-click="item.ishanding==true;del(item);"
+									>确认删除</a>
 							</td>
 						</tr>
 					</table>

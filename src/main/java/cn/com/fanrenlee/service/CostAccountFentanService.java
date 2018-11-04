@@ -1216,9 +1216,11 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 		
 		// 创建人
 		String loginUser = getLoginUser();
-		Integer orgId = userMgrService.getByLoginName(loginUser).getOrgId();
-		sb.append(" AND u.org_id = ? ");
-		values.add(orgId);
+		if(!"admin".equals(loginUser)) {
+			Integer orgId = userMgrService.getByLoginName(loginUser).getOrgId();
+			sb.append(" AND u.org_id = ? ");
+			values.add(orgId);
+		}
 
 		sb.append(" ORDER BY j.year DESC,j.type desc, j.half_type desc ");
 
@@ -1238,15 +1240,31 @@ public class CostAccountFentanService extends SimpleServiceImpl {
 		String loginUser = getLoginUser();
 		Integer orgId = userMgrService.getByLoginName(loginUser).getOrgId();
 		if (halfType == null) {
-			return jdbcTemplate.queryForList(
-					"SELECT j.* FROM `t_costaccount_job` j left join t_auth_user u on j.create_user = u.login_name "
-					+ " where 1=1 and year = ? and type = ? and half_type is null AND u.org_id = ?  ",
-					year, type, orgId);
+			if(!"admin".equals(loginUser)) {
+				return jdbcTemplate.queryForList(
+						"SELECT j.* FROM `t_costaccount_job` j left join t_auth_user u on j.create_user = u.login_name "
+						+ " where 1=1 and year = ? and type = ? and half_type is null AND u.org_id = ?  ",
+						year, type, orgId);
+			}else {
+				return jdbcTemplate.queryForList(
+						"SELECT j.* FROM `t_costaccount_job` j left join t_auth_user u on j.create_user = u.login_name "
+						+ " where 1=1 and year = ? and type = ? and half_type is null ",
+						year, type);
+			}
+			
 		} else {
-			return jdbcTemplate.queryForList(
-					"SELECT j.* FROM `t_costaccount_job` j left join t_auth_user u on j.create_user = u.login_name "
-					+ " where 1=1 and year = ? and type = ? and half_type = ? AND u.org_id = ? ", year,
-					type, halfType, orgId);
+			if(!"admin".equals(loginUser)) {
+				return jdbcTemplate.queryForList(
+						"SELECT j.* FROM `t_costaccount_job` j left join t_auth_user u on j.create_user = u.login_name "
+						+ " where 1=1 and year = ? and type = ? and half_type = ? AND u.org_id = ? ", year,
+						type, halfType, orgId);
+			}else {
+				return jdbcTemplate.queryForList(
+						"SELECT j.* FROM `t_costaccount_job` j left join t_auth_user u on j.create_user = u.login_name "
+						+ " where 1=1 and year = ? and type = ? and half_type = ? ", year,
+						type, halfType);
+			}
+			
 		}
 
 	}

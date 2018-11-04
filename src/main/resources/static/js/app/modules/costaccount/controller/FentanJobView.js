@@ -21,8 +21,10 @@ app.controller('FentanJobViewCtrl',function($scope,
 				$scope.dataSrcNls = data.srcNls;
 				
 				var srcNlsMap = {};
+				var srcNlsProMap = {};
 				for(var i in data.srcNls){
 					srcNlsMap[data.srcNls[i].dept_code] = true;
+					srcNlsProMap[data.srcNls[i].dept_code +"_" + data.srcNls[i].pro_code] = true;
 				}
 				
 				// 根据年例数过滤结果集（只显示科室开展项目）
@@ -40,7 +42,7 @@ app.controller('FentanJobViewCtrl',function($scope,
 				var proCosts = [];
 				if(data.srcNls && data.proresult){
 					for(var i in data.proresult){
-						if(srcNlsMap[data.proresult[i].dept_code] || data.proresult[i].level == 2){
+						if((srcNlsProMap[data.proresult[i].dept_code + "_" + data.proresult[i].pro_code]) || data.proresult[i].level == 2){
 							proCosts.push(data.proresult[i]);
 						}
 					}

@@ -22,6 +22,7 @@
 		
 			<ul class="role-set-menu">
 				<li ng-repeat="item in items">
+					<span ng-if="item.id=='jcsj_yy_dep'">&nbsp;&nbsp;&nbsp;&nbsp;</span>
 					<input type="checkbox" name="userroles"
 						value="item.id" 
 						ng-checked="item.checked == true"
