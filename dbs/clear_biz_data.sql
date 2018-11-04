@@ -1,0 +1,15 @@
+delete from t_costaccount_fentan;
+delete from t_costaccount_job;
+delete from t_costaccount_job_baseinfo;
+delete from t_costaccount_level1;
+delete from t_costaccount_level2;
+delete from t_costaccount_level3;
+delete from t_costaccount_src;
+delete from t_costaccount_src_dept;
+delete from t_costaccount_src_kdgzl;
+delete from t_costaccount_src_nls;
+delete from t_job_zone;
+delete from t_job_zone_reljob;
+delete from t_pro_result;
+delete from t_pro_result_cncbl;
+delete from t_pro_src;
