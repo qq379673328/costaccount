@@ -1,10 +1,12 @@
 package cn.com.fanrenlee.auth.dic;
 
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.util.ResourceUtils;
 import org.thymeleaf.util.StringUtils;
 
@@ -26,13 +28,13 @@ public class DicTransUtil {
 	static {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
-			List<DicType> dicTypes = mapper.readValue(
-					ResourceUtils.getFile(ResourceUtils.CLASSPATH_URL_PREFIX + DIC_PATH),
-					new TypeReference<List<DicType>>() {
-					});
+			InputStream in = new DefaultResourceLoader().getResource(ResourceUtils.CLASSPATH_URL_PREFIX + DIC_PATH).getInputStream();
+			List<DicType> dicTypes = mapper.readValue(in, new TypeReference<List<DicType>>() {
+			});
 			for (DicType dicType : dicTypes) {
 				DICS.put(dicType.getDicType(), dicType);
 			}
+			in.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
